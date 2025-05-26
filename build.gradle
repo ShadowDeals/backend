@@ -30,12 +30,33 @@ dependencies {
     aotPlugins("io.micronaut.security:micronaut-security-aot")
     aotPlugins platform("io.micronaut.platform:micronaut-platform:4.8.2")
 
+    // Spring security crypto for encrypting
+    implementation("org.springframework.security:spring-security-crypto:6.2.0")
+    implementation("org.slf4j:jcl-over-slf4j")
+
     // Serialization
     annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
 
+    // JetBrains Annotations
+    implementation("org.jetbrains:annotations:26.0.1")
+
+    // Mapstruct for mapping objects
+    implementation("org.mapstruct:mapstruct:1.6.3")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+
     //Reactor
     implementation("io.micronaut.reactor:micronaut-reactor")
+
+    // Micronaut RxJava
+    implementation("io.micronaut.rxjava3:micronaut-rxjava3")
+
+    // Micronaut Mail
+    implementation("io.micronaut.email:micronaut-email-javamail")
+    implementation("org.eclipse.angus:angus-mail")
+
+    // J2HTML - HTML generation
+    implementation("com.j2html:j2html:1.6.0")
 
     // Hibernate Reactive
     implementation("io.micronaut.data:micronaut-data-hibernate-reactive")
