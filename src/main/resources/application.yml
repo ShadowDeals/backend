@@ -1,0 +1,36 @@
+micronaut:
+  application:
+    name: shadow-deals
+  security:
+    authentication: bearer
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: ${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: none
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        connection:
+          db-type: postgresql
+    reactive: true
+
+vertx:
+  pg:
+    client:
+      user: ${DB_USERNAME:postgres}
+      password: ${DB_PASS:postgrespass}
+      host: ${DB_HOST:localhost}
+      port: ${DB_PORT:5432}
+      database: ${DB_NAME:stats}
+
+liquibase:
+  datasources:
+    default:
+      change-log: classpath:db/db.changelog-master.xml
+      enabled: true

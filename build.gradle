@@ -1,0 +1,106 @@
+plugins {
+    id("io.micronaut.application") version "4.5.3"
+    id("com.gradleup.shadow") version "8.3.6"
+    id("io.micronaut.test-resources") version "4.5.3"
+    id("io.micronaut.aot") version "4.5.3"
+}
+
+version = "0.1"
+group = "com.shadow.deals"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Micronaut data
+    annotationProcessor("io.micronaut.data:micronaut-data-processor")
+
+    // Lombok
+    annotationProcessor("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok")
+
+    // HTTP
+    annotationProcessor("io.micronaut:micronaut-http-validation")
+    compileOnly("io.micronaut:micronaut-http-client")
+
+    // Security
+    annotationProcessor("io.micronaut.security:micronaut-security-annotations")
+    implementation("io.micronaut.security:micronaut-security-jwt")
+    aotPlugins("io.micronaut.security:micronaut-security-aot")
+    aotPlugins platform("io.micronaut.platform:micronaut-platform:4.8.2")
+
+    // Serialization
+    annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
+    implementation("io.micronaut.serde:micronaut-serde-jackson")
+
+    //Reactor
+    implementation("io.micronaut.reactor:micronaut-reactor")
+
+    // Hibernate Reactive
+    implementation("io.micronaut.data:micronaut-data-hibernate-reactive")
+    implementation("io.micronaut.sql:micronaut-hibernate-reactive")
+
+    // PostgreSQL
+    runtimeOnly("org.postgresql:postgresql")
+
+    // VertX
+    implementation("io.micronaut.sql:micronaut-vertx-pg-client")
+    implementation("io.vertx:vertx-pg-client")
+
+    // Liquibase
+    implementation("io.micronaut.liquibase:micronaut-liquibase")
+
+    // Logging
+    runtimeOnly("ch.qos.logback:logback-classic")
+
+    // Enabling YAML configuration
+    runtimeOnly("org.yaml:snakeyaml")
+
+    // Tests
+    testImplementation("io.micronaut:micronaut-http-client")
+}
+
+
+application {
+    mainClass = "com.shadow.deals.Application"
+}
+java {
+    sourceCompatibility = JavaVersion.toVersion("21")
+    targetCompatibility = JavaVersion.toVersion("21")
+}
+
+
+graalvmNative.toolchainDetection = false
+
+micronaut {
+    runtime("netty")
+    testRuntime("junit5")
+    processing {
+        incremental(true)
+        annotations("com.shadow.deals.*")
+    }
+    testResources {
+        additionalModules.add("hibernate-reactive-postgresql")
+    }
+    aot {
+        // Please review carefully the optimizations enabled below
+        // Check https://micronaut-projects.github.io/micronaut-aot/latest/guide/ for more details
+        optimizeServiceLoading = false
+        convertYamlToJava = false
+        precomputeOperations = true
+        cacheEnvironment = true
+        optimizeClassLoading = true
+        deduceEnvironment = true
+        optimizeNetty = true
+        replaceLogbackXml = true
+        configurationProperties.put("micronaut.security.jwks.enabled","false")
+    }
+}
+
+
+tasks.named("dockerfileNative") {
+    jdkVersion = "21"
+}
+
+
