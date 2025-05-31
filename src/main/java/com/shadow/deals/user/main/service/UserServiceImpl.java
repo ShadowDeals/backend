@@ -4,14 +4,14 @@ import com.shadow.deals.base.service.CommonUpdateService;
 import com.shadow.deals.exception.APIException;
 import com.shadow.deals.user.main.entity.User;
 import com.shadow.deals.user.main.repository.UserRepository;
+import com.shadow.deals.user.role.entity.UserRole;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * This class contains methods that perform business logic related to the {@link User} entity.
@@ -74,6 +74,7 @@ public class UserServiceImpl implements UserService, CommonUpdateService<User> {
      * @throws APIException in case the requested instance of the entity does not exist. It throws with the
      *                      {@link HttpStatus#NOT_FOUND} code.
      */
+    @Transactional
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new APIException(
@@ -102,15 +103,18 @@ public class UserServiceImpl implements UserService, CommonUpdateService<User> {
      * @param user a user who needs to be assigned set of roles.
      * @return Set of user role names.
      */
+    @Transactional
     @Override
-    public Set<String> getUserRoles(User user) {
-        if (user == null || user.getRoles() == null) {
-            return Set.of();
+    public String getUserRole(User user) {
+        if (user == null) {
+            return null;
         }
-        return user.getRoles()
-                .stream()
-                .map(r -> r.getRoleName().getTitle())
-                .collect(Collectors.toSet());
+
+        UserRole role = user.getRole();
+        if (role == null) {
+            return null;
+        }
+        return user.getRole().getRoleName().getTitle();
     }
 
     /**
