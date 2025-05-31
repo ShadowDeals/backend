@@ -23,8 +23,9 @@ jpa:
   default:
     properties:
       hibernate:
+        enable_lazy_load_no_trans: true
         hbm2ddl:
-          auto: none
+          auto: validate
         dialect: org.hibernate.dialect.PostgreSQLDialect
         connection:
           db-type: postgresql
