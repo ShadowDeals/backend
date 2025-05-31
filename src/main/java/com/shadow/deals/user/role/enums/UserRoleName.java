@@ -14,15 +14,11 @@ import lombok.ToString;
 @RequiredArgsConstructor
 @ToString
 public enum UserRoleName implements CommonEnum<UserRoleName> {
-    /**
-     * User with this role have minimal features.
-     */
-    USER("User"),
-
-    /**
-     * User with this role have unlimited features.
-     */
-    SUPER_ADMIN("Super admin");
+    USER("Пользователь"),
+    DON("Дон"),
+    ADMIN("Администратор"),
+    SOLDIER("Солдат"),
+    SUPER_ADMIN("Главный администратор");
 
     /**
      * The Enum element string value.
