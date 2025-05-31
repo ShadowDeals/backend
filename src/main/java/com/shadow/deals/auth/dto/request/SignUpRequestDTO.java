@@ -1,6 +1,8 @@
 package com.shadow.deals.auth.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.shadow.deals.user.region.enums.RegionName;
+import com.shadow.deals.user.role.enums.UserRoleName;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.SerdeImport;
 import jakarta.validation.constraints.Email;
@@ -55,4 +57,11 @@ public class SignUpRequestDTO {
     @NotBlank
     @JsonProperty("email")
     private String email;
+
+    @NotBlank
+    @JsonProperty("role")
+    private UserRoleName role;
+
+    @JsonProperty("region")
+    private RegionName region;
 }
