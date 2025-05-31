@@ -18,31 +18,31 @@ public class MailProperties implements MailPropertiesProvider {
     /**
      * Is debug needed when working with the email service?
      */
-    @Value("${kast.mail.debug}")
+    @Value("${shadow-deals.mail.debug}")
     private boolean mailDebug;
 
     /**
      * The email service host.
      */
-    @Value("${kast.mail.host}")
+    @Value("${shadow-deals.mail.host}")
     private String mailHost;
 
     /**
      * The email service port.
      */
-    @Value("${kast.mail.port}")
+    @Value("${shadow-deals.mail.port}")
     private int mailPort;
 
     /**
      * The protocol for transmitting emails.
      */
-    @Value("${kast.mail.transport.protocol}")
+    @Value("${shadow-deals.mail.transport.protocol}")
     private String mailTransportProtocol;
 
     /**
      * Is authentication required on the SMTP server.
      */
-    @Value("${kast.mail.smtp.auth}")
+    @Value("${shadow-deals.mail.smtp.auth}")
     private boolean mailSmtpAuth;
 
     /**
@@ -50,26 +50,26 @@ public class MailProperties implements MailPropertiesProvider {
      *
      * @see <a href="https://en.wikipedia.org/wiki/Opportunistic_TLS">What is STARTTLS</a>.
      */
-    @Value("${kast.mail.smtp.starttls.enable}")
+    @Value("${shadow-deals.mail.smtp.starttls.enable}")
     private boolean mailSmtpStarttlsEnable;
 
     /**
      * Is check the server identity as specified by RFC 2595 needed. These additional checks based on the content of the
      * server's certificate are intended to prevent man-in-the-middle attacks.
      */
-    @Value("${kast.mail.smtp.ssl.checkserveridentity}")
+    @Value("${shadow-deals.mail.smtp.ssl.checkserveridentity}")
     private boolean mailSmtpSslCheckServerIdentity;
 
     /**
      * A set of hosts that are trusted.
      */
-    @Value("${kast.mail.smtp.ssl.trust}")
+    @Value("${shadow-deals.mail.smtp.ssl.trust}")
     private Set<String> mailSmtpSslTrust;
 
     /**
      * Is it necessary to use the SSL protocol and SSL port (by default).
      */
-    @Value("${kast.mail.smtp.ssl.enable}")
+    @Value("${shadow-deals.mail.smtp.ssl.enable}")
     private boolean mailSmtpSslEnable;
 
     /**

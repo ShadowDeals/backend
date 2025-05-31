@@ -27,7 +27,7 @@ public class RefreshTokenPersistenceImpl implements RefreshTokenPersistence {
 //    /**
 //     * The lifetime of the refresh token.
 //     */
-//    @Value("${kast.auth.refresh-token.expiration}")
+//    @Value("${shadow-deals.auth.refresh-token.expiration}")
 //    private int refreshTokenExpiresIn;
 
     /**

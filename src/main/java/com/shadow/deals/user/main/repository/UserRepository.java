@@ -31,7 +31,7 @@ public interface UserRepository extends CommonRepository<User> {
      * {@link Optional}.
      */
     @Query(value = """
-            SELECT * FROM sd_user WHERE id = (SELECT user_id FROM kast_refresh_token WHERE refresh_token = :refreshTokenKey)
+            SELECT * FROM sd_user WHERE id = (SELECT user_id FROM sd_refresh_token WHERE refresh_token = :refreshTokenKey)
             """,
             nativeQuery = true)
     Optional<User> findByRefreshTokenKey(String refreshTokenKey);

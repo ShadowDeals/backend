@@ -39,7 +39,7 @@ public class MailServiceImpl implements MailService {
     /**
      * Who send the message.
      */
-    @Value("${kast.mail.username}")
+    @Value("${shadow-deals.mail.username}")
     private String from;
 
     /**
@@ -126,7 +126,7 @@ public class MailServiceImpl implements MailService {
                         TagCreator.div(
                                 TagCreator.img()
                                         .withSrc("cid:logo")
-                                        .withAlt("KAST logo")
+                                        .withAlt("Shadow Deals logo")
                                         .withHeight("32px"),
                                 TagCreator.span(
                                         boldText

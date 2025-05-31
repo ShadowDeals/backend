@@ -110,23 +110,23 @@ public class AuthServiceImpl implements AuthService {
     /**
      * The address of the client application.
      */
-    @Value("${kast.client.address}")
+    @Value("${shadow-deals.client.address}")
     private String clientAddress;
 
     /**
      * The path where the password change will be displayed on the client.
      */
-    @Value("${kast.client.path.change-password}")
+    @Value("${shadow-deals.client.path.change-password}")
     private String clientChangePasswordPath;
 
     /**
      * The path where the email confirm will be displayed on the client.
      */
-    @Value("${kast.client.path.confirm-email}")
+    @Value("${shadow-deals.client.path.confirm-email}")
     private String clientConfirmEmailPath;
 
     /**
-     * The identifier that corresponds to the KAST logo in the sent email.
+     * The identifier that corresponds to the Shadow Deals logo in the sent email.
      */
     private final static String LOGO_EMAIL_CID = "logo";
 

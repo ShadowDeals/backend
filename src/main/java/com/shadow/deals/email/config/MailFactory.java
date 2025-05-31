@@ -16,13 +16,13 @@ public class MailFactory {
     /**
      * Username for authentication in the mail service.
      */
-    @Value("${kast.mail.username}")
+    @Value("${shadow-deals.mail.username}")
     private String username;
 
     /**
      * Password for authentication in the mail service.
      */
-    @Value("${kast.mail.password}")
+    @Value("${shadow-deals.mail.password}")
     private String password;
 
     /**
