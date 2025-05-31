@@ -5,6 +5,7 @@ import com.shadow.deals.exception.APIException;
 import com.shadow.deals.user.activation.entity.ActivationCode;
 import com.shadow.deals.user.activation.repository.ActivationCodeRepository;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
@@ -72,6 +73,7 @@ public class ActivationCodeServiceImpl implements ActivationCodeService, CommonU
      * @throws APIException in case a non-existent activation code is passed. It throws with the
      *                      {@link HttpStatus#NOT_FOUND} code.
      */
+    @Transactional
     @Override
     public ActivationCode findByActivationCode(String activationCode) {
         return activationCodeRepository.findByActivationCode(activationCode).orElseThrow(() -> new APIException(
