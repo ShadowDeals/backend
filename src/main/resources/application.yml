@@ -20,17 +20,43 @@ jpa:
           db-type: postgresql
     reactive: true
 
-vertx:
-  pg:
-    client:
-      user: ${DB_USERNAME:postgres}
-      password: ${DB_PASS:postgrespass}
-      host: ${DB_HOST:localhost}
-      port: ${DB_PORT:5432}
-      database: ${DB_NAME:stats}
+# Datasource properties
+datasources:
+  default:
+    # PostgreSQL properties
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASS:postgrespass}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:shadow}
 
+# Liquibase properties
 liquibase:
   datasources:
     default:
       change-log: classpath:db/db.changelog-master.xml
-      enabled: true
+
+shadow-deals:
+  client:
+    path:
+      change-password: /change-password?code=%s&email=%s
+      confirm-email: /confirm?code=%s
+    address: http://localhost:5173
+  auth:
+    refresh-token:
+      expiration: ${REFRESH_TOKEN_EXPIRATION:604800}
+  mail:
+    debug: ${MAIL_DEBUG:false}
+    host: ${MAIL_HOST:smtp.mail.ru}
+    port: ${MAIL_PORT:465}
+    username: ${MAIL_USERNAME:volce.chat@mail.ru}
+    password: ${MAIL_PASSWORD:evTjBPFQef7h5dE2NWvw}
+    transport:
+      protocol: ${MAIL_TRANSPORT_PROTOCOL:smtp}
+    smtp:
+      auth: ${MAIL_SMTP_AUTH:true}
+      starttls:
+        enable: ${MAIL_SMTP_STARTTLS_ENABLE:true}
+      ssl:
+        checkserveridentity: ${MAIL_SMTP_SSL_CHECK_SERVER_IDENTITY:true}
+        trust:
+          - "*"
+        enable: ${MAIL_SMTP_SSL_ENABLE:true}

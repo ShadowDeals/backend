@@ -45,9 +45,6 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.6.3")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 
-    //Reactor
-    implementation("io.micronaut.reactor:micronaut-reactor")
-
     // Micronaut RxJava
     implementation("io.micronaut.rxjava3:micronaut-rxjava3")
 
@@ -59,15 +56,12 @@ dependencies {
     implementation("com.j2html:j2html:1.6.0")
 
     // Hibernate Reactive
-    implementation("io.micronaut.data:micronaut-data-hibernate-reactive")
-    implementation("io.micronaut.sql:micronaut-hibernate-reactive")
+    implementation("io.micronaut.sql:micronaut-hibernate-jpa")
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
 
     // PostgreSQL
     runtimeOnly("org.postgresql:postgresql")
-
-    // VertX
-    implementation("io.micronaut.sql:micronaut-vertx-pg-client")
-    implementation("io.vertx:vertx-pg-client")
 
     // Liquibase
     implementation("io.micronaut.liquibase:micronaut-liquibase")
@@ -115,7 +109,7 @@ micronaut {
         deduceEnvironment = true
         optimizeNetty = true
         replaceLogbackXml = true
-        configurationProperties.put("micronaut.security.jwks.enabled","false")
+        configurationProperties.put("micronaut.security.jwks.enabled", "false")
     }
 }
 
