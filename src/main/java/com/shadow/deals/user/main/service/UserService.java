@@ -3,8 +3,6 @@ package com.shadow.deals.user.main.service;
 import com.shadow.deals.base.service.CommonEntityService;
 import com.shadow.deals.user.main.entity.User;
 
-import java.util.Set;
-
 /**
  * This interface contains the signatures of the methods that must be implemented by the corresponding service class.
  *
@@ -33,7 +31,7 @@ public interface UserService extends CommonEntityService<User> {
      * @param user a user who needs to be assigned set of roles.
      * @return Set of user role names.
      */
-    Set<String> getUserRoles(User user);
+    String getUserRole(User user);
 
     /**
      * This signature describes a method that allows to determine whether an entity exists with the given email.
