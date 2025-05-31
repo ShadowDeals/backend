@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
+import java.util.Set;
+
 /**
  * The class is responsible for saving the refresh token and getting information about the user using the refresh token.
  *
@@ -81,7 +83,7 @@ public class RefreshTokenPersistenceImpl implements RefreshTokenPersistence {
             if (user == null) {
                 emitter.onError(new APIException("Пользователь не найден.", HttpStatus.BAD_REQUEST));
             } else {
-                Authentication authentication = Authentication.build(user.getEmail(), userService.getUserRoles(user));
+                Authentication authentication = Authentication.build(user.getEmail(), Set.of(userService.getUserRole(user)));
                 emitter.onNext(authentication);
                 emitter.onComplete();
             }

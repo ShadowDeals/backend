@@ -233,7 +233,7 @@ public class AuthServiceImpl implements AuthService {
         activationCodeService.update(activationCode);
 
         User user = activationCode.getUser();
-        Authentication authentication = Authentication.build(user.getEmail(), userService.getUserRoles(user));
+        Authentication authentication = Authentication.build(user.getEmail(), Set.of(userService.getUserRole(user)));
 
         return generateTokenResponse(user, authentication, getAccessTokenExpiration());
     }
@@ -471,9 +471,7 @@ public class AuthServiceImpl implements AuthService {
     private User mapSignUpRequestDTOToUser(SignUpRequestDTO signUpRequestDTO) throws APIException {
         User user = UserMapper.INSTANCE.toUserFromSignUpRequestDTO(signUpRequestDTO);
         user.setPassword(passwordEncoder.encode(signUpRequestDTO.getPassword()));
-        user.setFirstName(signUpRequestDTO.getFirstName());
-        user.setLastName(signUpRequestDTO.getLastName());
-        user.setRoles(Set.of(userRoleService.findUserRoleByName(UserRoleName.USER)));
+        user.setRole(userRoleService.findUserRoleByName(signUpRequestDTO.getRole()));
 
         return userService.save(user);
     }

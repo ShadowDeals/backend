@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * This class processes the authentication request.
@@ -73,6 +74,6 @@ public class AuthProvider<B> implements HttpRequestAuthenticationProvider<B> {
                     "Данные не совпадают"
             );
         }
-        return AuthenticationResponse.success(email, userService.getUserRoles(user));
+        return AuthenticationResponse.success(email, Set.of(userService.getUserRole(user)));
     }
 }
