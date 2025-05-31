@@ -4,11 +4,21 @@ micronaut:
   security:
     authentication: bearer
     token:
+      generator:
+        access-token:
+          expiration: ${ACCESS_TOKEN_EXPIRATION:86400}
       jwt:
         signatures:
           secret:
             generator:
               secret: ${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}
+        generator:
+          refresh-token:
+            secret: ${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}
+      bearer:
+        enabled: true
+      enabled: true
+    enabled: true
 jpa:
   default:
     properties:
@@ -18,7 +28,6 @@ jpa:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         connection:
           db-type: postgresql
-    reactive: true
 
 # Datasource properties
 datasources:

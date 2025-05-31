@@ -55,13 +55,22 @@ dependencies {
     // J2HTML - HTML generation
     implementation("com.j2html:j2html:1.6.0")
 
-    // Hibernate Reactive
+    // Hibernate
     implementation("io.micronaut.sql:micronaut-hibernate-jpa")
     implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
 
     // PostgreSQL
     runtimeOnly("org.postgresql:postgresql")
+
+    // Micronaut RxJava
+    implementation("io.micronaut.rxjava3:micronaut-rxjava3")
+
+    // Micronaut Reactor
+    implementation("io.micronaut.reactor:micronaut-reactor")
+
+    // Micronaut Cache
+    implementation("io.micronaut.cache:micronaut-cache-caffeine")
 
     // Liquibase
     implementation("io.micronaut.liquibase:micronaut-liquibase")
@@ -95,9 +104,6 @@ micronaut {
         incremental(true)
         annotations("com.shadow.deals.*")
     }
-    testResources {
-        additionalModules.add("hibernate-reactive-postgresql")
-    }
     aot {
         // Please review carefully the optimizations enabled below
         // Check https://micronaut-projects.github.io/micronaut-aot/latest/guide/ for more details
@@ -109,7 +115,6 @@ micronaut {
         deduceEnvironment = true
         optimizeNetty = true
         replaceLogbackXml = true
-        configurationProperties.put("micronaut.security.jwks.enabled", "false")
     }
 }
 
