@@ -1,0 +1,33 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="insert-roles" author="Kirill 'Tamada' Simovin">
+
+        <comment>Insert roles in user_role table</comment>
+
+        <insert tableName="sd_user_role">
+            <column name="id" value="fc55ec84-5c0a-4890-9752-cba4c5fa6fa0"/>
+            <column name="role_name" value="USER"/>
+        </insert>
+        <insert tableName="sd_user_role">
+            <column name="id" value="9a2fe9c7-06d8-4fe0-b380-c38b1acb5e5b"/>
+            <column name="role_name" value="DON"/>
+        </insert>
+        <insert tableName="sd_user_role">
+            <column name="id" value="b9ce21f8-6230-473b-921d-4a489e89562b"/>
+            <column name="role_name" value="ADMIN"/>
+        </insert>
+        <insert tableName="sd_user_role">
+            <column name="id" value="9c7900fa-89e9-4422-9bc9-d2063ce60453"/>
+            <column name="role_name" value="SOLDIER"/>
+        </insert>
+        <insert tableName="sd_user_role">
+            <column name="id" value="b23c8c03-8e84-4620-b36b-aaf298fc140b"/>
+            <column name="role_name" value="SUPER_ADMIN"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

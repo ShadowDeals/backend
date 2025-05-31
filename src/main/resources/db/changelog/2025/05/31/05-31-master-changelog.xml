@@ -1,0 +1,16 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <include file="05-31-create-band-table.xml" relativeToChangelogFile="true"/>
+    <include file="05-31-create-user-table.xml" relativeToChangelogFile="true"/>
+    <include file="05-31-create-refresh_token-table.xml" relativeToChangelogFile="true"/>
+    <include file="05-31-create-activation_code-table.xml" relativeToChangelogFile="true"/>
+    <include file="05-31-create-user_role-table.xml" relativeToChangelogFile="true"/>
+    <include file="05-31-insert-roles.xml" relativeToChangelogFile="true"/>
+    <include file="05-31-create-region-table.xml" relativeToChangelogFile="true"/>
+    <include file="05-31-insert-regions.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
