@@ -3,6 +3,9 @@ package com.shadow.deals.band.main.service;
 import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.band.main.repository.BandRepository;
 import com.shadow.deals.exception.APIException;
+import com.shadow.deals.user.region.entity.Region;
+import com.shadow.deals.user.region.enums.RegionName;
+import com.shadow.deals.user.region.service.RegionService;
 import io.micronaut.http.HttpStatus;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BandServiceImpl implements BandService {
     private final BandRepository bandRepository;
+
+    private final RegionService regionService;
 
     @Override
     public Band save(Band entity) {
@@ -33,5 +38,13 @@ public class BandServiceImpl implements BandService {
     @Override
     public List<Band> findAll() {
         return bandRepository.findAll();
+    }
+
+    @Override
+    public Band findByRegion(RegionName regionName) {
+        Region regionEntity = regionService.findByRegionName(regionName);
+        return bandRepository.findByRegion(regionEntity).orElseThrow(() -> new APIException(
+                "Банды с регионом = %s не найдено".formatted(regionName.getTitle()),
+                HttpStatus.NOT_FOUND));
     }
 }
