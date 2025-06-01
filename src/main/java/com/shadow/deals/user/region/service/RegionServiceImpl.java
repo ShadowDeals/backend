@@ -9,7 +9,9 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.TreeSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Kirill "Tamada" Simovin
@@ -38,5 +40,13 @@ public class RegionServiceImpl implements RegionService {
                 "Региона с именем = %s не существует".formatted(regionName.getTitle()),
                 HttpStatus.NOT_FOUND)
         );
+    }
+
+    @Override
+    public TreeSet<String> getRegions(boolean isBandExist) {
+        return regionRepository.findRegionsByFlag(isBandExist)
+                .stream()
+                .map(region -> region.getRegionName().getTitle())
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 }
