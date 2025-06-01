@@ -1,0 +1,47 @@
+# Use `docker compose -f docker-compose.yml up --build -d` to up docker containers
+version: "3.9"
+services:
+  # PostgreSQL database
+  mpi_postgres:
+    image: postgres:latest
+    container_name: mpi_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASS:-postgrespass}
+      POSTGRES_DB: ${DB_NAME:-shadow}
+    ports:
+      - ${DB_PORT:-5442}:${DB_PORT:-5432}
+    volumes:
+      - mpi_postgres:/data/postgres
+
+  # pgAdmin - UI for PostgreSQL
+  mpi_pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: mpi_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - ${PGADMIN_INNER_PORT:-5050}:${PGADMIN_OUTER_PORT:-80}
+    volumes:
+      - mpi_pgadmin:/var/lib/pgadmin
+
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - ${API_PORT:-8080}:${API_PORT:-8080}
+    restart: always
+    depends_on:
+      - mpi_postgres
+    environment:
+      - DB_HOST=mpi_postgres
+
+volumes:
+  mpi_postgres:
+  mpi_pgadmin:
