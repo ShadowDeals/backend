@@ -1,10 +1,16 @@
 package com.shadow.deals.util;
 
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTParser;
 import com.shadow.deals.base.enums.CommonEnum;
+import com.shadow.deals.exception.APIException;
+import io.micronaut.http.HttpRequest;
+import io.micronaut.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.ParameterizedType;
+import java.text.ParseException;
 
 /**
  * This class contains methods used by various classes that are not united by a specific topic.
@@ -51,5 +57,21 @@ public class CommonUtils {
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Class is not parametrized with generic type! Please use extends <>!");
         }
+    }
+
+    public static String getUserEmailFromJWTToken(@NotNull HttpRequest<?> request){
+        String authorization = request.getHeaders().get("Authorization").replace("Bearer ", "");
+
+        String userEmail;
+        try {
+            JWT jwt = JWTParser.parse(authorization);
+            userEmail = jwt.getJWTClaimsSet().getSubject();
+        } catch (ParseException e) {
+            throw new APIException(
+                    "Во время парсинга JWT токена произошла ошибка",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return userEmail;
     }
 }
