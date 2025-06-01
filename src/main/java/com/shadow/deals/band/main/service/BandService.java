@@ -1,6 +1,6 @@
-package com.shadow.deals.band.service;
+package com.shadow.deals.band.main.service;
 
-import com.shadow.deals.band.entity.Band;
+import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.base.service.CommonEntityService;
 
 /**

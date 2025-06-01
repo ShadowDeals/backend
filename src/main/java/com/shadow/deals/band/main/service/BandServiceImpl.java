@@ -1,7 +1,7 @@
-package com.shadow.deals.band.service;
+package com.shadow.deals.band.main.service;
 
-import com.shadow.deals.band.entity.Band;
-import com.shadow.deals.band.repository.BandRepository;
+import com.shadow.deals.band.main.entity.Band;
+import com.shadow.deals.band.main.repository.BandRepository;
 import com.shadow.deals.exception.APIException;
 import io.micronaut.http.HttpStatus;
 import jakarta.inject.Singleton;

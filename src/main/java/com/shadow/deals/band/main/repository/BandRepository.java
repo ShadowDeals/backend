@@ -1,6 +1,6 @@
-package com.shadow.deals.band.repository;
+package com.shadow.deals.band.main.repository;
 
-import com.shadow.deals.band.entity.Band;
+import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.base.repository.CommonRepository;
 import io.micronaut.data.annotation.Repository;
 

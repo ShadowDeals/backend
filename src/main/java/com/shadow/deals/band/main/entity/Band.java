@@ -1,4 +1,4 @@
-package com.shadow.deals.band.entity;
+package com.shadow.deals.band.main.entity;
 
 import com.shadow.deals.base.entity.BaseIdEntity;
 import com.shadow.deals.user.main.entity.User;
