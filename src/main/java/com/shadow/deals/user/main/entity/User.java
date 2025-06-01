@@ -1,7 +1,7 @@
 package com.shadow.deals.user.main.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.shadow.deals.band.entity.Band;
+import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.base.entity.BaseIdEntity;
 import com.shadow.deals.user.activation.entity.ActivationCode;
 import com.shadow.deals.user.refresh.entity.RefreshToken;
