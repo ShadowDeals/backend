@@ -1,0 +1,16 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="update-viborgsky-region" author="Kirill 'Tamada' Simovin">
+        <comment>Rename VIBORGKY_REGION to VIBORGSKY_REGION</comment>
+
+        <update schemaName="public" tableName="sd_region">
+            <column name="region_name" value="VIBORGSKY_REGION"/>
+            <where>region_name='VIBORGKY_REGION'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>
