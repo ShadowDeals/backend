@@ -7,4 +7,6 @@
 
     <include file="06-01-add-band-region_id-column.xml" relativeToChangelogFile="true"/>
     <include file="06-01-update-viborgsky-region.xml" relativeToChangelogFile="true"/>
+    <include file="06-01-create-band_request-table.xml" relativeToChangelogFile="true"/>
+    <include file="06-01-add-request-date_created-column.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
