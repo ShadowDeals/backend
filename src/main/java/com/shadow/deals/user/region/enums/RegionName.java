@@ -14,7 +14,7 @@ import lombok.ToString;
 public enum RegionName implements CommonEnum<RegionName> {
     VASILEOSTROVKIY_REGION("Василеостровский район"),
     MOSCOW_REGION("Московский район"),
-    VIBORGKY_REGION("Выборгский район");
+    VIBORGSKY_REGION("Выборгский район");
 
     private final String title;
 }
