@@ -19,7 +19,7 @@ public class RegionController {
 
     @Get
     @PermitAll
-    public TreeSet<String> getRegions(@QueryValue(value = "is_band_exist") boolean isBandExist) {
+    public TreeSet<String> getRegions(@QueryValue(value = "isBandExist") boolean isBandExist) {
         return regionService.getRegions(isBandExist);
     }
 }
