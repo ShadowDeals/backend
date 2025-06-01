@@ -1,7 +1,5 @@
 package com.shadow.deals.auth.service;
 
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTParser;
 import com.shadow.deals.auth.dto.request.ChangePasswordRequestDTO;
 import com.shadow.deals.auth.dto.request.EmailRequestDTO;
 import com.shadow.deals.auth.dto.request.RefreshTokenRequestDTO;
@@ -11,6 +9,9 @@ import com.shadow.deals.auth.dto.request.UpdateEmailRequestDTO;
 import com.shadow.deals.auth.dto.response.TokenResponseDTO;
 import com.shadow.deals.auth.mapper.AuthMapper;
 import com.shadow.deals.auth.password.PasswordEncoder;
+import com.shadow.deals.band.main.entity.Band;
+import com.shadow.deals.band.main.service.BandService;
+import com.shadow.deals.band.request.service.RequestService;
 import com.shadow.deals.email.service.MailService;
 import com.shadow.deals.exception.APIException;
 import com.shadow.deals.exception.APIExceptionResponse;
@@ -20,8 +21,10 @@ import com.shadow.deals.user.main.entity.User;
 import com.shadow.deals.user.main.mapper.UserMapper;
 import com.shadow.deals.user.main.service.UserServiceImpl;
 import com.shadow.deals.user.refresh.service.RefreshTokenService;
+import com.shadow.deals.user.region.service.RegionService;
 import com.shadow.deals.user.role.enums.UserRoleName;
 import com.shadow.deals.user.role.service.UserRoleService;
+import com.shadow.deals.util.CommonUtils;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
@@ -41,7 +44,6 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.text.ParseException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -107,6 +109,12 @@ public class AuthServiceImpl implements AuthService {
      */
     private final ActivationCodeServiceImpl activationCodeService;
 
+    private final BandService bandService;
+
+    private final RegionService regionService;
+
+    private final RequestService requestService;
+
     /**
      * The address of the client application.
      */
@@ -163,6 +171,13 @@ public class AuthServiceImpl implements AuthService {
         sendSignUpEmail(userEmail, signUpRequestDTO.getNickname(), activationCodeVal);
 
         User user = mapSignUpRequestDTOToUser(signUpRequestDTO);
+
+        UserRoleName userRoleName = signUpRequestDTO.getRole();
+        if (userRoleName == UserRoleName.DON) {
+            createAndSaveBand(user, signUpRequestDTO);
+        } else if (userRoleName != UserRoleName.USER) {
+            requestService.createRequests(user, signUpRequestDTO.getRegion());
+        }
 
         createAndSaveActivationCode(user, activationCodeVal);
 
@@ -335,17 +350,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public void logout(@NotNull HttpRequest<?> request) throws APIException {
-        String authorization = request.getHeaders().get("Authorization").replace("Bearer ", "");
-
-        String userEmail;
-        try {
-            JWT jwt = JWTParser.parse(authorization);
-            userEmail = jwt.getJWTClaimsSet().getSubject();
-        } catch (ParseException e) {
-            throw new APIException(
-                    "Во время парсинга JWT токена произошла ошибка",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
         User user = userService.findByEmail(userEmail);
         refreshTokenService.deleteByUser(user);
     }
@@ -474,6 +479,13 @@ public class AuthServiceImpl implements AuthService {
         user.setRole(userRoleService.findUserRoleByName(signUpRequestDTO.getRole()));
 
         return userService.save(user);
+    }
+
+    private void createAndSaveBand(User user, @NotNull SignUpRequestDTO signUpRequestDTO) {
+        Band band = new Band();
+        band.setDon(user);
+        band.setRegion(regionService.findByRegionName(signUpRequestDTO.getRegion()));
+        bandService.save(band);
     }
 
     /**

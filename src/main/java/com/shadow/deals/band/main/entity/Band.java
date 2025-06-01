@@ -1,5 +1,6 @@
 package com.shadow.deals.band.main.entity;
 
+import com.shadow.deals.band.request.entity.Request;
 import com.shadow.deals.base.entity.BaseIdEntity;
 import com.shadow.deals.user.main.entity.User;
 import com.shadow.deals.user.region.entity.Region;
@@ -36,4 +37,7 @@ public class Band extends BaseIdEntity {
 
     @OneToMany(mappedBy = "band")
     private Set<User> workers;
+
+    @OneToMany(mappedBy = "band")
+    private Set<Request> requests;
 }

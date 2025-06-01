@@ -2,6 +2,7 @@ package com.shadow.deals.user.main.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shadow.deals.band.main.entity.Band;
+import com.shadow.deals.band.request.entity.Request;
 import com.shadow.deals.base.entity.BaseIdEntity;
 import com.shadow.deals.user.activation.entity.ActivationCode;
 import com.shadow.deals.user.refresh.entity.RefreshToken;
@@ -13,10 +14,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Set;
 
 /**
  * This class describe user and contains info about user.
@@ -59,6 +63,7 @@ public class User extends BaseIdEntity {
      */
     @Column(name = "nickname")
     private String nickname;
+
     /**
      * User's refresh token.
      */
@@ -84,4 +89,7 @@ public class User extends BaseIdEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private UserRole role;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Request> requests;
 }
