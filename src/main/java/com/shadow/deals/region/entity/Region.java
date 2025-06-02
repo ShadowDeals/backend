@@ -1,7 +1,7 @@
-package com.shadow.deals.user.region.entity;
+package com.shadow.deals.region.entity;
 
 import com.shadow.deals.base.entity.BaseIdEntity;
-import com.shadow.deals.user.region.enums.RegionName;
+import com.shadow.deals.region.enums.RegionName;
 import com.shadow.deals.util.constant.CommonConstantHolder;
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.persistence.Column;

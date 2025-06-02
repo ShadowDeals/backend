@@ -1,6 +1,6 @@
-package com.shadow.deals.user.region.controller;
+package com.shadow.deals.region.controller;
 
-import com.shadow.deals.user.region.service.RegionService;
+import com.shadow.deals.region.service.RegionService;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.QueryValue;

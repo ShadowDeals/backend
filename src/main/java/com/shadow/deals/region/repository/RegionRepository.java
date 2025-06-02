@@ -1,8 +1,8 @@
-package com.shadow.deals.user.region.repository;
+package com.shadow.deals.region.repository;
 
 import com.shadow.deals.base.repository.CommonRepository;
-import com.shadow.deals.user.region.entity.Region;
-import com.shadow.deals.user.region.enums.RegionName;
+import com.shadow.deals.region.entity.Region;
+import com.shadow.deals.region.enums.RegionName;
 import io.micronaut.data.annotation.Query;
 import io.micronaut.data.annotation.Repository;
 

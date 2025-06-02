@@ -1,7 +1,7 @@
 package com.shadow.deals.auth.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.shadow.deals.user.region.enums.RegionName;
+import com.shadow.deals.region.enums.RegionName;
 import com.shadow.deals.user.role.enums.UserRoleName;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.SerdeImport;

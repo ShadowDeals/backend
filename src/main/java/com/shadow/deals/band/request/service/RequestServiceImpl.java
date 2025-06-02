@@ -9,7 +9,7 @@ import com.shadow.deals.band.request.repository.RequestRepository;
 import com.shadow.deals.exception.APIException;
 import com.shadow.deals.user.main.entity.User;
 import com.shadow.deals.user.main.service.UserServiceImpl;
-import com.shadow.deals.user.region.enums.RegionName;
+import com.shadow.deals.region.enums.RegionName;
 import com.shadow.deals.user.role.enums.UserRoleName;
 import com.shadow.deals.util.CommonUtils;
 import io.micronaut.http.HttpRequest;

@@ -21,7 +21,7 @@ import com.shadow.deals.user.main.entity.User;
 import com.shadow.deals.user.main.mapper.UserMapper;
 import com.shadow.deals.user.main.service.UserServiceImpl;
 import com.shadow.deals.user.refresh.service.RefreshTokenService;
-import com.shadow.deals.user.region.service.RegionService;
+import com.shadow.deals.region.service.RegionService;
 import com.shadow.deals.user.role.enums.UserRoleName;
 import com.shadow.deals.user.role.service.UserRoleService;
 import com.shadow.deals.util.CommonUtils;

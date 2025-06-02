@@ -1,9 +1,9 @@
-package com.shadow.deals.user.region.service;
+package com.shadow.deals.region.service;
 
 import com.shadow.deals.exception.APIException;
-import com.shadow.deals.user.region.entity.Region;
-import com.shadow.deals.user.region.enums.RegionName;
-import com.shadow.deals.user.region.repository.RegionRepository;
+import com.shadow.deals.region.entity.Region;
+import com.shadow.deals.region.enums.RegionName;
+import com.shadow.deals.region.repository.RegionRepository;
 import io.micronaut.http.HttpStatus;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;

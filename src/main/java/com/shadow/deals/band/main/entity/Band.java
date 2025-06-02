@@ -3,7 +3,7 @@ package com.shadow.deals.band.main.entity;
 import com.shadow.deals.band.request.entity.Request;
 import com.shadow.deals.base.entity.BaseIdEntity;
 import com.shadow.deals.user.main.entity.User;
-import com.shadow.deals.user.region.entity.Region;
+import com.shadow.deals.region.entity.Region;
 import com.shadow.deals.util.constant.CommonConstantHolder;
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.persistence.Entity;

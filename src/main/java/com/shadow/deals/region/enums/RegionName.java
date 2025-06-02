@@ -1,4 +1,4 @@
-package com.shadow.deals.user.region.enums;
+package com.shadow.deals.region.enums;
 
 import com.shadow.deals.base.enums.CommonEnum;
 import lombok.Getter;
