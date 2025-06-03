@@ -25,21 +25,18 @@ public class SignUpRequestDTO {
     /**
      * User's nickname.
      */
-    @NotBlank
     @JsonProperty("nickname")
     private String nickname;
 
     /**
      * User's first name.
      */
-    @NotBlank
     @JsonProperty("firstName")
     private String firstName;
 
     /**
      * User's last name.
      */
-    @NotBlank
     @JsonProperty("lastName")
     private String lastName;
 
