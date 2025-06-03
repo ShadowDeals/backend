@@ -1,6 +1,13 @@
 micronaut:
   application:
     name: shadow-deals
+  server:
+    cors:
+      enabled: true
+      configurations:
+        ui:
+          allowed-origins:
+            - http://localhost:5173
   security:
     authentication: bearer
     token:
@@ -19,6 +26,7 @@ micronaut:
         enabled: true
       enabled: true
     enabled: true
+
 jpa:
   default:
     properties:
