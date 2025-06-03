@@ -6,12 +6,17 @@ import com.shadow.deals.exception.APIException;
 import com.shadow.deals.region.entity.Region;
 import com.shadow.deals.region.enums.RegionName;
 import com.shadow.deals.region.service.RegionService;
+import com.shadow.deals.user.main.dto.response.BandWorkerResponseDTO;
+import com.shadow.deals.user.main.mapper.UserMapper;
+import com.shadow.deals.user.role.enums.UserRoleName;
 import io.micronaut.http.HttpStatus;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.TreeSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Kirill "Tamada" Simovin
@@ -46,5 +51,16 @@ public class BandServiceImpl implements BandService {
         return bandRepository.findByRegion(regionEntity).orElseThrow(() -> new APIException(
                 "Банды с регионом = %s не найдено".formatted(regionName.getTitle()),
                 HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public TreeSet<BandWorkerResponseDTO> getWorkersByType(UUID bandId, UserRoleName userRole) {
+        Band band = findById(bandId);
+
+        return band.getWorkers()
+                .stream()
+                .filter(worker -> worker.getRole().getRoleName() == userRole)
+                .map(UserMapper.INSTANCE::toBandWorkerResponseDTO)
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 }
