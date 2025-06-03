@@ -1,0 +1,37 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="insert-task_statuses" author="Kirill 'Tamada' Simovin">
+
+        <comment>Insert task statuses in task_status table</comment>
+
+        <insert tableName="sd_task_status">
+            <column name="id" value="5953308d-d630-4310-8689-023033d4281c"/>
+            <column name="task_status" value="WAITING_FOR_ACCEPT"/>
+        </insert>
+
+        <insert tableName="sd_task_status">
+            <column name="id" value="5a2a3e7c-9406-4226-a393-a5e04d56e680"/>
+            <column name="task_status" value="WAITING_FOR_PAYMENT"/>
+        </insert>
+
+        <insert tableName="sd_task_status">
+            <column name="id" value="895b6850-85aa-44e6-b250-849c711a812b"/>
+            <column name="task_status" value="WAITING_FOR_ASSIGNMENT"/>
+        </insert>
+
+        <insert tableName="sd_task_status">
+            <column name="id" value="041c64ff-e1bc-412a-8738-4a3349aa5a65"/>
+            <column name="task_status" value="IN_WORK"/>
+        </insert>
+
+        <insert tableName="sd_task_status">
+            <column name="id" value="207f67f1-8331-4b7b-9dae-87c8ebd9ec1a"/>
+            <column name="task_status" value="FINISHED"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

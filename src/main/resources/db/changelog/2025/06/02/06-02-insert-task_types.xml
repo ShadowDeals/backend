@@ -1,0 +1,37 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="insert-task_types" author="Kirill 'Tamada' Simovin">
+
+        <comment>Insert task types in task_type table</comment>
+
+        <insert tableName="sd_task_type">
+            <column name="id" value="59d2457a-cb7f-45aa-bdaf-0d4f8294c3e3"/>
+            <column name="task_type" value="HIJACKING"/>
+        </insert>
+
+        <insert tableName="sd_task_type">
+            <column name="id" value="79d5eb8f-d6ea-425c-9348-060cba7fb41a"/>
+            <column name="task_type" value="MURDER"/>
+        </insert>
+
+        <insert tableName="sd_task_type">
+            <column name="id" value="afa1f1b4-6758-4a0a-a862-570c7fddd3a0"/>
+            <column name="task_type" value="ROBBERY"/>
+        </insert>
+
+        <insert tableName="sd_task_type">
+            <column name="id" value="daaf5528-e7a1-4eca-98ea-dd8e2141fb10"/>
+            <column name="task_type" value="SCARING"/>
+        </insert>
+
+        <insert tableName="sd_task_type">
+            <column name="id" value="f4891894-b961-46ae-b441-33129f89e8ea"/>
+            <column name="task_type" value="DELIVERY"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

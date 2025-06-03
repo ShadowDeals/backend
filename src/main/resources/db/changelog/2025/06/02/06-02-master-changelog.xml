@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <include file="06-02-create-task_status-table.xml" relativeToChangelogFile="true"/>
+    <include file="06-02-create-task_type-table.xml" relativeToChangelogFile="true"/>
+    <include file="06-02-insert-task_statuses.xml" relativeToChangelogFile="true"/>
+    <include file="06-02-insert-task_types.xml" relativeToChangelogFile="true"/>
+    <include file="06-02-create-task-table.xml" relativeToChangelogFile="true"/>
+    <include file="06-02-add-user-task_id-column.xml" relativeToChangelogFile="true"/>
+    <include file="06-02-add-task-band_id-column.xml" relativeToChangelogFile="true"/>
+    <include file="06-02-drop-task-band_id-column.xml" relativeToChangelogFile="true"/>
+    <include file="06-02-create-band_task-table.xml" relativeToChangelogFile="true"/>
+    <include file="06-02-create-task_band-table.xml" relativeToChangelogFile="true"/>
+    <include file="06-02-add-task-date_created-column.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

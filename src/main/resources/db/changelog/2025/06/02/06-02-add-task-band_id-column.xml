@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="add-task-band_id-column" author="Kirill 'Tamada' Simovin">
+        <comment>Add band_id column to task table</comment>
+
+        <addColumn schemaName="public"
+                   tableName="sd_task">
+
+            <column name="band_id" type="UUID"/>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="sd_task"
+                                 baseColumnNames="band_id"
+                                 constraintName="BAND_ID_FK"
+                                 referencedTableName="sd_band"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>
