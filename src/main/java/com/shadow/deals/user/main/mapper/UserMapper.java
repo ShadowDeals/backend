@@ -1,8 +1,11 @@
 package com.shadow.deals.user.main.mapper;
 
 import com.shadow.deals.auth.dto.request.SignUpRequestDTO;
+import com.shadow.deals.user.main.dto.response.BandWorkerResponseDTO;
+import com.shadow.deals.user.main.dto.response.FreeExecutorResponseDTO;
 import com.shadow.deals.user.main.entity.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -27,4 +30,13 @@ public interface UserMapper {
      * passed object.
      */
     User toUserFromSignUpRequestDTO(SignUpRequestDTO signUpRequestDTO);
+
+    @Mapping(target = "executorId", source = "id")
+    @Mapping(target = "executorName", expression = "java(user.getFirstName() + \" \" + user.getLastName())")
+    FreeExecutorResponseDTO toFreeExecutorResponseDTO(User user);
+
+    @Mapping(target = "workerId", source = "id")
+    @Mapping(target = "role", source = "role.roleName")
+    @Mapping(target = "workerName", expression = "java(user.getFirstName() + \" \" + user.getLastName())")
+    BandWorkerResponseDTO toBandWorkerResponseDTO(User user);
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.band.request.entity.Request;
 import com.shadow.deals.base.entity.BaseIdEntity;
+import com.shadow.deals.band.task.main.entity.Task;
 import com.shadow.deals.user.activation.entity.ActivationCode;
 import com.shadow.deals.user.refresh.entity.RefreshToken;
 import com.shadow.deals.user.role.entity.UserRole;
@@ -82,6 +83,10 @@ public class User extends BaseIdEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "band_id", referencedColumnName = "id")
     private Band band;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", referencedColumnName = "id")
+    private Task task;
 
     /**
      * A set of user roles that provide them with certain capabilities.
