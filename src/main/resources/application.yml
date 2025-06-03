@@ -1,4 +1,21 @@
 micronaut:
+  server:
+    cors:
+      enabled: true
+      configurations:
+        all:
+          allowed-origins:
+            - http://localhost:5173
+          allowed-methods:
+            - GET
+            - POST
+            - PUT
+            - PATCH
+            - DELETE
+            - OPTIONS
+          allowed-headers:
+            - "*"
+          allow-credentials: true
   application:
     name: shadow-deals
   server:
