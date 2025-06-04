@@ -179,6 +179,11 @@ public class UserServiceImpl implements UserService, CommonUpdateService<User> {
         return nickname;
     }
 
+    @Override
+    public void deleteById(UUID id) {
+        userRepository.deleteById(id);
+    }
+
     /**
      * This method allows updating the fields of the transferred entity in the database.
      *

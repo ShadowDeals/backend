@@ -63,4 +63,9 @@ public class BandServiceImpl implements BandService {
                 .map(UserMapper.INSTANCE::toBandWorkerResponseDTO)
                 .collect(Collectors.toCollection(TreeSet::new));
     }
+
+    @Override
+    public boolean existsByRegion(Region region) {
+        return bandRepository.existsByRegion(region);
+    }
 }

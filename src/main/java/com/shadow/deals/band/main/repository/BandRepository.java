@@ -13,4 +13,6 @@ import java.util.Optional;
 @Repository
 public interface BandRepository extends CommonRepository<Band> {
     Optional<Band> findByRegion(Region region);
+
+    boolean existsByRegion(Region region);
 }

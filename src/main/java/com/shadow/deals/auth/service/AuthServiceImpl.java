@@ -15,6 +15,7 @@ import com.shadow.deals.band.request.service.RequestService;
 import com.shadow.deals.email.service.MailService;
 import com.shadow.deals.exception.APIException;
 import com.shadow.deals.exception.APIExceptionResponse;
+import com.shadow.deals.region.entity.Region;
 import com.shadow.deals.region.service.RegionService;
 import com.shadow.deals.user.activation.entity.ActivationCode;
 import com.shadow.deals.user.activation.service.ActivationCodeServiceImpl;
@@ -167,8 +168,6 @@ public class AuthServiceImpl implements AuthService {
             throw new APIException(
                     "Пользователь с почтой %s уже существует".formatted(userEmail), HttpStatus.BAD_REQUEST);
         }
-        String activationCodeVal = generateUUIDFromString(userEmail);
-        sendSignUpEmail(userEmail, signUpRequestDTO.getNickname(), activationCodeVal);
 
         User user = mapSignUpRequestDTOToUser(signUpRequestDTO);
 
@@ -178,6 +177,9 @@ public class AuthServiceImpl implements AuthService {
         } else if (userRoleName != UserRoleName.USER) {
             requestService.createRequests(user, signUpRequestDTO.getRegion());
         }
+
+        String activationCodeVal = generateUUIDFromString(userEmail);
+        sendSignUpEmail(userEmail, signUpRequestDTO.getNickname(), activationCodeVal);
 
         createAndSaveActivationCode(user, activationCodeVal);
 
@@ -482,9 +484,15 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void createAndSaveBand(User user, @NotNull SignUpRequestDTO signUpRequestDTO) {
+        Region region = regionService.findByRegionName(signUpRequestDTO.getRegion());
+        if (bandService.existsByRegion(region)) {
+            userService.deleteById(user.getId());
+            throw new APIException("В регионе %s уже существует банда!", HttpStatus.BAD_REQUEST);
+        }
+
         Band band = new Band();
         band.setDon(user);
-        band.setRegion(regionService.findByRegionName(signUpRequestDTO.getRegion()));
+        band.setRegion(region);
         bandService.save(band);
     }
 
