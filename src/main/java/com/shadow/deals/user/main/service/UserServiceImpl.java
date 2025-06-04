@@ -6,6 +6,7 @@ import com.shadow.deals.exception.APIException;
 import com.shadow.deals.user.main.entity.User;
 import com.shadow.deals.user.main.repository.UserRepository;
 import com.shadow.deals.user.role.entity.UserRole;
+import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
@@ -171,7 +172,7 @@ public class UserServiceImpl implements UserService, CommonUpdateService<User> {
         }
 
         String nickname = user.getNickname();
-        if (nickname == null) {
+        if (StringUtils.isEmpty(nickname)) {
             return user.getLastName() + " " + user.getFirstName();
         }
 
