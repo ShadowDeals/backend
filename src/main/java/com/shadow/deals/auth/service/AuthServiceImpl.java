@@ -15,13 +15,13 @@ import com.shadow.deals.band.request.service.RequestService;
 import com.shadow.deals.email.service.MailService;
 import com.shadow.deals.exception.APIException;
 import com.shadow.deals.exception.APIExceptionResponse;
+import com.shadow.deals.region.service.RegionService;
 import com.shadow.deals.user.activation.entity.ActivationCode;
 import com.shadow.deals.user.activation.service.ActivationCodeServiceImpl;
 import com.shadow.deals.user.main.entity.User;
 import com.shadow.deals.user.main.mapper.UserMapper;
 import com.shadow.deals.user.main.service.UserServiceImpl;
 import com.shadow.deals.user.refresh.service.RefreshTokenService;
-import com.shadow.deals.region.service.RegionService;
 import com.shadow.deals.user.role.enums.UserRoleName;
 import com.shadow.deals.user.role.service.UserRoleService;
 import com.shadow.deals.util.CommonUtils;
@@ -248,7 +248,7 @@ public class AuthServiceImpl implements AuthService {
         activationCodeService.update(activationCode);
 
         User user = activationCode.getUser();
-        Authentication authentication = Authentication.build(user.getEmail(), Set.of(userService.getUserRole(user)), Map.of("bandId", userService.getUserBand(user)));
+        Authentication authentication = Authentication.build(user.getEmail(), Set.of(userService.getUserRole(user)), userService.getUserClaims(user));
 
         return generateTokenResponse(user, authentication, getAccessTokenExpiration());
     }

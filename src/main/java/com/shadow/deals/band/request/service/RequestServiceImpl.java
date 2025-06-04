@@ -7,16 +7,15 @@ import com.shadow.deals.band.request.entity.Request;
 import com.shadow.deals.band.request.mapper.RequestMapper;
 import com.shadow.deals.band.request.repository.RequestRepository;
 import com.shadow.deals.exception.APIException;
+import com.shadow.deals.region.enums.RegionName;
 import com.shadow.deals.user.main.entity.User;
 import com.shadow.deals.user.main.service.UserServiceImpl;
-import com.shadow.deals.region.enums.RegionName;
 import com.shadow.deals.user.role.enums.UserRoleName;
 import com.shadow.deals.util.CommonUtils;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.util.List;
@@ -105,20 +104,7 @@ public class RequestServiceImpl implements RequestService {
         return requestRepository.findByBand(band)
                 .stream()
                 .filter(req -> req.getUser().getRole().getRoleName() == targetRole)
-                .map(r -> RequestMapper.INSTANCE.toResponseDTO(r, getRequestUserName(r.getUser())))
+                .map(r -> RequestMapper.INSTANCE.toResponseDTO(r, userService.getUserName(r.getUser())))
                 .collect(Collectors.toCollection(TreeSet::new));
-    }
-
-    private @NotNull String getRequestUserName(User user) {
-        if (user == null) {
-            return "";
-        }
-
-        String nickname = user.getNickname();
-        if (nickname == null) {
-            return user.getLastName() + " " + user.getFirstName();
-        }
-
-        return nickname;
     }
 }

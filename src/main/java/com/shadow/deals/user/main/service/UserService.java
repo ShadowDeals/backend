@@ -3,7 +3,7 @@ package com.shadow.deals.user.main.service;
 import com.shadow.deals.base.service.CommonEntityService;
 import com.shadow.deals.user.main.entity.User;
 
-import java.util.UUID;
+import java.util.Map;
 
 /**
  * This interface contains the signatures of the methods that must be implemented by the corresponding service class.
@@ -43,5 +43,7 @@ public interface UserService extends CommonEntityService<User> {
      */
     boolean existsByEmail(String email);
 
-    UUID getUserBand(User user);
+    Map<String, Object> getUserClaims(User user);
+
+    String getUserName(User user);
 }

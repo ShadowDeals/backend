@@ -10,8 +10,10 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -131,7 +133,24 @@ public class UserServiceImpl implements UserService, CommonUpdateService<User> {
     }
 
     @Override
-    public UUID getUserBand(User user) {
+    public Map<String, Object> getUserClaims(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        Band userBand = user.getBand();
+        Band ownBand = user.getOwnBand();
+        if (userBand == null && ownBand == null) {
+            return null;
+        }
+
+        return Map.of(
+                "bandId", getUserBand(user),
+                "name", getUserName(user)
+        );
+    }
+
+    private UUID getUserBand(User user) {
         if (user == null) {
             return null;
         }
@@ -143,6 +162,20 @@ public class UserServiceImpl implements UserService, CommonUpdateService<User> {
         }
 
         return Objects.requireNonNullElse(userBand, ownBand).getId();
+    }
+
+    @NotNull
+    public String getUserName(User user) {
+        if (user == null) {
+            return "";
+        }
+
+        String nickname = user.getNickname();
+        if (nickname == null) {
+            return user.getLastName() + " " + user.getFirstName();
+        }
+
+        return nickname;
     }
 
     /**
