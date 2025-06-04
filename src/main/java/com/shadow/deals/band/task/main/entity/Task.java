@@ -1,9 +1,10 @@
 package com.shadow.deals.band.task.main.entity;
 
 import com.shadow.deals.band.main.entity.Band;
-import com.shadow.deals.base.entity.BaseIdEntity;
+import com.shadow.deals.band.task.report.entity.TaskReport;
 import com.shadow.deals.band.task.status.entity.TaskStatus;
 import com.shadow.deals.band.task.type.entity.TaskType;
+import com.shadow.deals.base.entity.BaseIdEntity;
 import com.shadow.deals.user.main.entity.User;
 import com.shadow.deals.util.constant.CommonConstantHolder;
 import io.micronaut.data.annotation.DateCreated;
@@ -16,6 +17,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -62,4 +64,7 @@ public class Task extends BaseIdEntity {
 
     @OneToMany(mappedBy = "task")
     private Set<User> executors;
+
+    @OneToOne(mappedBy = "task")
+    private TaskReport report;
 }
