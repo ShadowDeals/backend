@@ -9,4 +9,5 @@
     <include file="changelog/2025/05/31/05-31-master-changelog.xml" relativeToChangelogFile="true"/>
     <include file="changelog/2025/06/01/06-01-master-changelog.xml" relativeToChangelogFile="true"/>
     <include file="changelog/2025/06/02/06-02-master-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/2025/06/04/06-04-create-task_report-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
