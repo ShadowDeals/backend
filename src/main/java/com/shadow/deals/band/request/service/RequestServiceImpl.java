@@ -68,6 +68,13 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    public void createRequests(HttpRequest<?> request, RegionName region) {
+        String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
+        User user = userService.findByEmail(userEmail);
+        createRequests(user, region);
+    }
+
+    @Override
     public void createRequests(User user, RegionName region) {
         Request request = new Request();
         request.setDateCreated(Instant.now());
@@ -76,14 +83,18 @@ public class RequestServiceImpl implements RequestService {
         if (region == null) {
             bandService.findAll().forEach(band -> {
                 request.setBand(band);
-                requestRepository.save(request);
+                if (!requestRepository.existsByBandAndUser(band, user)) {
+                    requestRepository.save(request);
+                }
             });
             return;
         }
 
         Band band = bandService.findByRegion(region);
         request.setBand(band);
-        requestRepository.save(request);
+        if (!requestRepository.existsByBandAndUser(band, user)) {
+            requestRepository.save(request);
+        }
     }
 
     @Override

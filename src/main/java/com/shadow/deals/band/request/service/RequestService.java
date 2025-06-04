@@ -18,6 +18,8 @@ public interface RequestService extends CommonEntityService<Request> {
 
     void acceptRequest(UUID id);
 
+    void createRequests(HttpRequest<?> request, RegionName region);
+
     void createRequests(User user, RegionName region);
 
     TreeSet<RequestResponseDTO> getRequests(HttpRequest<?> request);

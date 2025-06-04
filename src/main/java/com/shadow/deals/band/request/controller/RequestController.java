@@ -2,10 +2,12 @@ package com.shadow.deals.band.request.controller;
 
 import com.shadow.deals.band.request.dto.response.RequestResponseDTO;
 import com.shadow.deals.band.request.service.RequestService;
+import com.shadow.deals.region.enums.RegionName;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
 import io.micronaut.http.annotation.QueryValue;
 import jakarta.annotation.security.RolesAllowed;
@@ -21,6 +23,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RequestController {
     private final RequestService requestService;
+
+    @Post
+    @RolesAllowed({"Администратор", "Солдат"})
+    public void createRequest(@QueryValue(value = "regionName") RegionName regionName, HttpRequest<?> request) {
+        requestService.createRequests(request, regionName);
+    }
 
     @Get
     @RolesAllowed({"Дон", "Администратор"})

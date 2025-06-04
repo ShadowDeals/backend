@@ -15,5 +15,7 @@ import java.util.List;
 public interface RequestRepository extends CommonRepository<Request> {
     List<Request> findByBand(Band band);
 
+    boolean existsByBandAndUser(Band band, User user);
+
     void deleteByUser(User user);
 }
