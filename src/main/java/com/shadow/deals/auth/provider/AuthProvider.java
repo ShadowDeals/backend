@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -74,6 +75,6 @@ public class AuthProvider<B> implements HttpRequestAuthenticationProvider<B> {
                     "Данные не совпадают"
             );
         }
-        return AuthenticationResponse.success(email, Set.of(userService.getUserRole(user)));
+        return AuthenticationResponse.success(email, Set.of(userService.getUserRole(user)), Map.of("bandId", userService.getUserBand(user)));
     }
 }

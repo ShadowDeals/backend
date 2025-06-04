@@ -248,7 +248,7 @@ public class AuthServiceImpl implements AuthService {
         activationCodeService.update(activationCode);
 
         User user = activationCode.getUser();
-        Authentication authentication = Authentication.build(user.getEmail(), Set.of(userService.getUserRole(user)));
+        Authentication authentication = Authentication.build(user.getEmail(), Set.of(userService.getUserRole(user)), Map.of("bandId", userService.getUserBand(user)));
 
         return generateTokenResponse(user, authentication, getAccessTokenExpiration());
     }

@@ -1,5 +1,6 @@
 package com.shadow.deals.user.main.service;
 
+import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.base.service.CommonUpdateService;
 import com.shadow.deals.exception.APIException;
 import com.shadow.deals.user.main.entity.User;
@@ -11,6 +12,7 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -126,6 +128,21 @@ public class UserServiceImpl implements UserService, CommonUpdateService<User> {
     @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public UUID getUserBand(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        Band userBand = user.getBand();
+        Band ownBand = user.getOwnBand();
+        if (userBand == null && ownBand == null) {
+            return null;
+        }
+
+        return Objects.requireNonNullElse(userBand, ownBand).getId();
     }
 
     /**

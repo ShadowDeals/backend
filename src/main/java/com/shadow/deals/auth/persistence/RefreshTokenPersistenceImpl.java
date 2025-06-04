@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -83,7 +84,7 @@ public class RefreshTokenPersistenceImpl implements RefreshTokenPersistence {
             if (user == null) {
                 emitter.onError(new APIException("Пользователь не найден.", HttpStatus.BAD_REQUEST));
             } else {
-                Authentication authentication = Authentication.build(user.getEmail(), Set.of(userService.getUserRole(user)));
+                Authentication authentication = Authentication.build(user.getEmail(), Set.of(userService.getUserRole(user)), Map.of("bandId", userService.getUserBand(user)));
                 emitter.onNext(authentication);
                 emitter.onComplete();
             }
