@@ -29,8 +29,7 @@ import java.util.Set;
 @Entity
 @Table(name = CommonConstantHolder.TABLE_PREFIX + "band")
 public class Band extends BaseIdEntity {
-    @OneToOne
-    @JoinColumn(name = "don_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "ownBand")
     private User don;
 
     @ManyToOne(fetch = FetchType.LAZY)

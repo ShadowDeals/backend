@@ -491,9 +491,11 @@ public class AuthServiceImpl implements AuthService {
         }
 
         Band band = new Band();
-        band.setDon(user);
         band.setRegion(region);
-        bandService.save(band);
+        band = bandService.save(band);
+
+        user.setOwnBand(band);
+        user = userService.update(user);
     }
 
     /**
