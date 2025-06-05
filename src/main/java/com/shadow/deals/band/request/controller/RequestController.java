@@ -1,5 +1,6 @@
 package com.shadow.deals.band.request.controller;
 
+import com.shadow.deals.band.request.dto.response.OwnRequestResponseDTO;
 import com.shadow.deals.band.request.dto.response.RequestResponseDTO;
 import com.shadow.deals.band.request.service.RequestService;
 import com.shadow.deals.region.enums.RegionName;
@@ -34,6 +35,12 @@ public class RequestController {
     @RolesAllowed({"Дон", "Администратор"})
     public TreeSet<RequestResponseDTO> getRequests(HttpRequest<?> request) {
         return requestService.getRequests(request);
+    }
+
+    @Get("/own")
+    @RolesAllowed({"Администратор", "Солдат"})
+    public TreeSet<OwnRequestResponseDTO> getOwnRequests(HttpRequest<?> request) {
+        return requestService.getOwnRequests(request);
     }
 
     @Delete

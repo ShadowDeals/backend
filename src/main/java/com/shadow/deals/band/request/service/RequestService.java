@@ -1,5 +1,6 @@
 package com.shadow.deals.band.request.service;
 
+import com.shadow.deals.band.request.dto.response.OwnRequestResponseDTO;
 import com.shadow.deals.band.request.dto.response.RequestResponseDTO;
 import com.shadow.deals.band.request.entity.Request;
 import com.shadow.deals.base.service.CommonEntityService;
@@ -23,4 +24,6 @@ public interface RequestService extends CommonEntityService<Request> {
     void createRequests(User user, RegionName region);
 
     TreeSet<RequestResponseDTO> getRequests(HttpRequest<?> request);
+
+    TreeSet<OwnRequestResponseDTO> getOwnRequests(HttpRequest<?> request);
 }

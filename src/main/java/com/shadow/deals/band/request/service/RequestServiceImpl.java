@@ -2,6 +2,7 @@ package com.shadow.deals.band.request.service;
 
 import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.band.main.service.BandService;
+import com.shadow.deals.band.request.dto.response.OwnRequestResponseDTO;
 import com.shadow.deals.band.request.dto.response.RequestResponseDTO;
 import com.shadow.deals.band.request.entity.Request;
 import com.shadow.deals.band.request.mapper.RequestMapper;
@@ -116,6 +117,17 @@ public class RequestServiceImpl implements RequestService {
                 .stream()
                 .filter(req -> req.getUser().getRole().getRoleName() == targetRole)
                 .map(r -> RequestMapper.INSTANCE.toResponseDTO(r, userService.getUserName(r.getUser())))
+                .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    @Override
+    public TreeSet<OwnRequestResponseDTO> getOwnRequests(HttpRequest<?> request) {
+        String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
+        User user = userService.findByEmail(userEmail);
+
+        return findAll().stream()
+                .filter(req -> req.getUser().getId() == user.getId())
+                .map(RequestMapper.INSTANCE::toOwnResponseDTO)
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 }

@@ -1,5 +1,6 @@
 package com.shadow.deals.band.request.mapper;
 
+import com.shadow.deals.band.request.dto.response.OwnRequestResponseDTO;
 import com.shadow.deals.band.request.dto.response.RequestResponseDTO;
 import com.shadow.deals.band.request.entity.Request;
 import org.mapstruct.Mapper;
@@ -18,4 +19,8 @@ public interface RequestMapper {
 
     @Mapping(target = "userRole", source = "request.user.role.roleName")
     RequestResponseDTO toResponseDTO(Request request, String name);
+
+    @Mapping(target = "bandRegion", source = "band.region.regionName")
+    @Mapping(target = "bandId", source = "band.id")
+    OwnRequestResponseDTO toOwnResponseDTO(Request request);
 }
