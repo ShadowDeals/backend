@@ -1,0 +1,15 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="drop-band-don_id-column" author="Kirill 'Tamada' Simovin">
+        <comment>Drop don_id in band table</comment>
+
+        <dropColumn columnName="don_id"
+                    schemaName="public"
+                    tableName="sd_band"/>
+    </changeSet>
+</databaseChangeLog>
