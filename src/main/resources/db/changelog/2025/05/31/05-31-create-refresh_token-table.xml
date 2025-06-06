@@ -24,7 +24,7 @@
             <column name="refresh_token" type="VARCHAR(255)"/>
             <column name="date_created" type="TIMESTAMP"/>
             <column name="user_id" type="UUID">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
 
