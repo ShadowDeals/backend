@@ -36,7 +36,7 @@ public class BandServiceImpl implements BandService {
     @Override
     public Band findById(UUID id) {
         return bandRepository.findById(id).orElseThrow(() -> new APIException(
-                "Пользователя с id = %s не найдено".formatted(id),
+                "Банды с id = %s не найдено".formatted(id),
                 HttpStatus.NOT_FOUND));
     }
 

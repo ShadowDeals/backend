@@ -141,7 +141,7 @@ public class TaskServiceImpl implements TaskService {
 
         return band.getWorkers()
                 .stream()
-                .filter(worker -> worker.getTask() == null && worker.getRole().getRoleName() == UserRoleName.ADMIN)
+                .filter(worker -> worker.getTask() == null && worker.getRole().getRoleName() == UserRoleName.SOLDIER)
                 .map(UserMapper.INSTANCE::toFreeExecutorResponseDTO)
                 .collect(Collectors.toCollection(TreeSet::new));
     }
