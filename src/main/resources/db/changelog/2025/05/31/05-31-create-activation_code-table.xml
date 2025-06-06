@@ -21,7 +21,7 @@
             <column name="activation_code" type="VARCHAR(255)"/>
             <column name="is_activated" type="BOOLEAN"/>
             <column name="sd_user_id" type="UUID">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
 
