@@ -126,7 +126,7 @@ public class RequestServiceImpl implements RequestService {
         User user = userService.findByEmail(userEmail);
 
         return findAll().stream()
-                .filter(req -> req.getUser().getId() == user.getId())
+                .filter(req -> user.getId().equals(req.getUser().getId()))
                 .map(RequestMapper.INSTANCE::toOwnResponseDTO)
                 .collect(Collectors.toCollection(TreeSet::new));
     }
