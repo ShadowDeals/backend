@@ -1,5 +1,6 @@
 package com.shadow.deals.band.task.main.service;
 
+import com.shadow.deals.band.blocked.service.BlockedBandService;
 import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.band.main.service.BandService;
 import com.shadow.deals.band.task.band.entity.BandTask;
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -50,6 +52,8 @@ public class TaskServiceImpl implements TaskService {
     private final TaskTypeService taskTypeService;
 
     private final BandTaskService bandTaskService;
+
+    private final BlockedBandService blockedBandService;
 
     @Override
     public Task findById(UUID id) {
@@ -99,6 +103,10 @@ public class TaskServiceImpl implements TaskService {
     public void updateTaskStatus(UUID taskId, UUID bandId, TaskStatusEnum taskStatus) {
         Task task = findById(taskId);
 
+        if (blockedBandService.existsByBandId(bandId)) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
+
         if (taskStatus == TaskStatusEnum.WAITING_FOR_ASSIGNMENT) {
             bandTaskService.deleteByTaskExcludeBand(taskId, bandId);
         } else if (taskStatus == TaskStatusEnum.FINISHED) {
@@ -114,6 +122,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TreeSet<TaskResponseDTO> getTasksByStatus(UUID bandId, TaskStatusEnum taskStatus) {
+        if (blockedBandService.existsByBandId(bandId)) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
+
         return bandTaskService.findAllTasksByBand(bandId)
                 .stream()
                 .filter(task -> task.getStatus().getTaskStatus() == taskStatus)
@@ -143,6 +155,10 @@ public class TaskServiceImpl implements TaskService {
             throw new APIException("Нет банды!", HttpStatus.BAD_REQUEST);
         }
 
+        if (blockedBandService.existsByBandId(band.getId())) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
+
         return band.getTasks()
                 .stream()
                 .filter(bandTask -> bandTask.getOfficer().getId().equals(user.getId()))
@@ -151,13 +167,36 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskResponseDTO getTaskById(UUID taskId) {
+    public TaskResponseDTO getTaskById(UUID taskId, HttpRequest<?> request) {
+        String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
+        User user = userService.findByEmail(userEmail);
+
+        Band band = user.getBand();
+        if (band == null) {
+            band = user.getOwnBand();
+        }
+        if (band == null) {
+            throw new APIException("Нет банды!", HttpStatus.BAD_REQUEST);
+        }
+
+        if (blockedBandService.existsByBandId(band.getId())) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
         return mapToResponseDTO(findById(taskId));
     }
 
     @Override
     public void setExecutors(UUID taskId, UUID officerId, @NotNull Set<UUID> executorsId) {
         Task task = findById(taskId);
+
+        if (task.getStatus().getTaskStatus() != TaskStatusEnum.WAITING_FOR_ASSIGNMENT) {
+            throw new APIException("Некорректный статус задания!", HttpStatus.BAD_REQUEST);
+        }
+
+        Band band = new ArrayList<>(task.getBands()).getFirst();
+        if (blockedBandService.existsByBandId(band.getId())) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
 
         for (UUID executorId : executorsId) {
             User executor = userService.findById(executorId);
@@ -173,6 +212,9 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TreeSet<FreeExecutorResponseDTO> getFreeExecutors(UUID bandId) {
         Band band = bandService.findById(bandId);
+        if (blockedBandService.existsByBandId(band.getId())) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
 
         return band.getWorkers()
                 .stream()
@@ -195,6 +237,10 @@ public class TaskServiceImpl implements TaskService {
 
         if (band == null) {
             throw new APIException("Нет банды!", HttpStatus.BAD_REQUEST);
+        }
+
+        if (blockedBandService.existsByBandId(band.getId())) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
 
         taskRepository.deleteByIdAndBandId(taskId, band.getId());

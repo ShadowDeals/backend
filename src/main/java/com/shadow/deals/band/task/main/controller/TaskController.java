@@ -51,8 +51,8 @@ public class TaskController {
 
     @Get("/one")
     @RolesAllowed({"Дон", "Администратор"})
-    public TaskResponseDTO getTask(@QueryValue(value = "taskId") UUID taskId) {
-        return taskService.getTaskById(taskId);
+    public TaskResponseDTO getTask(@QueryValue(value = "taskId") UUID taskId, HttpRequest<?> request) {
+        return taskService.getTaskById(taskId, request);
     }
 
     @Delete

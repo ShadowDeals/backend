@@ -1,5 +1,6 @@
 package com.shadow.deals.band.main.service;
 
+import com.shadow.deals.band.blocked.service.BlockedBandService;
 import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.band.main.repository.BandRepository;
 import com.shadow.deals.exception.APIException;
@@ -34,6 +35,8 @@ public class BandServiceImpl implements BandService {
 
     private final UserService userService;
 
+    private final BlockedBandService blockedBandService;
+
     @Override
     public Band save(Band entity) {
         return bandRepository.save(entity);
@@ -61,6 +64,10 @@ public class BandServiceImpl implements BandService {
 
     @Override
     public TreeSet<BandWorkerResponseDTO> getWorkersByType(UUID bandId, UserRoleName userRole) {
+        if (blockedBandService.existsByBandId(bandId)) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
+
         Band band = findById(bandId);
 
         return band.getWorkers()
@@ -78,6 +85,10 @@ public class BandServiceImpl implements BandService {
         Band userBand = user.getBand();
         if (userBand == null) {
             throw new APIException("Банды не совпадают!", HttpStatus.BAD_REQUEST);
+        }
+
+        if (blockedBandService.existsByBandId(userBand.getId())) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
 
         User userToKick = userService.findById(userId);

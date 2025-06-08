@@ -1,5 +1,6 @@
 package com.shadow.deals.band.request.service;
 
+import com.shadow.deals.band.blocked.service.BlockedBandService;
 import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.band.main.service.BandService;
 import com.shadow.deals.band.request.dto.response.OwnRequestResponseDTO;
@@ -36,6 +37,8 @@ public class RequestServiceImpl implements RequestService {
 
     private final BandService bandService;
 
+    private final BlockedBandService blockedBandService;
+
     @Override
     public Request findById(UUID id) {
         return requestRepository.findById(id).orElseThrow(() -> new APIException(
@@ -59,12 +62,20 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void acceptRequest(UUID id) {
-        Request request = findById(id);
-        User user = request.getUser();
+    public void acceptRequest(UUID id, HttpRequest<?> request) {
+        String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
+        User mainUser = userService.findByEmail(userEmail);
+
+        Request bandRequest = findById(id);
+        Band band = bandRequest.getBand();
+        if (blockedBandService.existsByBandId(band.getId())) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
+
+        User user = bandRequest.getUser();
         requestRepository.deleteByUser(user);
 
-        user.setBand(request.getBand());
+        user.setBand(band);
         userService.update(user);
     }
 
@@ -105,6 +116,10 @@ public class RequestServiceImpl implements RequestService {
         } else {
             band = user.getBand();
             targetRole = UserRoleName.SOLDIER;
+        }
+
+        if (blockedBandService.existsByBandId(band.getId())) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
 
         return requestRepository.findByBand(band)

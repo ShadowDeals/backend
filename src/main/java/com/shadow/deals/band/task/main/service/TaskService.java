@@ -24,7 +24,7 @@ public interface TaskService extends CommonEntityService<Task> {
 
     TreeSet<TaskResponseDTO> getOwnTask(HttpRequest<?> request);
 
-    TaskResponseDTO getTaskById(UUID taskId);
+    TaskResponseDTO getTaskById(UUID taskId, HttpRequest<?> request);
 
     void setExecutors(UUID taskId, UUID officerId, Set<UUID> executorsId);
 

@@ -1,5 +1,6 @@
 package com.shadow.deals.band.task.report.service;
 
+import com.shadow.deals.band.blocked.service.BlockedBandService;
 import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.band.task.main.entity.Task;
 import com.shadow.deals.band.task.main.service.TaskService;
@@ -19,6 +20,7 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -35,6 +37,8 @@ public class TaskReportServiceImpl implements TaskReportService {
     private final TaskService taskService;
 
     private final UserService userService;
+
+    private final BlockedBandService blockedBandService;
 
     @Override
     public TaskReport findById(UUID id) {
@@ -58,6 +62,12 @@ public class TaskReportServiceImpl implements TaskReportService {
         TaskReport taskReport = TaskReportMapper.INSTANCE.toEntity(dto);
         taskReport.setDateCreated(Instant.now());
         Task task = taskService.findById(taskId);
+
+        Band band = new ArrayList<>(task.getBands()).getFirst();
+        if (blockedBandService.existsByBandId(band.getId())) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
+
         taskReport.setTask(task);
         return save(taskReport).getId();
     }
@@ -84,6 +94,10 @@ public class TaskReportServiceImpl implements TaskReportService {
             throw new APIException("Нет банды!", HttpStatus.BAD_REQUEST);
         }
 
+        if (blockedBandService.existsByBandId(band.getId())) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
+
         return band.getTasks()
                 .stream()
                 .filter(task -> taskReportRepository.existsByTaskId(task.getId()))
@@ -97,6 +111,12 @@ public class TaskReportServiceImpl implements TaskReportService {
     @Override
     public TaskReportResponseDTO getTaskReport(UUID reportId) {
         TaskReport taskReport = findById(reportId);
+        Band band = new ArrayList<>(taskReport.getTask().getBands()).getFirst();
+
+        if (blockedBandService.existsByBandId(band.getId())) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
+
         return TaskReportMapper.INSTANCE.toResponseDTO(taskReport);
     }
 }

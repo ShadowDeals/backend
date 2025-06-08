@@ -17,7 +17,7 @@ import java.util.UUID;
 public interface RequestService extends CommonEntityService<Request> {
     void deleteRequest(UUID id);
 
-    void acceptRequest(UUID id);
+    void acceptRequest(UUID id, HttpRequest<?> request);
 
     void createRequests(HttpRequest<?> request, RegionName region);
 
