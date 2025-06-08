@@ -36,6 +36,9 @@ public class RegionServiceImpl implements RegionService {
 
     @Override
     public Region findByRegionName(RegionName regionName) {
+        if (regionName == null) {
+            return null;
+        }
         return regionRepository.findByRegionName(regionName).orElseThrow(() -> new APIException(
                 "Региона с именем = %s не существует".formatted(regionName.getTitle()),
                 HttpStatus.NOT_FOUND)

@@ -11,6 +11,7 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
@@ -48,10 +49,28 @@ public class TaskController {
         return taskService.getTasksByStatus(bandId, taskStatus);
     }
 
+    @Get("/one")
+    @RolesAllowed({"Дон", "Администратор"})
+    public TaskResponseDTO getTask(@QueryValue(value = "taskId") UUID taskId) {
+        return taskService.getTaskById(taskId);
+    }
+
+    @Delete
+    @RolesAllowed({"Дон", "Администратор"})
+    public void deleteTask(@QueryValue(value = "taskId") UUID taskId, HttpRequest<?> request) {
+        taskService.deleteById(taskId, request);
+    }
+
+    @Get("/own")
+    @RolesAllowed({"Солдат", "Пользователь"})
+    public TreeSet<TaskResponseDTO> getOwnTask(HttpRequest<?> request) {
+        return taskService.getOwnTask(request);
+    }
+
     @Post("/executors")
     @RolesAllowed({"Администратор"})
-    public void setExecutors(@QueryValue(value = "taskId") UUID taskId, @Body Set<UUID> executorsId) {
-        taskService.setExecutors(taskId, executorsId);
+    public void setExecutors(@QueryValue(value = "taskId") UUID taskId, @QueryValue(value = "officerId") UUID officerId, @Body Set<UUID> executorsId) {
+        taskService.setExecutors(taskId, officerId, executorsId);
     }
 
     @Get("/executors")

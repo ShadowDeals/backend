@@ -40,9 +40,16 @@ public class Task extends BaseIdEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "price")
+    private int price;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private User customer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "officer_id", referencedColumnName = "id")
+    private User officer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_id", referencedColumnName = "id")

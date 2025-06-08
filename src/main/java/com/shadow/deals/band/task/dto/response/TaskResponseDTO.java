@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -42,6 +43,18 @@ public class TaskResponseDTO implements Comparable<TaskResponseDTO> {
 
     @JsonProperty("taskStatus")
     private TaskStatusEnum taskStatus;
+
+    @JsonProperty("officer")
+    private String officer;
+
+    @JsonProperty("officer")
+    private int price;
+
+    @JsonProperty("reportId")
+    private UUID reportId;
+
+    @JsonProperty("executors")
+    private List<String> executors;
 
     @Override
     public int compareTo(@NotNull TaskResponseDTO o) {

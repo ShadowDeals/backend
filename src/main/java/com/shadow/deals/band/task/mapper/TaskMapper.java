@@ -20,5 +20,8 @@ public interface TaskMapper {
     @Mapping(target = "customer", source = "customer.nickname")
     @Mapping(target = "taskType", source = "type.taskType")
     @Mapping(target = "taskStatus", source = "status.taskStatus")
+    @Mapping(target = "reportId", source = "report.id")
+    @Mapping(target = "officer", ignore = true)
+    @Mapping(target = "executors", ignore = true)
     TaskResponseDTO toResponseDTO(Task task);
 }

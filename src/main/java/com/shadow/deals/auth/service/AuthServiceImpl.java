@@ -16,6 +16,7 @@ import com.shadow.deals.email.service.MailService;
 import com.shadow.deals.exception.APIException;
 import com.shadow.deals.exception.APIExceptionResponse;
 import com.shadow.deals.region.entity.Region;
+import com.shadow.deals.region.enums.RegionName;
 import com.shadow.deals.region.service.RegionService;
 import com.shadow.deals.user.activation.entity.ActivationCode;
 import com.shadow.deals.user.activation.service.ActivationCodeServiceImpl;
@@ -173,9 +174,11 @@ public class AuthServiceImpl implements AuthService {
 
         UserRoleName userRoleName = signUpRequestDTO.getRole();
         if (userRoleName == UserRoleName.DON) {
-            createAndSaveBand(user, signUpRequestDTO);
-        } else if (userRoleName != UserRoleName.USER) {
-            requestService.createRequests(user, signUpRequestDTO.getRegion());
+            Region region = user.getRegion();
+            if (bandService.existsByRegion(region)) {
+                userService.deleteById(user.getId());
+                throw new APIException("В регионе '%s' уже существует банда!".formatted(region.getRegionName().getTitle()), HttpStatus.BAD_REQUEST);
+            }
         }
 
         String activationCodeVal = generateUUIDFromString(userEmail);
@@ -251,6 +254,18 @@ public class AuthServiceImpl implements AuthService {
 
         User user = activationCode.getUser();
         Authentication authentication = Authentication.build(user.getEmail(), Set.of(userService.getUserRole(user)), userService.getUserClaims(user));
+
+        UserRoleName userRoleName = user.getRole().getRoleName();
+        if (userRoleName == UserRoleName.DON) {
+            createAndSaveBand(user);
+        } else if (userRoleName != UserRoleName.USER) {
+            Region region = user.getRegion();
+            RegionName regionName = null;
+            if (region != null) {
+                regionName = region.getRegionName();
+            }
+            requestService.createRequests(user, regionName);
+        }
 
         return generateTokenResponse(user, authentication, getAccessTokenExpiration());
     }
@@ -478,15 +493,16 @@ public class AuthServiceImpl implements AuthService {
         User user = UserMapper.INSTANCE.toUserFromSignUpRequestDTO(signUpRequestDTO);
         user.setPassword(passwordEncoder.encode(signUpRequestDTO.getPassword()));
         user.setRole(userRoleService.findUserRoleByName(signUpRequestDTO.getRole()));
+        user.setRegion(regionService.findByRegionName(signUpRequestDTO.getRegion()));
 
         return userService.save(user);
     }
 
-    private void createAndSaveBand(User user, @NotNull SignUpRequestDTO signUpRequestDTO) {
-        Region region = regionService.findByRegionName(signUpRequestDTO.getRegion());
+    private void createAndSaveBand(@NotNull User user) {
+        Region region = user.getRegion();
         if (bandService.existsByRegion(region)) {
             userService.deleteById(user.getId());
-            throw new APIException("В регионе %s уже существует банда!", HttpStatus.BAD_REQUEST);
+            throw new APIException("В регионе '%s' уже существует банда!".formatted(region.getRegionName().getTitle()), HttpStatus.BAD_REQUEST);
         }
 
         Band band = new Band();

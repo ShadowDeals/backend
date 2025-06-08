@@ -22,7 +22,13 @@ public interface TaskService extends CommonEntityService<Task> {
 
     TreeSet<TaskResponseDTO> getTasksByStatus(UUID bandId, TaskStatusEnum taskStatus);
 
-    void setExecutors(UUID taskId, Set<UUID> executorsId);
+    TreeSet<TaskResponseDTO> getOwnTask(HttpRequest<?> request);
+
+    TaskResponseDTO getTaskById(UUID taskId);
+
+    void setExecutors(UUID taskId, UUID officerId, Set<UUID> executorsId);
 
     TreeSet<FreeExecutorResponseDTO> getFreeExecutors(UUID bandId);
+
+    void deleteById(UUID taskId, HttpRequest<?> request);
 }

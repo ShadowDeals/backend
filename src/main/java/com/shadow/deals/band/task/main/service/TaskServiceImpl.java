@@ -81,19 +81,16 @@ public class TaskServiceImpl implements TaskService {
         RegionName region = createTaskDTO.getRegion();
 
         task = taskRepository.save(task);
-        BandTask bandTask = new BandTask();
-        bandTask.setTask(task);
+
         if (region == null) {
-            bandService.findAll().forEach(band -> {
-                bandTask.setBand(band);
-                bandTaskService.save(bandTask);
-            });
+            for (Band band : bandService.findAll()) {
+                createBandTask(task, band);
+            }
             return task.getId();
         }
 
         Band band = bandService.findByRegion(region);
-        bandTask.setBand(band);
-        bandTaskService.save(bandTask);
+        createBandTask(task, band);
 
         return task.getId();
     }
@@ -120,12 +117,46 @@ public class TaskServiceImpl implements TaskService {
         return bandTaskService.findAllTasksByBand(bandId)
                 .stream()
                 .filter(task -> task.getStatus().getTaskStatus() == taskStatus)
-                .map(TaskMapper.INSTANCE::toResponseDTO)
+                .map(this::mapToResponseDTO)
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
     @Override
-    public void setExecutors(UUID taskId, @NotNull Set<UUID> executorsId) {
+    public TreeSet<TaskResponseDTO> getOwnTask(HttpRequest<?> request) {
+        String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
+        User user = userService.findByEmail(userEmail);
+
+        if (user.getRole().getRoleName() == UserRoleName.USER) {
+            return taskRepository.findByCustomer(user)
+                    .stream()
+                    .map(this::mapToResponseDTO)
+                    .collect(Collectors.toCollection(TreeSet::new));
+        }
+
+        Task task = user.getTask();
+        if (task != null) {
+            return new TreeSet<>(Set.of(mapToResponseDTO(task)));
+        }
+
+        Band band = user.getBand();
+        if (band == null) {
+            throw new APIException("Нет банды!", HttpStatus.BAD_REQUEST);
+        }
+
+        return band.getTasks()
+                .stream()
+                .filter(bandTask -> bandTask.getOfficer().getId().equals(user.getId()))
+                .map(this::mapToResponseDTO)
+                .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    @Override
+    public TaskResponseDTO getTaskById(UUID taskId) {
+        return mapToResponseDTO(findById(taskId));
+    }
+
+    @Override
+    public void setExecutors(UUID taskId, UUID officerId, @NotNull Set<UUID> executorsId) {
         Task task = findById(taskId);
 
         for (UUID executorId : executorsId) {
@@ -133,6 +164,10 @@ public class TaskServiceImpl implements TaskService {
             executor.setTask(task);
             userService.update(executor);
         }
+
+        User officer = userService.findById(officerId);
+        task.setOfficer(officer);
+        taskRepository.update(task);
     }
 
     @Override
@@ -144,5 +179,47 @@ public class TaskServiceImpl implements TaskService {
                 .filter(worker -> worker.getTask() == null && worker.getRole().getRoleName() == UserRoleName.SOLDIER)
                 .map(UserMapper.INSTANCE::toFreeExecutorResponseDTO)
                 .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    @Override
+    public void deleteById(UUID taskId, HttpRequest<?> request) {
+        String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
+        User user = userService.findByEmail(userEmail);
+
+        Band band;
+        if (user.getRole().getRoleName() == UserRoleName.ADMIN) {
+            band = user.getBand();
+        } else {
+            band = user.getOwnBand();
+        }
+
+        if (band == null) {
+            throw new APIException("Нет банды!", HttpStatus.BAD_REQUEST);
+        }
+
+        taskRepository.deleteByIdAndBandId(taskId, band.getId());
+        taskRepository.deleteById(taskId);
+    }
+
+    private TaskResponseDTO mapToResponseDTO(Task task) {
+        if (task == null) {
+            return null;
+        }
+
+        TaskResponseDTO responseDTO = TaskMapper.INSTANCE.toResponseDTO(task);
+        responseDTO.setOfficer(userService.getUserName(task.getCustomer()));
+        List<String> executors = task.getExecutors()
+                .stream()
+                .map(userService::getUserName)
+                .toList();
+        responseDTO.setExecutors(executors);
+        return responseDTO;
+    }
+
+    private void createBandTask(Task task, Band band) {
+        BandTask bandTask = new BandTask();
+        bandTask.setTask(task);
+        bandTask.setBand(band);
+        bandTaskService.save(bandTask);
     }
 }

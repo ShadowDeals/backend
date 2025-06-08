@@ -77,24 +77,18 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public void createRequests(User user, RegionName region) {
-        Request request = new Request();
-        request.setDateCreated(Instant.now());
-        request.setUser(user);
-
         if (region == null) {
             bandService.findAll().forEach(band -> {
-                request.setBand(band);
                 if (!requestRepository.existsByBandAndUser(band, user)) {
-                    requestRepository.save(request);
+                    createRequest(user, band);
                 }
             });
             return;
         }
 
         Band band = bandService.findByRegion(region);
-        request.setBand(band);
         if (!requestRepository.existsByBandAndUser(band, user)) {
-            requestRepository.save(request);
+            createRequest(user, band);
         }
     }
 
@@ -129,5 +123,13 @@ public class RequestServiceImpl implements RequestService {
                 .filter(req -> user.getId().equals(req.getUser().getId()))
                 .map(RequestMapper.INSTANCE::toOwnResponseDTO)
                 .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    private void createRequest(User user, Band band) {
+        Request request = new Request();
+        request.setDateCreated(Instant.now());
+        request.setUser(user);
+        request.setBand(band);
+        requestRepository.save(request);
     }
 }

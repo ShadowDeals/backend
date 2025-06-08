@@ -1,12 +1,13 @@
 package com.shadow.deals.user.main.service;
 
 import com.shadow.deals.band.main.entity.Band;
-import com.shadow.deals.base.service.CommonUpdateService;
 import com.shadow.deals.exception.APIException;
 import com.shadow.deals.user.main.entity.User;
 import com.shadow.deals.user.main.repository.UserRepository;
 import com.shadow.deals.user.role.entity.UserRole;
+import com.shadow.deals.util.CommonUtils;
 import io.micronaut.core.util.StringUtils;
+import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
@@ -25,7 +26,7 @@ import java.util.UUID;
  */
 @Singleton
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService, CommonUpdateService<User> {
+public class UserServiceImpl implements UserService {
     /**
      * Instance of the repository interface that contains methods for interacting with table associated with
      * {@link User} entity.
@@ -149,6 +150,15 @@ public class UserServiceImpl implements UserService, CommonUpdateService<User> {
                 "bandId", getUserBand(user),
                 "name", getUserName(user)
         );
+    }
+
+    @Override
+    public void leaveBand(HttpRequest<?> request) {
+        String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
+        User user = findByEmail(userEmail);
+
+        user.setBand(null);
+        update(user);
     }
 
     private UUID getUserBand(User user) {

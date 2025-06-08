@@ -5,6 +5,7 @@ import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.band.request.entity.Request;
 import com.shadow.deals.band.task.main.entity.Task;
 import com.shadow.deals.base.entity.BaseIdEntity;
+import com.shadow.deals.region.entity.Region;
 import com.shadow.deals.user.activation.entity.ActivationCode;
 import com.shadow.deals.user.refresh.entity.RefreshToken;
 import com.shadow.deals.user.role.entity.UserRole;
@@ -95,6 +96,10 @@ public class User extends BaseIdEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private UserRole role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id", referencedColumnName = "id")
+    private Region region;
 
     @OneToMany(mappedBy = "user")
     private Set<Request> requests;

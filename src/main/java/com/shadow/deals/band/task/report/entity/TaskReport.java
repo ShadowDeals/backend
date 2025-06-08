@@ -3,6 +3,7 @@ package com.shadow.deals.band.task.report.entity;
 import com.shadow.deals.band.task.main.entity.Task;
 import com.shadow.deals.base.entity.BaseIdEntity;
 import com.shadow.deals.util.constant.CommonConstantHolder;
+import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +13,8 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.Instant;
 
 /**
  * @author Kirill "Tamada" Simovin
@@ -27,6 +30,10 @@ public class TaskReport extends BaseIdEntity {
 
     @Column(name = "time_spent")
     private int timeSpent;
+
+    @DateCreated
+    @Column(name = "date_created")
+    private Instant dateCreated;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", referencedColumnName = "id")

@@ -30,6 +30,9 @@ public class CreateTaskRequestDTO {
     @JsonProperty("taskType")
     private TaskTypeEnum taskType;
 
+    @JsonProperty("price")
+    private int price;
+
     @JsonProperty("region")
     private RegionName region;
 }
