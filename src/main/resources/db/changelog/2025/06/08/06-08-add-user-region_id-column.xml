@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="add-user-region_id-column" author="Kirill 'Tamada' Simovin">
+        <comment>Add region_id column to user table</comment>
+
+        <addColumn schemaName="public"
+                   tableName="sd_user">
+
+            <column name="region_id" type="UUID"/>
+
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="sd_user"
+                                 baseColumnNames="region_id"
+                                 constraintName="REGION_ID_FK"
+                                 referencedTableName="sd_region"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>
