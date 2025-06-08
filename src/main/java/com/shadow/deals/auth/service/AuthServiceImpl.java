@@ -179,7 +179,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String activationCodeVal = generateUUIDFromString(userEmail);
-        sendSignUpEmail(userEmail, signUpRequestDTO.getNickname(), activationCodeVal);
+        sendSignUpEmail(user, activationCodeVal);
 
         createAndSaveActivationCode(user, activationCodeVal);
 
@@ -299,7 +299,7 @@ public class AuthServiceImpl implements AuthService {
 
         user.setEmail(newEmail);
         userService.update(user);
-        sendSignUpEmail(newEmail, user.getNickname(), activationCodeVal);
+        sendSignUpEmail(user, activationCodeVal);
         return newEmail;
     }
 
@@ -317,7 +317,7 @@ public class AuthServiceImpl implements AuthService {
 
         mailService.sendMessage(email,
                 "Смена пароля в Shadow Deals",
-                createChangePasswordEmail(user.getNickname(), email),
+                createChangePasswordEmail(userService.getUserName(user), email),
                 Map.of(LOGO_EMAIL_CID, LOGO_EMAIL_PATH)
         );
     }
@@ -376,14 +376,13 @@ public class AuthServiceImpl implements AuthService {
     /**
      * This method allows to send an email confirmation message when registering a new user.
      *
-     * @param to             the recipient of the email.
-     * @param nickname       the nickname of the recipient.
+     * @param user           the recipient.
      * @param activationCode the activation code for email confirmation.
      */
-    private void sendSignUpEmail(String to, String nickname, String activationCode) {
-        mailService.sendMessage(to,
-                "Подтверждение почты",
-                createSignUpEmail(nickname, activationCode),
+    private void sendSignUpEmail(User user, String activationCode) {
+        mailService.sendMessage(user.getEmail(),
+                "Подтверждение почты Shadow Deals",
+                createSignUpEmail(userService.getUserName(user), activationCode),
                 Map.of(LOGO_EMAIL_CID, LOGO_EMAIL_PATH)
         );
     }
