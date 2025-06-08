@@ -1,0 +1,33 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create-blocked_band-table" author="Kirill 'Tamada' Simovin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="sd_blocked_band"/>
+            </not>
+        </preConditions>
+
+        <comment>Create blocked band table</comment>
+
+        <createTable tableName="sd_blocked_band">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="band_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="sd_blocked_band"
+                                 baseColumnNames="band_id"
+                                 constraintName="BAND_ID_FK"
+                                 referencedTableName="sd_band"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

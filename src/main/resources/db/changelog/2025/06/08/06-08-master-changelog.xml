@@ -9,4 +9,5 @@
     <include file="06-08-add-task-officer_id-column.xml" relativeToChangelogFile="true"/>
     <include file="06-08-add-task-price-column.xml" relativeToChangelogFile="true"/>
     <include file="06-08-add-task_report-date_created-column.xml" relativeToChangelogFile="true"/>
+    <include file="06-08-create-blocked_band-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
