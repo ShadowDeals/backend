@@ -47,7 +47,7 @@ public class TaskResponseDTO implements Comparable<TaskResponseDTO> {
     @JsonProperty("officer")
     private String officer;
 
-    @JsonProperty("officer")
+    @JsonProperty("price")
     private int price;
 
     @JsonProperty("reportId")
