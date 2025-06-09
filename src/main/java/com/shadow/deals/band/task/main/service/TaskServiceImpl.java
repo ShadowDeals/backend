@@ -5,11 +5,12 @@ import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.band.main.service.BandService;
 import com.shadow.deals.band.task.band.entity.BandTask;
 import com.shadow.deals.band.task.band.service.BandTaskService;
-import com.shadow.deals.band.task.dto.request.CreateTaskRequestDTO;
-import com.shadow.deals.band.task.dto.response.TaskResponseDTO;
+import com.shadow.deals.band.task.main.dto.request.CancelTaskRequestDTO;
+import com.shadow.deals.band.task.main.dto.request.CreateTaskRequestDTO;
+import com.shadow.deals.band.task.main.dto.response.TaskResponseDTO;
 import com.shadow.deals.band.task.main.entity.Task;
 import com.shadow.deals.band.task.main.repository.TaskRepository;
-import com.shadow.deals.band.task.mapper.TaskMapper;
+import com.shadow.deals.band.task.main.mapper.TaskMapper;
 import com.shadow.deals.band.task.status.enums.TaskStatusEnum;
 import com.shadow.deals.band.task.status.service.TaskStatusService;
 import com.shadow.deals.band.task.type.service.TaskTypeService;
@@ -245,6 +246,25 @@ public class TaskServiceImpl implements TaskService {
 
         taskRepository.deleteByIdAndBandId(taskId, band.getId());
         taskRepository.deleteById(taskId);
+    }
+
+    @Override
+    public void cancelTask(UUID taskId, @NotNull CancelTaskRequestDTO cancelTaskRequestDTO, HttpRequest<?> request) {
+        String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
+        User user = userService.findByEmail(userEmail);
+
+        Task task = findById(taskId);
+
+        TaskStatusEnum statusEnum;
+        if (user.getRole().getRoleName() == UserRoleName.ADMIN) {
+            statusEnum = TaskStatusEnum.CANCELED_BY_ADMIN;
+        } else {
+            statusEnum = TaskStatusEnum.CANCELED_BY_USER;
+        }
+        task.setCancelStatus(task.getStatus());
+        task.setStatus(taskStatusService.findByTaskStatus(statusEnum));
+        task.setCancelReason(cancelTaskRequestDTO.getReason());
+        taskRepository.update(task);
     }
 
     private TaskResponseDTO mapToResponseDTO(Task task) {

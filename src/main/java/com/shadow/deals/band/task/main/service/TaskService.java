@@ -1,7 +1,8 @@
 package com.shadow.deals.band.task.main.service;
 
-import com.shadow.deals.band.task.dto.request.CreateTaskRequestDTO;
-import com.shadow.deals.band.task.dto.response.TaskResponseDTO;
+import com.shadow.deals.band.task.main.dto.request.CancelTaskRequestDTO;
+import com.shadow.deals.band.task.main.dto.request.CreateTaskRequestDTO;
+import com.shadow.deals.band.task.main.dto.response.TaskResponseDTO;
 import com.shadow.deals.band.task.main.entity.Task;
 import com.shadow.deals.band.task.status.enums.TaskStatusEnum;
 import com.shadow.deals.base.service.CommonEntityService;
@@ -31,4 +32,6 @@ public interface TaskService extends CommonEntityService<Task> {
     TreeSet<FreeExecutorResponseDTO> getFreeExecutors(UUID bandId);
 
     void deleteById(UUID taskId, HttpRequest<?> request);
+
+    void cancelTask(UUID taskId, CancelTaskRequestDTO cancelTaskRequestDTO, HttpRequest<?> request);
 }

@@ -1,4 +1,4 @@
-package com.shadow.deals.band.task.dto.request;
+package com.shadow.deals.band.task.main.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.shadow.deals.band.task.type.enums.TaskTypeEnum;

@@ -1,7 +1,8 @@
 package com.shadow.deals.band.task.main.controller;
 
-import com.shadow.deals.band.task.dto.request.CreateTaskRequestDTO;
-import com.shadow.deals.band.task.dto.response.TaskResponseDTO;
+import com.shadow.deals.band.task.main.dto.request.CancelTaskRequestDTO;
+import com.shadow.deals.band.task.main.dto.request.CreateTaskRequestDTO;
+import com.shadow.deals.band.task.main.dto.response.TaskResponseDTO;
 import com.shadow.deals.band.task.main.service.TaskService;
 import com.shadow.deals.band.task.status.enums.TaskStatusEnum;
 import com.shadow.deals.user.main.dto.response.FreeExecutorResponseDTO;
@@ -41,6 +42,12 @@ public class TaskController {
     @RolesAllowed({"Администратор", "Солдат"})
     public void updateTaskStatus(@QueryValue(value = "taskId") UUID taskId, @QueryValue(value = "bandId") UUID bandId, @QueryValue(value = "taskStatus") TaskStatusEnum taskStatus) {
         taskService.updateTaskStatus(taskId, bandId, taskStatus);
+    }
+
+    @Put
+    @RolesAllowed({"Администратор", "Пользователь"})
+    public void cancelTask(@QueryValue(value = "taskId") UUID taskId, @Body CancelTaskRequestDTO cancelTaskRequestDTO, HttpRequest<?> request) {
+        taskService.cancelTask(taskId, cancelTaskRequestDTO, request);
     }
 
     @Get

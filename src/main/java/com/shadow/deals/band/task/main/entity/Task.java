@@ -63,6 +63,13 @@ public class Task extends BaseIdEntity {
     @Column(name = "date_created")
     private Instant dateCreated;
 
+    @Column(name = "cancel_reason")
+    private String cancelReason;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cancel_status_id", referencedColumnName = "id")
+    private TaskStatus cancelStatus;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = CommonConstantHolder.TABLE_PREFIX + "band_task",
             joinColumns = @JoinColumn(name = "band_id", referencedColumnName = "id"),

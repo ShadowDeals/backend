@@ -1,7 +1,7 @@
-package com.shadow.deals.band.task.mapper;
+package com.shadow.deals.band.task.main.mapper;
 
-import com.shadow.deals.band.task.dto.request.CreateTaskRequestDTO;
-import com.shadow.deals.band.task.dto.response.TaskResponseDTO;
+import com.shadow.deals.band.task.main.dto.request.CreateTaskRequestDTO;
+import com.shadow.deals.band.task.main.dto.response.TaskResponseDTO;
 import com.shadow.deals.band.task.main.entity.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -23,5 +23,6 @@ public interface TaskMapper {
     @Mapping(target = "reportId", source = "report.id")
     @Mapping(target = "officer", ignore = true)
     @Mapping(target = "executors", ignore = true)
+    @Mapping(target = "cancelTaskStatus", source = "cancelStatus.taskStatus")
     TaskResponseDTO toResponseDTO(Task task);
 }

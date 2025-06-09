@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="insert-task_statuses_2" author="Kirill 'Tamada' Simovin">
+
+        <comment>Insert task statuses in task_status table</comment>
+
+        <insert tableName="sd_task_status">
+            <column name="id" value="1a653609-da64-460b-bc17-57690d1f00aa"/>
+            <column name="task_status" value="CANCELED_BY_USER"/>
+        </insert>
+
+        <insert tableName="sd_task_status">
+            <column name="id" value="dd193c87-3f6b-43be-8fd6-1fa357cd3c7d"/>
+            <column name="task_status" value="CANCELED_BY_ADMIN"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

@@ -27,5 +27,5 @@ public interface BandService extends CommonEntityService<Band> {
 
     BandInfoResponseDTO selectBandInfo(UUID bandId);
 
-    BandStatsInfoResponseDTO selectBandStatsInfo(UUID bandId);
+    BandStatsInfoResponseDTO selectBandStatsInfo(HttpRequest<?> request);
 }

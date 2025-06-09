@@ -44,7 +44,7 @@ public class BandController {
 
     @Get("/stats")
     @RolesAllowed({"Дон"})
-    public BandStatsInfoResponseDTO selectBandStatsInfo(@QueryValue(value = "bandId") UUID bandId) {
-        return bandService.selectBandStatsInfo(bandId);
+    public BandStatsInfoResponseDTO selectBandStatsInfo(HttpRequest<?> request) {
+        return bandService.selectBandStatsInfo(request);
     }
 }

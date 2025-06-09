@@ -135,9 +135,12 @@ public class BandServiceImpl implements BandService {
     }
 
     @Override
-    public BandStatsInfoResponseDTO selectBandStatsInfo(UUID bandId) {
-        Band band = findById(bandId);
-        if (blockedBandService.existsByBandId(bandId)) {
+    public BandStatsInfoResponseDTO selectBandStatsInfo(HttpRequest<?> request) {
+        String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
+        User user = userService.findByEmail(userEmail);
+        Band band = user.getOwnBand();
+
+        if (blockedBandService.existsByBandId(band.getId())) {
             throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
 

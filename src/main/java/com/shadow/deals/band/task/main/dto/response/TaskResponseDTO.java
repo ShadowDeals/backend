@@ -1,4 +1,4 @@
-package com.shadow.deals.band.task.dto.response;
+package com.shadow.deals.band.task.main.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.shadow.deals.band.task.status.enums.TaskStatusEnum;
@@ -55,6 +55,12 @@ public class TaskResponseDTO implements Comparable<TaskResponseDTO> {
 
     @JsonProperty("executors")
     private List<String> executors;
+
+    @JsonProperty("cancelReason")
+    private String cancelReason;
+
+    @JsonProperty("cancelTaskStatus")
+    private TaskStatusEnum cancelTaskStatus;
 
     @Override
     public int compareTo(@NotNull TaskResponseDTO o) {
