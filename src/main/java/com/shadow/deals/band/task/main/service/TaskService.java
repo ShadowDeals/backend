@@ -21,7 +21,7 @@ public interface TaskService extends CommonEntityService<Task> {
 
     void updateTaskStatus(UUID taskId, UUID bandId, TaskStatusEnum taskStatus);
 
-    TreeSet<TaskResponseDTO> getTasksByStatus(UUID bandId, TaskStatusEnum taskStatus);
+    TreeSet<TaskResponseDTO> getTasksByStatus(UUID bandId, TaskStatusEnum taskStatus, HttpRequest<?> request);
 
     TreeSet<TaskResponseDTO> getOwnTask(HttpRequest<?> request);
 

@@ -7,6 +7,7 @@ import com.shadow.deals.band.task.band.entity.BandTask;
 import com.shadow.deals.band.task.band.service.BandTaskService;
 import com.shadow.deals.band.task.main.dto.request.CancelTaskRequestDTO;
 import com.shadow.deals.band.task.main.dto.request.CreateTaskRequestDTO;
+import com.shadow.deals.band.task.main.dto.response.TaskExecutorResponseDTO;
 import com.shadow.deals.band.task.main.dto.response.TaskResponseDTO;
 import com.shadow.deals.band.task.main.entity.Task;
 import com.shadow.deals.band.task.main.mapper.TaskMapper;
@@ -122,15 +123,47 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TreeSet<TaskResponseDTO> getTasksByStatus(UUID bandId, TaskStatusEnum taskStatus) {
-        if (blockedBandService.existsByBandId(bandId)) {
+    public TreeSet<TaskResponseDTO> getTasksByStatus(UUID bandId, TaskStatusEnum taskStatus, HttpRequest<?> request) {
+        String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
+        User user = userService.findByEmail(userEmail);
+
+        UserRoleName userRoleName = user.getRole().getRoleName();
+        if (blockedBandService.existsByBandId(bandId) && userRoleName != UserRoleName.USER) {
             throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
 
-        return bandTaskService.findAllTasksByBand(bandId)
+        TreeSet<TaskResponseDTO> allBandTasks = bandTaskService.findAllTasksByBand(bandId)
                 .stream()
                 .filter(task -> task.getStatus().getTaskStatus() == taskStatus)
                 .map(this::mapToResponseDTO)
+                .collect(Collectors.toCollection(TreeSet::new));
+
+        if (userRoleName == UserRoleName.ADMIN || userRoleName == UserRoleName.DON) {
+            return allBandTasks;
+        }
+
+        if (userRoleName == UserRoleName.USER) {
+            return allBandTasks.stream()
+                    .filter(task -> task.getCustomerId().equals(user.getId()))
+                    .collect(Collectors.toCollection(TreeSet::new));
+        }
+
+        return allBandTasks.stream()
+                .filter(task -> {
+                    Set<UUID> executors = task.getExecutors()
+                            .stream()
+                            .map(TaskExecutorResponseDTO::getId)
+                            .collect(Collectors.toSet());
+
+                    TaskExecutorResponseDTO officer = task.getOfficer();
+                    boolean executorExists = executors.contains(user.getId());
+
+                    if (officer == null) {
+                        return executorExists;
+                    }
+
+                    return executors.contains(user.getId()) || officer.getId().equals(user.getId());
+                })
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
@@ -289,13 +322,24 @@ public class TaskServiceImpl implements TaskService {
         }
 
         TaskResponseDTO responseDTO = TaskMapper.INSTANCE.toResponseDTO(task);
-        responseDTO.setOfficer(userService.getUserName(task.getCustomer()));
-        List<String> executors = task.getExecutors()
+        responseDTO.setOfficer(mapExecutor(task.getOfficer()));
+        List<TaskExecutorResponseDTO> executors = task.getExecutors()
                 .stream()
-                .map(userService::getUserName)
+                .map(this::mapExecutor)
                 .toList();
         responseDTO.setExecutors(executors);
         return responseDTO;
+    }
+
+    private TaskExecutorResponseDTO mapExecutor(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        return new TaskExecutorResponseDTO(
+                userService.getUserName(user),
+                user.getId()
+        );
     }
 
     private void createBandTask(Task task, Band band) {

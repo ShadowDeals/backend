@@ -18,6 +18,7 @@ public interface TaskMapper {
 
     @Mapping(target = "taskId", source = "id")
     @Mapping(target = "customer", source = "customer.nickname")
+    @Mapping(target = "customerId", source = "customer.id")
     @Mapping(target = "taskType", source = "type.taskType")
     @Mapping(target = "taskStatus", source = "status.taskStatus")
     @Mapping(target = "reportId", source = "report.id")

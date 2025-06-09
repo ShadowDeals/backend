@@ -26,6 +26,9 @@ public class TaskResponseDTO implements Comparable<TaskResponseDTO> {
     @JsonProperty("taskId")
     private UUID taskId;
 
+    @JsonProperty("customerId")
+    private UUID customerId;
+
     @JsonProperty("customer")
     private String customer;
 
@@ -45,7 +48,7 @@ public class TaskResponseDTO implements Comparable<TaskResponseDTO> {
     private TaskStatusEnum taskStatus;
 
     @JsonProperty("officer")
-    private String officer;
+    private TaskExecutorResponseDTO officer;
 
     @JsonProperty("price")
     private int price;
@@ -54,7 +57,7 @@ public class TaskResponseDTO implements Comparable<TaskResponseDTO> {
     private UUID reportId;
 
     @JsonProperty("executors")
-    private List<String> executors;
+    private List<TaskExecutorResponseDTO> executors;
 
     @JsonProperty("cancelReason")
     private String cancelReason;

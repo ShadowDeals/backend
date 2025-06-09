@@ -17,6 +17,8 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
 import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 
@@ -57,9 +59,9 @@ public class TaskController {
     }
 
     @Get
-    @RolesAllowed({"Дон", "Администратор"})
-    public TreeSet<TaskResponseDTO> getTasksByStatus(@QueryValue(value = "bandId") UUID bandId, @QueryValue(value = "taskStatus") TaskStatusEnum taskStatus) {
-        return taskService.getTasksByStatus(bandId, taskStatus);
+    @Secured(SecurityRule.IS_AUTHENTICATED)
+    public TreeSet<TaskResponseDTO> getTasksByStatus(@QueryValue(value = "bandId", defaultValue = "null") UUID bandId, @QueryValue(value = "taskStatus") TaskStatusEnum taskStatus, HttpRequest<?> request) {
+        return taskService.getTasksByStatus(bandId, taskStatus, request);
     }
 
     @Get("/one")
