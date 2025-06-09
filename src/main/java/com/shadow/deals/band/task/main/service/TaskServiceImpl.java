@@ -9,8 +9,8 @@ import com.shadow.deals.band.task.main.dto.request.CancelTaskRequestDTO;
 import com.shadow.deals.band.task.main.dto.request.CreateTaskRequestDTO;
 import com.shadow.deals.band.task.main.dto.response.TaskResponseDTO;
 import com.shadow.deals.band.task.main.entity.Task;
-import com.shadow.deals.band.task.main.repository.TaskRepository;
 import com.shadow.deals.band.task.main.mapper.TaskMapper;
+import com.shadow.deals.band.task.main.repository.TaskRepository;
 import com.shadow.deals.band.task.status.enums.TaskStatusEnum;
 import com.shadow.deals.band.task.status.service.TaskStatusService;
 import com.shadow.deals.band.task.type.service.TaskTypeService;
@@ -264,6 +264,18 @@ public class TaskServiceImpl implements TaskService {
         task.setCancelStatus(task.getStatus());
         task.setStatus(taskStatusService.findByTaskStatus(statusEnum));
         task.setCancelReason(cancelTaskRequestDTO.getReason());
+        taskRepository.update(task);
+    }
+
+    @Override
+    public void updateTaskPrice(UUID taskId, UUID bandId, int price) {
+        Task task = findById(taskId);
+
+        if (blockedBandService.existsByBandId(bandId)) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
+
+        task.setPrice(price);
         taskRepository.update(task);
     }
 

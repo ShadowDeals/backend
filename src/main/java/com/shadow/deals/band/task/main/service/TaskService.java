@@ -34,4 +34,6 @@ public interface TaskService extends CommonEntityService<Task> {
     void deleteById(UUID taskId, HttpRequest<?> request);
 
     void cancelTask(UUID taskId, CancelTaskRequestDTO cancelTaskRequestDTO, HttpRequest<?> request);
+
+    void updateTaskPrice(UUID taskId, UUID bandId, int price);
 }
