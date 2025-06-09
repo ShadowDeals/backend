@@ -1,8 +1,13 @@
 package com.shadow.deals.band.main.service;
 
 import com.shadow.deals.band.blocked.service.BlockedBandService;
+import com.shadow.deals.band.main.dto.response.BandInfoResponseDTO;
+import com.shadow.deals.band.main.dto.response.BandStatsInfoResponseDTO;
 import com.shadow.deals.band.main.entity.Band;
+import com.shadow.deals.band.main.mapper.BandMapper;
 import com.shadow.deals.band.main.repository.BandRepository;
+import com.shadow.deals.band.task.main.entity.Task;
+import com.shadow.deals.band.task.status.enums.TaskStatusEnum;
 import com.shadow.deals.exception.APIException;
 import com.shadow.deals.region.entity.Region;
 import com.shadow.deals.region.enums.RegionName;
@@ -19,6 +24,7 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -114,5 +120,46 @@ public class BandServiceImpl implements BandService {
     @Override
     public boolean existsByRegion(Region region) {
         return bandRepository.existsByRegion(region);
+    }
+
+    @Override
+    public BandInfoResponseDTO selectBandInfo(UUID bandId) {
+        Band band = findById(bandId);
+        if (blockedBandService.existsByBandId(bandId)) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
+
+        BandInfoResponseDTO bandInfoResponseDTO = BandMapper.INSTANCE.toResponseDTO(band);
+        bandInfoResponseDTO.setDonName(userService.getUserName(band.getDon()));
+        return bandInfoResponseDTO;
+    }
+
+    @Override
+    public BandStatsInfoResponseDTO selectBandStatsInfo(UUID bandId) {
+        Band band = findById(bandId);
+        if (blockedBandService.existsByBandId(bandId)) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
+        }
+
+        Set<User> workers = band.getWorkers();
+        long adminsCount = workers.stream()
+                .filter(worker -> worker.getRole().getRoleName() == UserRoleName.ADMIN)
+                .count();
+
+        long soldiersCount = workers.stream()
+                .filter(worker -> worker.getRole().getRoleName() == UserRoleName.SOLDIER)
+                .count();
+
+        Set<Task> tasks = band.getTasks();
+        Set<Task> completedTasks = tasks.stream()
+                .filter(task -> task.getStatus().getTaskStatus() == TaskStatusEnum.FINISHED)
+                .collect(Collectors.toSet());
+
+        int totalTasksPrice = completedTasks
+                .stream()
+                .map(Task::getPrice)
+                .reduce(0, Integer::sum);
+
+        return new BandStatsInfoResponseDTO(adminsCount, soldiersCount, tasks.size(), completedTasks.size(), totalTasksPrice);
     }
 }

@@ -1,5 +1,7 @@
 package com.shadow.deals.band.main.service;
 
+import com.shadow.deals.band.main.dto.response.BandInfoResponseDTO;
+import com.shadow.deals.band.main.dto.response.BandStatsInfoResponseDTO;
 import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.base.service.CommonEntityService;
 import com.shadow.deals.region.entity.Region;
@@ -22,4 +24,8 @@ public interface BandService extends CommonEntityService<Band> {
     void kickFromBand(UUID userId, HttpRequest<?> request);
 
     boolean existsByRegion(Region region);
+
+    BandInfoResponseDTO selectBandInfo(UUID bandId);
+
+    BandStatsInfoResponseDTO selectBandStatsInfo(UUID bandId);
 }

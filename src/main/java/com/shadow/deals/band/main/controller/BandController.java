@@ -1,5 +1,7 @@
 package com.shadow.deals.band.main.controller;
 
+import com.shadow.deals.band.main.dto.response.BandInfoResponseDTO;
+import com.shadow.deals.band.main.dto.response.BandStatsInfoResponseDTO;
 import com.shadow.deals.band.main.service.BandService;
 import com.shadow.deals.user.main.dto.response.BandWorkerResponseDTO;
 import com.shadow.deals.user.role.enums.UserRoleName;
@@ -32,5 +34,17 @@ public class BandController {
     @RolesAllowed({"Дон", "Администратор"})
     public void kickFromBand(@QueryValue(value = "userId") UUID userId, HttpRequest<?> request) {
         bandService.kickFromBand(userId, request);
+    }
+
+    @Get
+    @RolesAllowed({"Дон", "Администратор"})
+    public BandInfoResponseDTO selectBandInfo(@QueryValue(value = "bandId") UUID bandId) {
+        return bandService.selectBandInfo(bandId);
+    }
+
+    @Get("/stats")
+    @RolesAllowed({"Дон"})
+    public BandStatsInfoResponseDTO selectBandStatsInfo(@QueryValue(value = "bandId") UUID bandId) {
+        return bandService.selectBandStatsInfo(bandId);
     }
 }
