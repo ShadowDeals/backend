@@ -128,12 +128,12 @@ public class TaskServiceImpl implements TaskService {
         User user = userService.findByEmail(userEmail);
 
         UserRoleName userRoleName = user.getRole().getRoleName();
-        if (blockedBandService.existsByBandId(bandId) && userRoleName != UserRoleName.USER) {
-            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
-        }
-
         if (userRoleName != UserRoleName.USER && bandId == null) {
             throw new APIException("Банда не специфицирован!", HttpStatus.BAD_REQUEST);
+        }
+
+        if (blockedBandService.existsByBandId(bandId) && userRoleName != UserRoleName.USER) {
+            throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
 
         TreeSet<TaskResponseDTO> allBandTasks;
