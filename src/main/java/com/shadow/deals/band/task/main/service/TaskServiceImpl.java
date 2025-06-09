@@ -332,6 +332,13 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.update(task);
     }
 
+    @Override
+    public void payment(UUID taskId) {
+        Task task = findById(taskId);
+        task.setStatus(taskStatusService.findByTaskStatus(TaskStatusEnum.WAITING_FOR_ASSIGNMENT));
+        taskRepository.update(task);
+    }
+
     private TaskResponseDTO mapToResponseDTO(Task task, UUID bandId) {
         if (task == null) {
             return null;

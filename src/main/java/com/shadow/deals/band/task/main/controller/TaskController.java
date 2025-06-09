@@ -53,6 +53,13 @@ public class TaskController {
         taskService.updateTaskPrice(taskId, bandId, price);
     }
 
+
+    @Put("/payment")
+    @RolesAllowed({"Пользователь"})
+    public void payment(@QueryValue(value = "taskId") UUID taskId) {
+        taskService.payment(taskId);
+    }
+
     @Put("/cancel")
     @RolesAllowed({"Администратор", "Пользователь"})
     public void cancelTask(@QueryValue(value = "taskId") UUID taskId, @Body CancelTaskRequestDTO cancelTaskRequestDTO, HttpRequest<?> request) {
