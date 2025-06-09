@@ -39,7 +39,7 @@ public class TaskReportController {
     }
 
     @Get
-    @RolesAllowed({"Администратор", "Солдат"})
+    @RolesAllowed({"Администратор", "Солдат", "Пользователь"})
     public TaskReportResponseDTO findTaskReport(@QueryValue("taskId") UUID taskId) {
         return taskReportService.getTaskReport(taskId);
     }
