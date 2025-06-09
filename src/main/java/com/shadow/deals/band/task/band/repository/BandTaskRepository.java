@@ -20,4 +20,9 @@ public interface BandTaskRepository extends CommonRepository<BandTask> {
 //    @Query(value = "SELECT st.* FROM sd_task st WHERE st.id IN (SELECT sbt.task_id FROM sd_band_task sbt WHERE sbt.band_id = :bandId)", nativeQuery = true)
     @Query("SELECT t FROM Task t WHERE t.id IN (SELECT bt.task.id FROM BandTask bt WHERE bt.band.id = :bandId)")
     List<Task> findAllTasksByBand(UUID bandId);
+
+    @Query("SELECT bt FROM BandTask bt WHERE bt.task.customer.id = :customerId")
+    List<BandTask> findAllByCustomer(UUID customerId);
+
+    List<BandTask> findAllByTask(Task task);
 }

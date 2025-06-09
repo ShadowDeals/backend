@@ -26,6 +26,9 @@ public class TaskResponseDTO implements Comparable<TaskResponseDTO> {
     @JsonProperty("taskId")
     private UUID taskId;
 
+    @JsonProperty("bandId")
+    private UUID bandId;
+
     @JsonProperty("customerId")
     private UUID customerId;
 

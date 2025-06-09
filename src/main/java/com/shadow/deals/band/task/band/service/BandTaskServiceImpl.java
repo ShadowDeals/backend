@@ -45,4 +45,14 @@ public class BandTaskServiceImpl implements BandTaskService {
     public List<Task> findAllTasksByBand(UUID bandId) {
         return bandTaskRepository.findAllTasksByBand(bandId);
     }
+
+    @Override
+    public List<BandTask> findAllByCustomer(UUID customerId) {
+        return bandTaskRepository.findAllByCustomer(customerId);
+    }
+
+    @Override
+    public List<BandTask> findAllByTask(Task task) {
+        return bandTaskRepository.findAllByTask(task);
+    }
 }

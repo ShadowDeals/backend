@@ -14,4 +14,8 @@ public interface BandTaskService extends CommonEntityService<BandTask> {
     void deleteByTaskExcludeBand(UUID taskId, UUID bandId);
 
     List<Task> findAllTasksByBand(UUID bandId);
+
+    List<BandTask> findAllByCustomer(UUID customerId);
+
+    List<BandTask> findAllByTask(Task task);
 }

@@ -132,11 +132,24 @@ public class TaskServiceImpl implements TaskService {
             throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
 
-        TreeSet<TaskResponseDTO> allBandTasks = bandTaskService.findAllTasksByBand(bandId)
-                .stream()
-                .filter(task -> task.getStatus().getTaskStatus() == taskStatus)
-                .map(this::mapToResponseDTO)
-                .collect(Collectors.toCollection(TreeSet::new));
+        if (userRoleName != UserRoleName.USER && bandId == null) {
+            throw new APIException("Банда не специфицирован!", HttpStatus.BAD_REQUEST);
+        }
+
+        TreeSet<TaskResponseDTO> allBandTasks;
+        if (bandId != null) {
+            allBandTasks = bandTaskService.findAllTasksByBand(bandId)
+                    .stream()
+                    .filter(task -> task.getStatus().getTaskStatus() == taskStatus)
+                    .map(task -> mapToResponseDTO(task, bandId))
+                    .collect(Collectors.toCollection(TreeSet::new));
+        } else {
+            allBandTasks = bandTaskService.findAll()
+                    .stream()
+                    .filter(bandTask -> bandTask.getTask().getStatus().getTaskStatus() == taskStatus)
+                    .map(bandTask -> mapToResponseDTO(bandTask.getTask(), bandTask.getBand().getId()))
+                    .collect(Collectors.toCollection(TreeSet::new));
+        }
 
         if (userRoleName == UserRoleName.ADMIN || userRoleName == UserRoleName.DON) {
             return allBandTasks;
@@ -173,15 +186,16 @@ public class TaskServiceImpl implements TaskService {
         User user = userService.findByEmail(userEmail);
 
         if (user.getRole().getRoleName() == UserRoleName.USER) {
-            return taskRepository.findByCustomer(user)
+            return bandTaskService.findAllByCustomer(user.getId())
                     .stream()
-                    .map(this::mapToResponseDTO)
+                    .map(bandTask -> mapToResponseDTO(bandTask.getTask(), bandTask.getBand().getId()))
                     .collect(Collectors.toCollection(TreeSet::new));
         }
 
         Task task = user.getTask();
         if (task != null) {
-            return new TreeSet<>(Set.of(mapToResponseDTO(task)));
+            List<BandTask> bandTasks = bandTaskService.findAllByTask(task);
+            return new TreeSet<>(Set.of(mapToResponseDTO(task, bandTasks.getFirst().getBand().getId())));
         }
 
         Band band = user.getBand();
@@ -196,7 +210,7 @@ public class TaskServiceImpl implements TaskService {
         return band.getTasks()
                 .stream()
                 .filter(bandTask -> bandTask.getOfficer().getId().equals(user.getId()))
-                .map(this::mapToResponseDTO)
+                .map(taskEntity -> mapToResponseDTO(taskEntity, band.getId()))
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
@@ -216,7 +230,7 @@ public class TaskServiceImpl implements TaskService {
         if (blockedBandService.existsByBandId(band.getId())) {
             throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
-        return mapToResponseDTO(findById(taskId));
+        return mapToResponseDTO(findById(taskId), band.getId());
     }
 
     @Override
@@ -316,12 +330,13 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.update(task);
     }
 
-    private TaskResponseDTO mapToResponseDTO(Task task) {
+    private TaskResponseDTO mapToResponseDTO(Task task, UUID bandId) {
         if (task == null) {
             return null;
         }
 
         TaskResponseDTO responseDTO = TaskMapper.INSTANCE.toResponseDTO(task);
+        responseDTO.setBandId(bandId);
         responseDTO.setOfficer(mapExecutor(task.getOfficer()));
         List<TaskExecutorResponseDTO> executors = task.getExecutors()
                 .stream()
