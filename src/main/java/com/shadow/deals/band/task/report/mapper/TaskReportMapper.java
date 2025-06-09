@@ -18,5 +18,6 @@ public interface TaskReportMapper {
 
     @Mapping(target = "reportId", source = "id")
     @Mapping(target = "taskId", source = "task.id")
+    @Mapping(target = "taskStatus", source = "task.status.taskStatus")
     TaskReportResponseDTO toResponseDTO(TaskReport report);
 }
