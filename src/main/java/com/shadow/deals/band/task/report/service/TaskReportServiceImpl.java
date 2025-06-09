@@ -121,7 +121,7 @@ public class TaskReportServiceImpl implements TaskReportService {
             throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
 
-        return band.getTasks()
+        return bandTaskService.findAllTasksByBand(band.getId())
                 .stream()
                 .filter(task -> taskReportRepository.existsByTaskId(task.getId()))
                 .map(task -> {
@@ -132,8 +132,8 @@ public class TaskReportServiceImpl implements TaskReportService {
     }
 
     @Override
-    public TaskReportResponseDTO getTaskReport(UUID reportId) {
-        TaskReport taskReport = findById(reportId);
+    public TaskReportResponseDTO getTaskReport(UUID taskId) {
+        TaskReport taskReport = taskService.findById(taskId).getReport();
         Band band = bandTaskService.findAllByTask(taskReport.getTask()).getFirst().getBand();
 
         if (blockedBandService.existsByBandId(band.getId())) {

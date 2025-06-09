@@ -17,5 +17,5 @@ public interface TaskReportService extends CommonEntityService<TaskReport> {
 
     TreeSet<TaskReportResponseDTO> getTaskReports(HttpRequest<?> request);
 
-    TaskReportResponseDTO getTaskReport(UUID reportId);
+    TaskReportResponseDTO getTaskReport(UUID taskId);
 }
