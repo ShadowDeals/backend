@@ -241,7 +241,8 @@ public class TaskServiceImpl implements TaskService {
             throw new APIException("Некорректный статус задания!", HttpStatus.BAD_REQUEST);
         }
 
-        Band band = new ArrayList<>(task.getBands()).getFirst();
+
+        Band band = bandTaskService.findAllByTask(task).getFirst().getBand();
         if (blockedBandService.existsByBandId(band.getId())) {
             throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
