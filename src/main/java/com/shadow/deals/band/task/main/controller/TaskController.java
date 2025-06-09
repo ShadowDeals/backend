@@ -44,7 +44,7 @@ public class TaskController {
         taskService.updateTaskStatus(taskId, bandId, taskStatus);
     }
 
-    @Put
+    @Put("/cancel")
     @RolesAllowed({"Администратор", "Пользователь"})
     public void cancelTask(@QueryValue(value = "taskId") UUID taskId, @Body CancelTaskRequestDTO cancelTaskRequestDTO, HttpRequest<?> request) {
         taskService.cancelTask(taskId, cancelTaskRequestDTO, request);
