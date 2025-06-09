@@ -18,7 +18,8 @@ public enum TaskStatusEnum implements CommonEnum<TaskStatusEnum> {
     IN_WORK("В работе"),
     FINISHED("Завершенные"),
     CANCELED_BY_USER("Отмененные Заказчиком"),
-    CANCELED_BY_ADMIN("Отмененные Администратором");
+    CANCELED_BY_ADMIN("Отмененные Администратором"),
+    FAILED("Проваленные");
 
     private final String title;
 }
