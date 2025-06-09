@@ -56,6 +56,10 @@ public class BlockedBandServiceImpl implements BlockedBandService {
     public void blockDb(BlockBandRequestDTO blockBandRequestDTO, HttpRequest<?> request) {
         Band band = check(blockBandRequestDTO, request);
 
+        if (existsByBandId(band.getId())) {
+            throw new APIException("База данных уже заблокирована!", HttpStatus.BAD_REQUEST);
+        }
+
         BlockedBand blockedBand = new BlockedBand();
         blockedBand.setBand(band);
         save(blockedBand);
@@ -72,15 +76,10 @@ public class BlockedBandServiceImpl implements BlockedBandService {
         String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
         User user = userService.findByEmail(userEmail);
 
-        Band band = user.getBand();
-        if (existsByBandId(band.getId())) {
-            throw new APIException("База данных уже заблокирована!", HttpStatus.BAD_REQUEST);
-        }
-
         if (!passwordEncoder.matches(blockBandRequestDTO.getPassword(), user.getPassword())) {
             throw new APIException("Некорректный пароль!", HttpStatus.UNAUTHORIZED);
         }
 
-        return band;
+        return user.getBand();
     }
 }
