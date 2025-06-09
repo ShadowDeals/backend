@@ -1,0 +1,17 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="insert-task_statuses_3" author="Kirill 'Tamada' Simovin">
+
+        <comment>Insert task statuses in task_status table</comment>
+
+        <insert tableName="sd_task_status">
+            <column name="id" value="d93a9343-4769-4983-92df-55be734540a7"/>
+            <column name="task_status" value="FAILED"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

@@ -8,4 +8,5 @@
     <include file="06-09-add-task-cancel_reason-column.xml" relativeToChangelogFile="true"/>
     <include file="06-09-insert-task_status_2.xml" relativeToChangelogFile="true"/>
     <include file="06-09-add-task-cancel_status-column.xml" relativeToChangelogFile="true"/>
+    <include file="06-09-insert-task_status_3.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
