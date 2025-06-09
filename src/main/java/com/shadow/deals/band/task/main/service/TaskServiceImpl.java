@@ -269,6 +269,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void updateTaskPrice(UUID taskId, UUID bandId, int price) {
+        if (price < 0) {
+            throw new APIException("Цена не может быть отрицательной!", HttpStatus.BAD_REQUEST);
+        }
+
         Task task = findById(taskId);
 
         if (blockedBandService.existsByBandId(bandId)) {
