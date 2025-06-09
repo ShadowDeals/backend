@@ -132,7 +132,7 @@ public class TaskServiceImpl implements TaskService {
             throw new APIException("Банда не специфицирован!", HttpStatus.BAD_REQUEST);
         }
 
-        if (blockedBandService.existsByBandId(bandId) && userRoleName != UserRoleName.USER) {
+        if (userRoleName != UserRoleName.USER && blockedBandService.existsByBandId(bandId)) {
             throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
 
