@@ -2,6 +2,7 @@ package com.shadow.deals.band.task.report.service;
 
 import com.shadow.deals.band.blocked.service.BlockedBandService;
 import com.shadow.deals.band.main.entity.Band;
+import com.shadow.deals.band.task.band.service.BandTaskService;
 import com.shadow.deals.band.task.main.entity.Task;
 import com.shadow.deals.band.task.main.service.TaskService;
 import com.shadow.deals.band.task.report.dto.request.TaskReportRequestDTO;
@@ -9,6 +10,8 @@ import com.shadow.deals.band.task.report.dto.response.TaskReportResponseDTO;
 import com.shadow.deals.band.task.report.entity.TaskReport;
 import com.shadow.deals.band.task.report.mapper.TaskReportMapper;
 import com.shadow.deals.band.task.report.repository.TaskReportRepository;
+import com.shadow.deals.band.task.status.enums.TaskStatusEnum;
+import com.shadow.deals.band.task.status.service.TaskStatusService;
 import com.shadow.deals.exception.APIException;
 import com.shadow.deals.user.main.entity.User;
 import com.shadow.deals.user.main.service.UserService;
@@ -20,7 +23,6 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -39,6 +41,10 @@ public class TaskReportServiceImpl implements TaskReportService {
     private final UserService userService;
 
     private final BlockedBandService blockedBandService;
+
+    private final BandTaskService bandTaskService;
+
+    private final TaskStatusService taskStatusService;
 
     @Override
     public TaskReport findById(UUID id) {
@@ -63,10 +69,22 @@ public class TaskReportServiceImpl implements TaskReportService {
         taskReport.setDateCreated(Instant.now());
         Task task = taskService.findById(taskId);
 
-        Band band = new ArrayList<>(task.getBands()).getFirst();
+        TaskStatusEnum reportStatus = dto.getStatus();
+        if (reportStatus != TaskStatusEnum.FAILED && reportStatus != TaskStatusEnum.FINISHED) {
+            throw new APIException("Передан некорректный статус задания!", HttpStatus.BAD_REQUEST);
+        }
+
+        if (task.getStatus().getTaskStatus() != TaskStatusEnum.IN_WORK) {
+            throw new APIException("Текущий статус задания не позволяет создать отчет!", HttpStatus.BAD_REQUEST);
+        }
+
+        Band band = bandTaskService.findAllByTask(task).getFirst().getBand();
         if (blockedBandService.existsByBandId(band.getId())) {
             throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
+
+        task.setStatus(taskStatusService.findByTaskStatus(reportStatus));
+        taskService.update(task);
 
         taskReport.setTask(task);
         return save(taskReport).getId();
@@ -111,7 +129,7 @@ public class TaskReportServiceImpl implements TaskReportService {
     @Override
     public TaskReportResponseDTO getTaskReport(UUID reportId) {
         TaskReport taskReport = findById(reportId);
-        Band band = new ArrayList<>(taskReport.getTask().getBands()).getFirst();
+        Band band = bandTaskService.findAllByTask(taskReport.getTask()).getFirst().getBand();
 
         if (blockedBandService.existsByBandId(band.getId())) {
             throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);

@@ -38,4 +38,6 @@ public interface TaskService extends CommonEntityService<Task> {
     void updateTaskPrice(UUID taskId, UUID bandId, int price);
 
     void payment(UUID taskId);
+
+    void update(Task task);
 }

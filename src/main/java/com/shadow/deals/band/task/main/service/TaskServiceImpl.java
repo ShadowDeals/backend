@@ -119,7 +119,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         task.setStatus(taskStatusService.findByTaskStatus(taskStatus));
-        taskRepository.update(task);
+        update(task);
     }
 
     @Override
@@ -255,7 +255,7 @@ public class TaskServiceImpl implements TaskService {
 
         User officer = userService.findById(officerId);
         task.setOfficer(officer);
-        taskRepository.update(task);
+        update(task);
     }
 
     @Override
@@ -312,7 +312,7 @@ public class TaskServiceImpl implements TaskService {
         task.setCancelStatus(task.getStatus());
         task.setStatus(taskStatusService.findByTaskStatus(statusEnum));
         task.setCancelReason(cancelTaskRequestDTO.getReason());
-        taskRepository.update(task);
+        update(task);
     }
 
     @Override
@@ -329,13 +329,18 @@ public class TaskServiceImpl implements TaskService {
 
         task.setPrice(price);
         task.setStatus(taskStatusService.findByTaskStatus(TaskStatusEnum.WAITING_FOR_PAYMENT));
-        taskRepository.update(task);
+        update(task);
     }
 
     @Override
     public void payment(UUID taskId) {
         Task task = findById(taskId);
         task.setStatus(taskStatusService.findByTaskStatus(TaskStatusEnum.WAITING_FOR_ASSIGNMENT));
+        update(task);
+    }
+
+    @Override
+    public void update(Task task) {
         taskRepository.update(task);
     }
 
