@@ -83,6 +83,11 @@ public class TaskReportServiceImpl implements TaskReportService {
             throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
 
+        task.getExecutors().forEach(executor -> {
+            executor.setTask(null);
+            userService.update(executor);
+        });
+
         task.setStatus(taskStatusService.findByTaskStatus(reportStatus));
         taskService.update(task);
 

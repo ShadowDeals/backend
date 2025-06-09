@@ -303,6 +303,11 @@ public class TaskServiceImpl implements TaskService {
 
         Task task = findById(taskId);
 
+        task.getExecutors().forEach(executor -> {
+            executor.setTask(null);
+            userService.update(executor);
+        });
+
         TaskStatusEnum statusEnum;
         if (user.getRole().getRoleName() == UserRoleName.ADMIN) {
             statusEnum = TaskStatusEnum.CANCELED_BY_ADMIN;
