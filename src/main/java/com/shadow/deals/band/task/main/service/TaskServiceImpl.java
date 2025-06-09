@@ -328,6 +328,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         task.setPrice(price);
+        task.setStatus(taskStatusService.findByTaskStatus(TaskStatusEnum.WAITING_FOR_PAYMENT));
         taskRepository.update(task);
     }
 
