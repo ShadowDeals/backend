@@ -88,7 +88,14 @@ public class BandServiceImpl implements BandService {
         String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
         User user = userService.findByEmail(userEmail);
 
-        Band userBand = user.getOwnBand();
+        Band userBand;
+        UserRoleName userRoleName = user.getRole().getRoleName();
+        if (userRoleName == UserRoleName.ADMIN) {
+            userBand = user.getOwnBand();
+        } else {
+            userBand = user.getBand();
+        }
+
         if (userBand == null) {
             throw new APIException("Банды не совпадают!", HttpStatus.BAD_REQUEST);
         }
@@ -107,7 +114,6 @@ public class BandServiceImpl implements BandService {
             throw new APIException("Банды не совпадают!", HttpStatus.BAD_REQUEST);
         }
 
-        UserRoleName userRoleName = user.getRole().getRoleName();
         UserRoleName userToKickRoleName = userToKick.getRole().getRoleName();
         if (userRoleName == UserRoleName.ADMIN && userToKickRoleName != UserRoleName.SOLDIER || userRoleName == UserRoleName.DON && userToKickRoleName != UserRoleName.ADMIN) {
             throw new APIException("Вы не можете исключить данного человека!", HttpStatus.BAD_REQUEST);
