@@ -72,7 +72,7 @@ public class BlockedBandServiceImpl implements BlockedBandService {
         blockedBandRepository.deleteByBand(band);
     }
 
-    private @NotNull Band check(BlockBandRequestDTO blockBandRequestDTO, HttpRequest<?> request) {
+    private @NotNull Band check(@NotNull BlockBandRequestDTO blockBandRequestDTO, HttpRequest<?> request) {
         String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
         User user = userService.findByEmail(userEmail);
 
@@ -80,6 +80,6 @@ public class BlockedBandServiceImpl implements BlockedBandService {
             throw new APIException("Некорректный пароль!", HttpStatus.UNAUTHORIZED);
         }
 
-        return user.getBand();
+        return user.getOwnBand();
     }
 }
