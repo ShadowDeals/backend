@@ -88,7 +88,7 @@ public class BandServiceImpl implements BandService {
         String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
         User user = userService.findByEmail(userEmail);
 
-        Band userBand = user.getBand();
+        Band userBand = user.getOwnBand();
         if (userBand == null) {
             throw new APIException("Банды не совпадают!", HttpStatus.BAD_REQUEST);
         }
