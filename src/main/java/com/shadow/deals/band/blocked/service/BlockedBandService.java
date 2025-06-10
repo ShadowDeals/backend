@@ -16,4 +16,6 @@ public interface BlockedBandService extends CommonEntityService<BlockedBand> {
     void blockDb(BlockBandRequestDTO blockBandRequestDTO, HttpRequest<?> request);
 
     void unblockDb(BlockBandRequestDTO blockBandRequestDTO, HttpRequest<?> request);
+
+    boolean getDbState(HttpRequest<?> request);
 }

@@ -72,6 +72,14 @@ public class BlockedBandServiceImpl implements BlockedBandService {
         blockedBandRepository.deleteByBand(band);
     }
 
+    @Override
+    public boolean getDbState(HttpRequest<?> request) {
+        String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
+        User user = userService.findByEmail(userEmail);
+
+        return existsByBandId(user.getOwnBand().getId());
+    }
+
     private @NotNull Band check(@NotNull BlockBandRequestDTO blockBandRequestDTO, HttpRequest<?> request) {
         String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
         User user = userService.findByEmail(userEmail);

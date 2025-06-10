@@ -6,6 +6,7 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Delete;
+import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BlockedBandController {
     private final BlockedBandService blockedBandService;
+
+    @Get
+    @RolesAllowed({"Дон"})
+    public boolean getDbState(HttpRequest<?> request) {
+        return blockedBandService.getDbState(request);
+    }
 
     @Post
     @RolesAllowed({"Дон"})

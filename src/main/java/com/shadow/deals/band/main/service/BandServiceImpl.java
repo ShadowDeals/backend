@@ -6,6 +6,7 @@ import com.shadow.deals.band.main.dto.response.BandStatsInfoResponseDTO;
 import com.shadow.deals.band.main.entity.Band;
 import com.shadow.deals.band.main.mapper.BandMapper;
 import com.shadow.deals.band.main.repository.BandRepository;
+import com.shadow.deals.band.task.band.service.BandTaskService;
 import com.shadow.deals.band.task.main.entity.Task;
 import com.shadow.deals.band.task.status.enums.TaskStatusEnum;
 import com.shadow.deals.exception.APIException;
@@ -42,6 +43,8 @@ public class BandServiceImpl implements BandService {
     private final UserService userService;
 
     private final BlockedBandService blockedBandService;
+
+    private final BandTaskService bandTaskService;
 
     @Override
     public Band save(Band entity) {
@@ -159,7 +162,7 @@ public class BandServiceImpl implements BandService {
                 .filter(worker -> worker.getRole().getRoleName() == UserRoleName.SOLDIER)
                 .count();
 
-        Set<Task> tasks = band.getTasks();
+        List<Task> tasks = bandTaskService.findAllTasksByBand(band.getId());
         Set<Task> completedTasks = tasks.stream()
                 .filter(task -> task.getStatus().getTaskStatus() == TaskStatusEnum.FINISHED)
                 .collect(Collectors.toSet());
