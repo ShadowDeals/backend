@@ -90,7 +90,7 @@ public class BandServiceImpl implements BandService {
 
         Band userBand;
         UserRoleName userRoleName = user.getRole().getRoleName();
-        if (userRoleName == UserRoleName.ADMIN) {
+        if (userRoleName == UserRoleName.DON) {
             userBand = user.getOwnBand();
         } else {
             userBand = user.getBand();
