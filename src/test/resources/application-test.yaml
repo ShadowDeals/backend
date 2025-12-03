@@ -1,0 +1,10 @@
+micronaut:
+  application:
+    name: myapp
+
+datasources:
+  default:
+    driver-class-name: org.postgresql.Driver
+    url: ${JDBC_URL}
+    username: ${JDBC_USER}
+    password: ${JDBC_PASSWORD}
