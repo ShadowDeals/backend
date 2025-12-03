@@ -83,6 +83,8 @@ dependencies {
 
     // Tests
     testImplementation("io.micronaut:micronaut-http-client")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:testcontainers")
 }
 
 
