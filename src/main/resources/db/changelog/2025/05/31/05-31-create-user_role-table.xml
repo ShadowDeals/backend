@@ -19,13 +19,17 @@
             <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="role_name" type="VARCHAR(255)"/>
+
+            <column name="role_name" type="VARCHAR(255)">
+              <constraints unique="true"/>
+            </column>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="sd_user"
                                  baseColumnNames="role_id"
                                  constraintName="ROLE_ID_FK"
                                  referencedTableName="sd_user_role"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id"
+                                 deleteCascade="true"/>
     </changeSet>
 </databaseChangeLog>
