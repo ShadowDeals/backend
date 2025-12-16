@@ -69,6 +69,10 @@ public class BlockedBandServiceImpl implements BlockedBandService {
     public void unblockDb(BlockBandRequestDTO blockBandRequestDTO, HttpRequest<?> request) {
         Band band = check(blockBandRequestDTO, request);
 
+        if (!existsByBandId(band.getId())) {
+            throw new APIException("База данных не заблокирована!", HttpStatus.BAD_REQUEST);
+        }
+
         blockedBandRepository.deleteByBand(band);
     }
 
