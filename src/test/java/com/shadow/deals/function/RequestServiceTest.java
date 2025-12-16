@@ -1,8 +1,5 @@
 package com.shadow.deals.function;
 
-import com.shadow.deals.BaseTestContainerTest;
-import com.shadow.deals.auth.dto.request.SignUpRequestDTO;
-import com.shadow.deals.auth.service.AuthService;
 import com.shadow.deals.band.blocked.dto.request.BlockBandRequestDTO;
 import com.shadow.deals.band.blocked.service.BlockedBandService;
 import com.shadow.deals.band.main.dto.response.BandStatsInfoResponseDTO;
@@ -10,11 +7,11 @@ import com.shadow.deals.band.main.service.BandService;
 import com.shadow.deals.band.request.dto.response.OwnRequestResponseDTO;
 import com.shadow.deals.band.request.dto.response.RequestResponseDTO;
 import com.shadow.deals.band.request.service.RequestService;
+import com.shadow.deals.base.BaseAuthTestContainerTest;
 import com.shadow.deals.exception.APIException;
 import com.shadow.deals.region.enums.RegionName;
 import com.shadow.deals.user.main.dto.response.BandWorkerResponseDTO;
 import com.shadow.deals.user.role.enums.UserRoleName;
-import com.shadow.deals.util.CommonUtils;
 import com.shadow.deals.util.TestUtils;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
@@ -27,10 +24,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Kirill "Tamada" Simovin
  */
-public class RequestServiceTest extends BaseTestContainerTest {
-
-    @Inject
-    private AuthService authService;
+public class RequestServiceTest extends BaseAuthTestContainerTest {
 
     @Inject
     private RequestService requestService;
@@ -699,25 +693,5 @@ public class RequestServiceTest extends BaseTestContainerTest {
         );
         Assertions.assertNotNull(workers);
         Assertions.assertTrue(workers.isEmpty());
-    }
-
-    private String createUser(String email, UserRoleName role) {
-        return createUser(email, role, RegionName.MOSCOW_REGION);
-    }
-
-    private String createUser(String email, UserRoleName role, RegionName regionName) {
-        authService.signup(
-            new SignUpRequestDTO(
-                "TEST",
-                "TEST",
-                "TEST",
-                "TEST",
-                email,
-                role,
-                regionName
-            )
-        );
-
-        return authService.confirmEmail(CommonUtils.generateUUIDFromString(email)).getAccessToken();
     }
 }
