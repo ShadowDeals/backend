@@ -1,6 +1,6 @@
 package com.shadow.deals.database;
 
-import com.shadow.deals.BaseTestContainerTest;
+import com.shadow.deals.base.BaseTestContainerTest;
 import com.shadow.deals.util.TestUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
