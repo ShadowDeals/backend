@@ -22,13 +22,12 @@ import com.shadow.deals.util.CommonUtils;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
 import jakarta.inject.Singleton;
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author Kirill "Tamada" Simovin
@@ -36,6 +35,7 @@ import java.util.stream.Collectors;
 @Singleton
 @RequiredArgsConstructor
 public class BandServiceImpl implements BandService {
+
     private final BandRepository bandRepository;
 
     private final RegionService regionService;
@@ -54,8 +54,8 @@ public class BandServiceImpl implements BandService {
     @Override
     public Band findById(UUID id) {
         return bandRepository.findById(id).orElseThrow(() -> new APIException(
-                "Банды с id = %s не найдено".formatted(id),
-                HttpStatus.NOT_FOUND));
+            "Банды с id = %s не найдено".formatted(id),
+            HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -67,8 +67,8 @@ public class BandServiceImpl implements BandService {
     public Band findByRegion(RegionName regionName) {
         Region regionEntity = regionService.findByRegionName(regionName);
         return bandRepository.findByRegion(regionEntity).orElseThrow(() -> new APIException(
-                "Банды с регионом = %s не найдено".formatted(regionName.getTitle()),
-                HttpStatus.NOT_FOUND));
+            "Банды с регионом = %s не найдено".formatted(regionName.getTitle()),
+            HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -77,13 +77,11 @@ public class BandServiceImpl implements BandService {
             throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
 
-        Band band = findById(bandId);
-
-        return band.getWorkers()
-                .stream()
-                .filter(worker -> worker.getRole().getRoleName() == userRole)
-                .map(UserMapper.INSTANCE::toBandWorkerResponseDTO)
-                .collect(Collectors.toCollection(TreeSet::new));
+        return userService.findAllByBand(findById(bandId))
+            .stream()
+            .filter(worker -> worker.getRole().getRoleName() == userRole)
+            .map(UserMapper.INSTANCE::toBandWorkerResponseDTO)
+            .collect(Collectors.toCollection(TreeSet::new));
     }
 
     @Override
@@ -118,7 +116,8 @@ public class BandServiceImpl implements BandService {
         }
 
         UserRoleName userToKickRoleName = userToKick.getRole().getRoleName();
-        if (userRoleName == UserRoleName.ADMIN && userToKickRoleName != UserRoleName.SOLDIER || userRoleName == UserRoleName.DON && userToKickRoleName != UserRoleName.ADMIN) {
+        if (userRoleName == UserRoleName.ADMIN && userToKickRoleName != UserRoleName.SOLDIER
+            || userRoleName == UserRoleName.DON && userToKickRoleName != UserRoleName.ADMIN) {
             throw new APIException("Вы не можете исключить данного человека!", HttpStatus.BAD_REQUEST);
         }
 
@@ -140,6 +139,13 @@ public class BandServiceImpl implements BandService {
 
         BandInfoResponseDTO bandInfoResponseDTO = BandMapper.INSTANCE.toResponseDTO(band);
         bandInfoResponseDTO.setDonName(userService.getUserName(band.getDon()));
+        bandInfoResponseDTO.setWorkers(
+            findBandWorkers(bandId)
+                .stream()
+                .map(UserMapper.INSTANCE::toBandWorkerResponseDTO)
+                .toList()
+        );
+        bandInfoResponseDTO.setDonId(userService.findDonByBandId(bandId));
         return bandInfoResponseDTO;
     }
 
@@ -153,25 +159,30 @@ public class BandServiceImpl implements BandService {
             throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
         }
 
-        Set<User> workers = band.getWorkers();
+        List<User> workers = userService.findAllByBand(band);
         long adminsCount = workers.stream()
-                .filter(worker -> worker.getRole().getRoleName() == UserRoleName.ADMIN)
-                .count();
+            .filter(worker -> worker.getRole().getRoleName() == UserRoleName.ADMIN)
+            .count();
 
         long soldiersCount = workers.stream()
-                .filter(worker -> worker.getRole().getRoleName() == UserRoleName.SOLDIER)
-                .count();
+            .filter(worker -> worker.getRole().getRoleName() == UserRoleName.SOLDIER)
+            .count();
 
         List<Task> tasks = bandTaskService.findAllTasksByBand(band.getId());
         Set<Task> completedTasks = tasks.stream()
-                .filter(task -> task.getStatus().getTaskStatus() == TaskStatusEnum.FINISHED)
-                .collect(Collectors.toSet());
+            .filter(task -> task.getStatus().getTaskStatus() == TaskStatusEnum.FINISHED)
+            .collect(Collectors.toSet());
 
         int totalTasksPrice = completedTasks
-                .stream()
-                .map(Task::getPrice)
-                .reduce(0, Integer::sum);
+            .stream()
+            .map(Task::getPrice)
+            .reduce(0, Integer::sum);
 
         return new BandStatsInfoResponseDTO(adminsCount, soldiersCount, tasks.size(), completedTasks.size(), totalTasksPrice);
+    }
+
+    @Override
+    public List<User> findBandWorkers(UUID bandId) {
+        return userService.findAllByBand(findById(bandId));
     }
 }

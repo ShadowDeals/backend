@@ -7,9 +7,11 @@ import com.shadow.deals.base.service.CommonEntityService;
 import com.shadow.deals.region.entity.Region;
 import com.shadow.deals.region.enums.RegionName;
 import com.shadow.deals.user.main.dto.response.BandWorkerResponseDTO;
+import com.shadow.deals.user.main.entity.User;
 import com.shadow.deals.user.role.enums.UserRoleName;
 import io.micronaut.http.HttpRequest;
 
+import java.util.List;
 import java.util.TreeSet;
 import java.util.UUID;
 
@@ -28,4 +30,6 @@ public interface BandService extends CommonEntityService<Band> {
     BandInfoResponseDTO selectBandInfo(UUID bandId);
 
     BandStatsInfoResponseDTO selectBandStatsInfo(HttpRequest<?> request);
+
+    List<User> findBandWorkers(UUID bandId);
 }
