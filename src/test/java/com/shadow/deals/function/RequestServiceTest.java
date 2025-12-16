@@ -532,6 +532,12 @@ public class RequestServiceTest extends BaseAuthTestContainerTest {
 
         BandWorkerResponseDTO worker = workers.getFirst();
 
+        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
+        Assertions.assertDoesNotThrow(() -> blockedBandService.blockDb(
+            blockBandRequestDTO,
+            HttpRequest.POST("/band/block", blockBandRequestDTO).bearerAuth(donAccessToken)
+        ));
+
         APIException exception = Assertions.assertThrows(APIException.class, () -> bandService.kickFromBand(
             worker.getWorkerId(),
             HttpRequest.PUT("/band", null).bearerAuth(donAccessToken)
