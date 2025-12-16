@@ -1,4 +1,4 @@
-package com.shadow.deals;
+package com.shadow.deals.base;
 
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
