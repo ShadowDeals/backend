@@ -5,6 +5,7 @@ import com.shadow.deals.base.service.CommonUpdateService;
 import com.shadow.deals.user.main.entity.User;
 import io.micronaut.http.HttpRequest;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -53,4 +54,8 @@ public interface UserService extends CommonUpdateService<User> {
     void deleteById(UUID id);
 
     void leaveBand(HttpRequest<?> request);
+
+    List<User> findAllByBand(Band band);
+
+    UUID findDonByBandId(UUID bandId);
 }

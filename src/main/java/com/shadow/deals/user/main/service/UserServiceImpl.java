@@ -11,13 +11,12 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
-import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This class contains methods that perform business logic related to the {@link User} entity.
@@ -27,9 +26,9 @@ import java.util.UUID;
 @Singleton
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     /**
-     * Instance of the repository interface that contains methods for interacting with table associated with
-     * {@link User} entity.
+     * Instance of the repository interface that contains methods for interacting with table associated with {@link User} entity.
      */
     private final UserRepository userRepository;
 
@@ -38,23 +37,21 @@ public class UserServiceImpl implements UserService {
      *
      * @param id entity's {@link UUID} Id.
      * @return The {@link User} entity corresponding to the given Id.
-     * @throws APIException in case the requested instance of the entity does not exist. It throws with the
-     *                      {@link HttpStatus#NOT_FOUND} code.
+     * @throws APIException in case the requested instance of the entity does not exist. It throws with the {@link HttpStatus#NOT_FOUND}
+     *                      code.
      */
     @Override
     public User findById(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new APIException(
-                "Пользователь с id = %s не найден".formatted(id),
-                HttpStatus.NOT_FOUND)
+            "Пользователь с id = %s не найден".formatted(id),
+            HttpStatus.NOT_FOUND)
         );
     }
 
     /**
-     * This method allows to get all the elements from the table corresponding to the {@link User}
-     * entity described by the Generic class.
+     * This method allows to get all the elements from the table corresponding to the {@link User} entity described by the Generic class.
      *
-     * @return All the elements from the table corresponding to the {@link User} entity described
-     * by the Generic class.
+     * @return All the elements from the table corresponding to the {@link User} entity described by the Generic class.
      */
     @Override
     public List<User> findAll() {
@@ -77,15 +74,15 @@ public class UserServiceImpl implements UserService {
      *
      * @param email user's email.
      * @return The entity corresponding to the given email.
-     * @throws APIException in case the requested instance of the entity does not exist. It throws with the
-     *                      {@link HttpStatus#NOT_FOUND} code.
+     * @throws APIException in case the requested instance of the entity does not exist. It throws with the {@link HttpStatus#NOT_FOUND}
+     *                      code.
      */
     @Transactional
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new APIException(
-                "Пользователя с почтой %s не существует".formatted(email),
-                HttpStatus.NOT_FOUND));
+            "Пользователя с почтой %s не существует".formatted(email),
+            HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -93,14 +90,14 @@ public class UserServiceImpl implements UserService {
      *
      * @param refreshTokenKey refresh token UUID-key.
      * @return The entity corresponding to the given refresh token UUID-key.
-     * @throws APIException in case the requested instance of the entity does not exist. It throws with the
-     *                      {@link HttpStatus#NOT_FOUND} code.
+     * @throws APIException in case the requested instance of the entity does not exist. It throws with the {@link HttpStatus#NOT_FOUND}
+     *                      code.
      */
     @Override
     public User findByRefreshTokenKey(String refreshTokenKey) {
         return userRepository.findByRefreshTokenKey(refreshTokenKey).orElseThrow(() -> new APIException(
-                "Токен обновления не соответствует ни одному пользователю.",
-                HttpStatus.NOT_FOUND));
+            "Токен обновления не соответствует ни одному пользователю.",
+            HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -140,15 +137,9 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        Band userBand = user.getBand();
-        Band ownBand = user.getOwnBand();
-        if (userBand == null && ownBand == null) {
-            return null;
-        }
-
         return Map.of(
-                "bandId", getUserBand(user),
-                "name", getUserName(user)
+            "bandId", getUserBand(user),
+            "name", getUserName(user)
         );
     }
 
@@ -159,6 +150,16 @@ public class UserServiceImpl implements UserService {
 
         user.setBand(null);
         update(user);
+    }
+
+    @Override
+    public List<User> findAllByBand(Band band) {
+        return userRepository.findAllByBand(band);
+    }
+
+    @Override
+    public UUID findDonByBandId(UUID bandId) {
+        return userRepository.findDonByBandId(bandId);
     }
 
     private UUID getUserBand(User user) {
