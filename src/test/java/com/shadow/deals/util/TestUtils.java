@@ -10,14 +10,25 @@ import java.util.UUID;
  */
 public class TestUtils {
 
+    public static UUID createTask(Connection connection, UUID customerId) throws SQLException {
+        return createTask(
+            connection,
+            customerId,
+            UUID.fromString("afa1f1b4-6758-4a0a-a862-570c7fddd3a0"),
+            UUID.fromString("1a653609-da64-460b-bc17-57690d1f00aa"),
+            UUID.fromString("1a653609-da64-460b-bc17-57690d1f00aa"),
+            customerId
+        );
+    }
+
     public static UUID createTask(Connection connection) throws SQLException {
 
         return createTask(
             connection,
             createUser(connection),
             UUID.fromString("afa1f1b4-6758-4a0a-a862-570c7fddd3a0"),
-            UUID.fromString("5953308d-d630-4310-8689-023033d4281c"),
-            null,
+            UUID.fromString("1a653609-da64-460b-bc17-57690d1f00aa"),
+            UUID.fromString("1a653609-da64-460b-bc17-57690d1f00aa"),
             null
         );
     }
@@ -28,7 +39,7 @@ public class TestUtils {
             return null;
         }
 
-        String sql = "INSERT INTO sd_task(id, customer_id, type_id, status_id, cancel_status_id, officer_id) VALUES(?, ?, ?, ?)";
+        String sql = "INSERT INTO sd_task(id, customer_id, type_id, status_id, cancel_status_id, officer_id) VALUES(?, ?, ?, ?, ?, ?)";
 
         UUID id = UUID.randomUUID();
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -36,8 +47,8 @@ public class TestUtils {
             statement.setObject(2, customerId);
             statement.setObject(3, typeId);
             statement.setObject(4, statusId);
-            statement.setObject(4, cancelStatusId);
-            statement.setObject(4, officerId);
+            statement.setObject(5, cancelStatusId);
+            statement.setObject(6, officerId);
             statement.execute();
         }
 
@@ -49,7 +60,7 @@ public class TestUtils {
             return null;
         }
 
-        String sql = "INSERT INTO sd_user(id, email, first_name, last_name, role_id) VALUES(?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO sd_user(id, email, first_name, last_name, role_id, region_id) VALUES(?, ?, ?, ?, ?, ?)";
 
         UUID userId = UUID.randomUUID();
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -58,10 +69,15 @@ public class TestUtils {
             statement.setString(3, "Test");
             statement.setString(4, "User");
             statement.setObject(5, UUID.fromString("fc55ec84-5c0a-4890-9752-cba4c5fa6fa0"));
+            statement.setObject(6, UUID.fromString("170f5f8f-bf1b-4d1b-ab21-7714a83880f1"));
             statement.execute();
         }
 
         return userId;
+    }
+
+    public static UUID createBand(Connection connection) throws SQLException {
+        return createBand(connection, UUID.fromString("170f5f8f-bf1b-4d1b-ab21-7714a83880f1"));
     }
 
     public static UUID createBand(Connection connection, UUID regionId) throws SQLException {
@@ -138,5 +154,50 @@ public class TestUtils {
             statement.setObject(2, taskId);
             statement.execute();
         }
+    }
+
+    public static void createActivationCode(Connection connection, UUID userId) throws SQLException {
+        createActivationCode(connection, userId, UUID.randomUUID().toString());
+    }
+
+    public static UUID createActivationCode(Connection connection, UUID userId, String code) throws SQLException {
+        if (connection == null) {
+            return null;
+        }
+
+        String sql = "INSERT INTO sd_activation_code(id, activation_code, is_activated, sd_user_id) VALUES(?, ?, ?, ?)";
+
+        UUID id = UUID.randomUUID();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setObject(1, id);
+            statement.setString(2, code);
+            statement.setBoolean(3, false);
+            statement.setObject(4, userId);
+            statement.execute();
+        }
+
+        return id;
+    }
+
+    public static UUID createRefreshToken(Connection connection) throws SQLException {
+        return createRefreshToken(connection, createUser(connection));
+    }
+
+    public static UUID createRefreshToken(Connection connection, UUID userId) throws SQLException {
+        if (connection == null) {
+            return null;
+        }
+
+        String sql = "insert into sd_refresh_token (id, refresh_token, user_id) values (?, ?, ?);";
+
+        UUID id = UUID.randomUUID();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setObject(1, id);
+            statement.setString(2, "SOME_REFRESH_TOKEN");
+            statement.setObject(3, userId);
+            statement.execute();
+        }
+
+        return id;
     }
 }

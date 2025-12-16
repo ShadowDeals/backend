@@ -19,15 +19,7 @@ public class ForeignKeyTest extends BaseTestContainerTest {
         SQLException exception = Assertions.assertThrows(SQLException.class, () -> {
             try (Connection connection = getConnection()) {
 
-                String sql = "INSERT INTO sd_activation_code(id, activation_code, is_activated, sd_user_id) VALUES(?, ?, ?, ?)";
-
-                try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                    statement.setObject(1, UUID.randomUUID());
-                    statement.setString(2, "test@example.com");
-                    statement.setBoolean(3, false);
-                    statement.setObject(4, UUID.fromString("1704041f-54ea-46c9-8c22-11bf60fefb73"));
-                    statement.execute();
-                }
+                TestUtils.createActivationCode(connection, UUID.randomUUID());
             }
         });
 
@@ -68,8 +60,7 @@ public class ForeignKeyTest extends BaseTestContainerTest {
     void testInvalidForeignKeyBandRequest2() {
         SQLException exception = Assertions.assertThrows(SQLException.class, () -> {
             try (Connection connection = getConnection()) {
-                UUID regionId = UUID.fromString("170f5f8f-bf1b-4d1b-ab21-7714a83880f1");
-                UUID bandId = TestUtils.createBand(connection, regionId);
+                UUID bandId = TestUtils.createBand(connection);
                 TestUtils.createBandRequest(connection, bandId, UUID.fromString("1704041f-54ea-46c9-8c22-11bf60fefb73"));
             }
         });
@@ -83,8 +74,7 @@ public class ForeignKeyTest extends BaseTestContainerTest {
     void testInvalidForeignKeyBandTask1() {
         SQLException exception = Assertions.assertThrows(SQLException.class, () -> {
             try (Connection connection = getConnection()) {
-                UUID regionId = UUID.fromString("170f5f8f-bf1b-4d1b-ab21-7714a83880f1");
-                UUID bandId = TestUtils.createBand(connection, regionId);
+                UUID bandId = TestUtils.createBand(connection);
                 TestUtils.createBandTask(connection, bandId, UUID.fromString("1704041f-54ea-46c9-8c22-11bf60fefb73"));
             }
         });
@@ -125,14 +115,7 @@ public class ForeignKeyTest extends BaseTestContainerTest {
     void testInvalidForeignKeyRefreshToken() {
         SQLException exception = Assertions.assertThrows(SQLException.class, () -> {
             try (Connection connection = getConnection()) {
-                String sql = "insert into sd_refresh_token (id, refresh_token, user_id) values (?, ?, ?);";
-
-                try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                    statement.setObject(1, UUID.randomUUID());
-                    statement.setString(2, "dwadawdwadaw");
-                    statement.setObject(3, UUID.randomUUID());
-                    statement.execute();
-                }
+                TestUtils.createRefreshToken(connection, UUID.randomUUID());
             }
         });
 
@@ -247,7 +230,7 @@ public class ForeignKeyTest extends BaseTestContainerTest {
             try (Connection connection = getConnection()) {
                 String sql = "INSERT INTO sd_task_report(id, task_id) VALUES(?, ?)";
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                    statement.setObject(1,  UUID.randomUUID());
+                    statement.setObject(1, UUID.randomUUID());
                     statement.setObject(2, UUID.randomUUID());
                     statement.execute();
                 }

@@ -1,34 +1,35 @@
 <?xml version="1.1" encoding="UTF-8"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="create-task_report-table" author="Kirill 'Tamada' Simovin">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="sd_task_report"/>
-            </not>
-        </preConditions>
+  <changeSet id="create-task_report-table" author="Kirill 'Tamada' Simovin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="sd_task_report"/>
+      </not>
+    </preConditions>
 
-        <comment>Create task report table</comment>
+    <comment>Create task report table</comment>
 
-        <createTable tableName="sd_task_report">
-            <column name="id" type="UUID">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="description" type="VARCHAR(1024)"/>
-            <column name="time_spent" type="INT"/>
-            <column name="task_id" type="UUID">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+    <createTable tableName="sd_task_report">
+      <column name="id" type="UUID">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="description" type="VARCHAR(1024)"/>
+      <column name="time_spent" type="INT"/>
+      <column name="task_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
 
-        <addForeignKeyConstraint baseTableName="sd_task_report"
-                                 baseColumnNames="task_id"
-                                 constraintName="TASK_ID_FK"
-                                 referencedTableName="sd_task"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+    <addForeignKeyConstraint baseTableName="sd_task_report"
+      baseColumnNames="task_id"
+      constraintName="TASK_ID_FK"
+      referencedTableName="sd_task"
+      referencedColumnNames="id"
+      deleteCascade="true"/>
+  </changeSet>
 </databaseChangeLog>

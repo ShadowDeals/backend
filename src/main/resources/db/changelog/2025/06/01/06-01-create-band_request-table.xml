@@ -32,13 +32,15 @@
       baseColumnNames="user_id"
       constraintName="USER_ID_FK"
       referencedTableName="sd_user"
-      referencedColumnNames="id"/>
+      referencedColumnNames="id"
+      deleteCascade="true"/>
 
     <addForeignKeyConstraint baseTableName="sd_band_request"
       baseColumnNames="band_id"
       constraintName="BAND_ID_FK"
       referencedTableName="sd_band"
-      referencedColumnNames="id"/>
+      referencedColumnNames="id"
+      deleteCascade="true"/>
 
     <addUniqueConstraint columnNames="user_id, band_id"
       constraintName="unique_request_const"

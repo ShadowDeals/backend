@@ -1,24 +1,25 @@
 <?xml version="1.1" encoding="UTF-8"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="add-task-officer_id-column" author="Kirill 'Tamada' Simovin">
-        <comment>Add officer_id column to task table</comment>
+  <changeSet id="add-task-officer_id-column" author="Kirill 'Tamada' Simovin">
+    <comment>Add officer_id column to task table</comment>
 
-        <addColumn schemaName="public"
-                   tableName="sd_task">
+    <addColumn schemaName="public"
+      tableName="sd_task">
 
-            <column name="officer_id" type="UUID"/>
+      <column name="officer_id" type="UUID"/>
 
-        </addColumn>
+    </addColumn>
 
-        <addForeignKeyConstraint baseTableName="sd_task"
-                                 baseColumnNames="officer_id"
-                                 constraintName="OFFICER_ID_FK"
-                                 referencedTableName="sd_user"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+    <addForeignKeyConstraint baseTableName="sd_task"
+      baseColumnNames="officer_id"
+      constraintName="OFFICER_ID_FK"
+      referencedTableName="sd_user"
+      referencedColumnNames="id"
+      deleteCascade="true"/>
+  </changeSet>
 </databaseChangeLog>

@@ -40,23 +40,14 @@ public class PrimaryKeyTest extends BaseTestContainerTest {
     void testInvalidPrimaryKeyActivationCode() {
         SQLException exception = Assertions.assertThrows(SQLException.class, () -> {
             try (Connection connection = getConnection()) {
-                UUID userId = TestUtils.createUser(connection);
-
                 String sql = "INSERT INTO sd_activation_code(id, activation_code, is_activated, sd_user_id) VALUES(?, ?, ?, ?)";
 
+                UUID activationCodeId = TestUtils.createActivationCode(connection, TestUtils.createUser(connection), "CODE1");
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                    statement.setObject(1, UUID.randomUUID());
+                    statement.setObject(1, activationCodeId);
                     statement.setString(2, "some_code");
                     statement.setBoolean(3, false);
-                    statement.setObject(4, userId);
-                    statement.execute();
-                }
-
-                try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                    statement.setObject(1, UUID.randomUUID());
-                    statement.setString(2, "some_code");
-                    statement.setBoolean(3, false);
-                    statement.setObject(4, userId);
+                    statement.setObject(4, TestUtils.createUser(connection));
                     statement.execute();
                 }
             }
@@ -71,9 +62,8 @@ public class PrimaryKeyTest extends BaseTestContainerTest {
     void testInvalidPrimaryKeyBand() {
         SQLException exception = Assertions.assertThrows(SQLException.class, () -> {
             try (Connection connection = getConnection()) {
-                UUID regionId = UUID.fromString("170f5f8f-bf1b-4d1b-ab21-7714a83880f1");
-                TestUtils.createBand(connection, regionId);
-                TestUtils.createBand(connection, regionId);
+                TestUtils.createBand(connection);
+                TestUtils.createBand(connection);
             }
         });
 
@@ -86,8 +76,7 @@ public class PrimaryKeyTest extends BaseTestContainerTest {
     void testInvalidPrimaryKeyBandRequest() {
         SQLException exception = Assertions.assertThrows(SQLException.class, () -> {
             try (Connection connection = getConnection()) {
-                UUID regionId = UUID.fromString("170f5f8f-bf1b-4d1b-ab21-7714a83880f1");
-                UUID bandId = TestUtils.createBand(connection, regionId);
+                UUID bandId = TestUtils.createBand(connection);
                 UUID userId = TestUtils.createUser(connection);
 
                 String sql = "insert into sd_band_request (id, user_id, band_id) values (?, ?, ?);";
@@ -118,8 +107,7 @@ public class PrimaryKeyTest extends BaseTestContainerTest {
     void testInvalidPrimaryKeyBandTask() {
         SQLException exception = Assertions.assertThrows(SQLException.class, () -> {
             try (Connection connection = getConnection()) {
-                UUID regionId = UUID.fromString("170f5f8f-bf1b-4d1b-ab21-7714a83880f1");
-                UUID bandId = TestUtils.createBand(connection, regionId);
+                UUID bandId = TestUtils.createBand(connection);
                 UUID taskId = TestUtils.createTask(connection);
 
                 String sql = "insert into sd_band_task (id, band_id, task_id) values (?, ?, ?);";
@@ -150,8 +138,7 @@ public class PrimaryKeyTest extends BaseTestContainerTest {
     void testInvalidPrimaryKeyBlockedBand() {
         SQLException exception = Assertions.assertThrows(SQLException.class, () -> {
             try (Connection connection = getConnection()) {
-                UUID regionId = UUID.fromString("170f5f8f-bf1b-4d1b-ab21-7714a83880f1");
-                UUID bandId = TestUtils.createBand(connection, regionId);
+                UUID bandId = TestUtils.createBand(connection);
 
                 String sql = "insert into sd_blocked_band (id, band_id) values (?, ?);";
 
@@ -179,22 +166,13 @@ public class PrimaryKeyTest extends BaseTestContainerTest {
     void testInvalidPrimaryKeyRefreshToken() {
         SQLException exception = Assertions.assertThrows(SQLException.class, () -> {
             try (Connection connection = getConnection()) {
-                UUID userId = TestUtils.createUser(connection);
-
                 String sql = "insert into sd_refresh_token (id, refresh_token, user_id) values (?, ?, ?);";
 
-                UUID tokenId = UUID.randomUUID();
+                UUID tokenId = TestUtils.createRefreshToken(connection);
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     statement.setObject(1, tokenId);
-                    statement.setString(2, "dwadawdwadaw");
-                    statement.setObject(3, userId);
-                    statement.execute();
-                }
-
-                try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                    statement.setObject(1, tokenId);
-                    statement.setString(2, "dwadawdwadaw");
-                    statement.setObject(3, userId);
+                    statement.setString(2, "dwadawdwadaw1");
+                    statement.setObject(3, TestUtils.createUser(connection));
                     statement.execute();
                 }
             }

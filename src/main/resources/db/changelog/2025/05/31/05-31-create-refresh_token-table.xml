@@ -1,35 +1,38 @@
 <?xml version="1.1" encoding="UTF-8"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="create-refresh_token-table" author="Kirill 'Tamada' Simovin">
-        <!-- Create table if not exist -->
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="sd_refresh_token"/>
-            </not>
-        </preConditions>
+  <changeSet id="create-refresh_token-table" author="Kirill 'Tamada' Simovin">
+    <!-- Create table if not exist -->
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="sd_refresh_token"/>
+      </not>
+    </preConditions>
 
-        <comment>Create refresh token table</comment>
+    <comment>Create refresh token table</comment>
 
-        <!-- Creating table "sd_refresh_token" -->
-        <createTable tableName="sd_refresh_token">
-            <!-- Defining columns -->
-            <column name="id" type="UUID">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="refresh_token" type="VARCHAR(255)"/>
-            <column name="date_created" type="TIMESTAMP" defaultValue="NOW()"/>
-            <column name="user_id" type="UUID">
-                <constraints nullable="false" unique="true"/>
-            </column>
-        </createTable>
+    <!-- Creating table "sd_refresh_token" -->
+    <createTable tableName="sd_refresh_token">
+      <!-- Defining columns -->
+      <column name="id" type="UUID">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="refresh_token" type="VARCHAR(255)"/>
+      <column name="date_created" type="TIMESTAMP" defaultValue="NOW()"/>
+      <column name="user_id" type="UUID">
+        <constraints nullable="false" unique="true"/>
+      </column>
+    </createTable>
 
-        <addForeignKeyConstraint baseTableName="sd_refresh_token" baseColumnNames="user_id"
-                                 constraintName="CNGP_USER_ID_FK" referencedTableName="sd_user"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+    <addForeignKeyConstraint baseTableName="sd_refresh_token"
+      baseColumnNames="user_id"
+      constraintName="CNGP_USER_ID_FK"
+      referencedTableName="sd_user"
+      referencedColumnNames="id"
+      deleteCascade="true"/>
+  </changeSet>
 </databaseChangeLog>

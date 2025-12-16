@@ -1,39 +1,40 @@
 <?xml version="1.1" encoding="UTF-8"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="create-activation_code-table" author="Kirill 'Tamada' Simovin">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="sd_activation_code"/>
-            </not>
-        </preConditions>
+  <changeSet id="create-activation_code-table" author="Kirill 'Tamada' Simovin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="sd_activation_code"/>
+      </not>
+    </preConditions>
 
-        <comment>Create activation code table</comment>
+    <comment>Create activation code table</comment>
 
-        <createTable tableName="sd_activation_code">
-            <column name="id" type="UUID">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
+    <createTable tableName="sd_activation_code">
+      <column name="id" type="UUID">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
 
-            <column name="activation_code" type="VARCHAR(255)">
-              <constraints nullable="false" unique="true"/>
-            </column>
+      <column name="activation_code" type="VARCHAR(255)"/>
 
-            <column name="is_activated" type="BOOLEAN">
-              <constraints nullable="false"/>
-            </column>
+      <column name="is_activated" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
 
-            <column name="sd_user_id" type="UUID">
-                <constraints nullable="false" unique="true"/>
-            </column>
-        </createTable>
+      <column name="sd_user_id" type="UUID">
+        <constraints nullable="false" unique="true"/>
+      </column>
+    </createTable>
 
-        <addForeignKeyConstraint baseTableName="sd_activation_code" baseColumnNames="sd_user_id"
-                                 constraintName="CNGP_USER_ID_FK" referencedTableName="sd_user"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+    <addForeignKeyConstraint baseTableName="sd_activation_code"
+      baseColumnNames="sd_user_id"
+      constraintName="CNGP_USER_ID_FK"
+      referencedTableName="sd_user"
+      referencedColumnNames="id"
+      deleteCascade="true"/>
+  </changeSet>
 </databaseChangeLog>
