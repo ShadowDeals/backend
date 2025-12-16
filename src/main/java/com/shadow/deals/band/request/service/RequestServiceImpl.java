@@ -62,10 +62,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void acceptRequest(UUID id, HttpRequest<?> request) {
-        String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
-        User mainUser = userService.findByEmail(userEmail);
-
+    public void acceptRequest(UUID id) {
         Request bandRequest = findById(id);
         Band band = bandRequest.getBand();
         if (blockedBandService.existsByBandId(band.getId())) {

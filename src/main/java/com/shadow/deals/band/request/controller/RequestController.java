@@ -51,7 +51,7 @@ public class RequestController {
 
     @Put
     @RolesAllowed({"Дон", "Администратор"})
-    public void acceptRequest(@QueryValue(value = "requestId") UUID requestId, HttpRequest<?> request) {
-        requestService.acceptRequest(requestId, request);
+    public void acceptRequest(@QueryValue(value = "requestId") UUID requestId) {
+        requestService.acceptRequest(requestId);
     }
 }
