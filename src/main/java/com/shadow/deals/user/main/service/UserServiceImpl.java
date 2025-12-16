@@ -1,6 +1,7 @@
 package com.shadow.deals.user.main.service;
 
 import com.shadow.deals.band.main.entity.Band;
+import com.shadow.deals.band.task.main.entity.Task;
 import com.shadow.deals.exception.APIException;
 import com.shadow.deals.user.main.entity.User;
 import com.shadow.deals.user.main.repository.UserRepository;
@@ -11,6 +12,8 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -137,10 +140,15 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        return Map.of(
-            "bandId", getUserBand(user),
-            "name", getUserName(user)
-        );
+        HashMap<String, Object> claims = new HashMap<>();
+        UUID bandId = getUserBand(user);
+        if (bandId != null) {
+            claims.put("bandId", bandId);
+        }
+
+        claims.put("name", getUserName(user));
+
+        return claims;
     }
 
     @Override
@@ -160,6 +168,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UUID findDonByBandId(UUID bandId) {
         return userRepository.findDonByBandId(bandId);
+    }
+
+    @Override
+    public List<User> findTaskExecutors(Task task) {
+        return userRepository.findAllByTask(task);
     }
 
     private UUID getUserBand(User user) {

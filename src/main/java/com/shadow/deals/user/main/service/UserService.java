@@ -1,10 +1,10 @@
 package com.shadow.deals.user.main.service;
 
 import com.shadow.deals.band.main.entity.Band;
+import com.shadow.deals.band.task.main.entity.Task;
 import com.shadow.deals.base.service.CommonUpdateService;
 import com.shadow.deals.user.main.entity.User;
 import io.micronaut.http.HttpRequest;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +15,7 @@ import java.util.UUID;
  * @author Kirill "Tamada" Simovin
  */
 public interface UserService extends CommonUpdateService<User> {
+
     /**
      * This signature describes a method that allows to find an entity by the email value.
      *
@@ -58,4 +59,6 @@ public interface UserService extends CommonUpdateService<User> {
     List<User> findAllByBand(Band band);
 
     UUID findDonByBandId(UUID bandId);
+
+    List<User> findTaskExecutors(Task task);
 }

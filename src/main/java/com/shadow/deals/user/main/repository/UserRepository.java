@@ -1,6 +1,7 @@
 package com.shadow.deals.user.main.repository;
 
 import com.shadow.deals.band.main.entity.Band;
+import com.shadow.deals.band.task.main.entity.Task;
 import com.shadow.deals.base.repository.CommonRepository;
 import com.shadow.deals.user.main.entity.User;
 import io.micronaut.data.annotation.Query;
@@ -49,4 +50,6 @@ public interface UserRepository extends CommonRepository<User> {
 
     @Query("SELECT u.id FROM User u WHERE u.ownBand.id = :bandId")
     UUID findDonByBandId(UUID bandId);
+
+    List<User> findAllByTask(Task task);
 }

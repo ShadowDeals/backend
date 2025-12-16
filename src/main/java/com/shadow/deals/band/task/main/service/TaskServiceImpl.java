@@ -355,7 +355,8 @@ public class TaskServiceImpl implements TaskService {
         TaskResponseDTO responseDTO = TaskMapper.INSTANCE.toResponseDTO(task);
         responseDTO.setBandId(bandId);
         responseDTO.setOfficer(mapExecutor(task.getOfficer()));
-        List<TaskExecutorResponseDTO> executors = task.getExecutors()
+
+        List<TaskExecutorResponseDTO> executors = userService.findTaskExecutors(task)
             .stream()
             .map(this::mapExecutor)
             .toList();
