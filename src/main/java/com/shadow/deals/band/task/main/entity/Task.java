@@ -19,6 +19,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.HashSet;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -74,10 +75,10 @@ public class Task extends BaseIdEntity {
     @JoinTable(name = CommonConstantHolder.TABLE_PREFIX + "band_task",
             joinColumns = @JoinColumn(name = "band_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"))
-    private Set<Band> bands;
+    private Set<Band> bands = new HashSet<>();
 
     @OneToMany(mappedBy = "task")
-    private Set<User> executors;
+    private Set<User> executors = new HashSet<>();
 
     @OneToOne(mappedBy = "task")
     private TaskReport report;
