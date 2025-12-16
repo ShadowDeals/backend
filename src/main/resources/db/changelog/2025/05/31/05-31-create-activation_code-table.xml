@@ -18,8 +18,15 @@
             <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="activation_code" type="VARCHAR(255)"/>
-            <column name="is_activated" type="BOOLEAN"/>
+
+            <column name="activation_code" type="VARCHAR(255)">
+              <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="is_activated" type="BOOLEAN">
+              <constraints nullable="false"/>
+            </column>
+
             <column name="sd_user_id" type="UUID">
                 <constraints nullable="false" unique="true"/>
             </column>

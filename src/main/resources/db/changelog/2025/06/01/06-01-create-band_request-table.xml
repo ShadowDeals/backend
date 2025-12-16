@@ -1,43 +1,47 @@
 <?xml version="1.1" encoding="UTF-8"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="create-band_request-table" author="Kirill 'Tamada' Simovin">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="sd_band_request"/>
-            </not>
-        </preConditions>
+  <changeSet id="create-band_request-table" author="Kirill 'Tamada' Simovin">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="sd_band_request"/>
+      </not>
+    </preConditions>
 
-        <comment>Create band request table</comment>
+    <comment>Create band request table</comment>
 
-        <createTable tableName="sd_band_request">
-            <column name="id" type="UUID">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
+    <createTable tableName="sd_band_request">
+      <column name="id" type="UUID">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
 
-            <column name="user_id" type="UUID">
-                <constraints nullable="false"/>
-            </column>
+      <column name="user_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
 
-            <column name="band_id" type="UUID">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+      <column name="band_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
 
-        <addForeignKeyConstraint baseTableName="sd_band_request"
-                                 baseColumnNames="user_id"
-                                 constraintName="USER_ID_FK"
-                                 referencedTableName="sd_user"
-                                 referencedColumnNames="id"/>
+    <addForeignKeyConstraint baseTableName="sd_band_request"
+      baseColumnNames="user_id"
+      constraintName="USER_ID_FK"
+      referencedTableName="sd_user"
+      referencedColumnNames="id"/>
 
-        <addForeignKeyConstraint baseTableName="sd_band_request"
-                                 baseColumnNames="band_id"
-                                 constraintName="BAND_ID_FK"
-                                 referencedTableName="sd_band"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+    <addForeignKeyConstraint baseTableName="sd_band_request"
+      baseColumnNames="band_id"
+      constraintName="BAND_ID_FK"
+      referencedTableName="sd_band"
+      referencedColumnNames="id"/>
+
+    <addUniqueConstraint columnNames="user_id, band_id"
+      constraintName="unique_request_const"
+      tableName="sd_band_request"/>
+  </changeSet>
 </databaseChangeLog>

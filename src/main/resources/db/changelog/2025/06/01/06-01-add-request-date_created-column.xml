@@ -11,7 +11,7 @@
         <addColumn schemaName="public"
                    tableName="sd_band_request">
 
-            <column name="date_created" type="TIMESTAMP">
+            <column name="date_created" type="TIMESTAMP" defaultValue="NOW()">
                 <constraints nullable="false"/>
             </column>
 

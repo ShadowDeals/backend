@@ -12,7 +12,7 @@
                    tableName="sd_band">
 
             <column name="region_id" type="UUID">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
 
         </addColumn>

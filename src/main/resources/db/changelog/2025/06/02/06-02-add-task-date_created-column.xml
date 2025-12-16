@@ -11,7 +11,7 @@
         <addColumn schemaName="public"
                    tableName="sd_task">
 
-            <column name="date_created" type="TIMESTAMP"/>
+            <column name="date_created" type="TIMESTAMP" defaultValue="NOW()"/>
 
         </addColumn>
     </changeSet>

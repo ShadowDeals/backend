@@ -39,5 +39,9 @@
                                  constraintName="TASK_ID_FK"
                                  referencedTableName="sd_task"
                                  referencedColumnNames="id"/>
+
+      <addUniqueConstraint columnNames="task_id, band_id"
+        constraintName="unique_band_task_const"
+        tableName="sd_band_task"/>
     </changeSet>
 </databaseChangeLog>

@@ -22,7 +22,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="refresh_token" type="VARCHAR(255)"/>
-            <column name="date_created" type="TIMESTAMP"/>
+            <column name="date_created" type="TIMESTAMP" defaultValue="NOW()"/>
             <column name="user_id" type="UUID">
                 <constraints nullable="false" unique="true"/>
             </column>
