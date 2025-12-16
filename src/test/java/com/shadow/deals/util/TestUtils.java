@@ -3,7 +3,11 @@ package com.shadow.deals.util;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.UUID;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Kirill "Tamada" Simovin
@@ -199,5 +203,22 @@ public class TestUtils {
         }
 
         return id;
+    }
+
+    public static UUID getBandId(String accessToken) {
+        if (accessToken == null) {
+            return null;
+        }
+
+        String[] chunks = accessToken.split("\\.");
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+
+        String payload = new String(decoder.decode(chunks[1]));
+
+        try {
+            return UUID.fromString(new ObjectMapper().readValue(payload, HashMap.class).get("bandId").toString());
+        } catch (JsonProcessingException e) {
+            return null;
+        }
     }
 }
