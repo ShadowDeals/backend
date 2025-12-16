@@ -6,6 +6,7 @@ import com.shadow.deals.base.enums.CommonEnum;
 import com.shadow.deals.exception.APIException;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
+import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,5 +74,15 @@ public class CommonUtils {
         }
 
         return userEmail;
+    }
+
+    /**
+     * This method allows to generate a string representation of UUID from a string.
+     *
+     * @param str the string to use to generate the UUID.
+     * @return The string representation of UUID.
+     */
+    public static String generateUUIDFromString(@NotNull String str) {
+        return UUID.nameUUIDFromBytes(str.getBytes()).toString();
     }
 }

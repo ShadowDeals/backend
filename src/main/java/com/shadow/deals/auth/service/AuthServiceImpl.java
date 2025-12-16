@@ -181,7 +181,7 @@ public class AuthServiceImpl implements AuthService {
             }
         }
 
-        String activationCodeVal = generateUUIDFromString(userEmail);
+        String activationCodeVal = CommonUtils.generateUUIDFromString(userEmail);
         sendSignUpEmail(user, activationCodeVal);
 
         createAndSaveActivationCode(user, activationCodeVal);
@@ -253,7 +253,6 @@ public class AuthServiceImpl implements AuthService {
         activationCodeService.update(activationCode);
 
         User user = activationCode.getUser();
-        Authentication authentication = Authentication.build(user.getEmail(), Set.of(userService.getUserRole(user)), userService.getUserClaims(user));
 
         UserRoleName userRoleName = user.getRole().getRoleName();
         if (userRoleName == UserRoleName.DON) {
@@ -267,6 +266,7 @@ public class AuthServiceImpl implements AuthService {
             requestService.createRequests(user, regionName);
         }
 
+        Authentication authentication = Authentication.build(user.getEmail(), Set.of(userService.getUserRole(user)), userService.getUserClaims(user));
         return generateTokenResponse(user, authentication, getAccessTokenExpiration());
     }
 
@@ -301,12 +301,12 @@ public class AuthServiceImpl implements AuthService {
 
         String activationCodeVal;
         if (activationCode == null) {
-            activationCodeVal = generateUUIDFromString(newEmail);
+            activationCodeVal = CommonUtils.generateUUIDFromString(newEmail);
             createAndSaveActivationCode(user, activationCodeVal);
         } else {
             activationCodeVal = activationCode.getActivationCode();
             if (activationCodeVal == null) {
-                activationCodeVal = generateUUIDFromString(newEmail);
+                activationCodeVal = CommonUtils.generateUUIDFromString(newEmail);
                 activationCode.setActivationCode(activationCodeVal);
                 activationCodeService.update(activationCode);
             }
@@ -348,7 +348,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void changePassword(@NotNull ChangePasswordRequestDTO changePasswordRequestDTO) throws APIException {
         String email = changePasswordRequestDTO.getEmail();
-        if (!generateUUIDFromString(email).equals(changePasswordRequestDTO.getChangePasswordCode().toString())) {
+        if (!CommonUtils.generateUUIDFromString(email).equals(changePasswordRequestDTO.getChangePasswordCode().toString())) {
             throw new APIException(
                     "Код смены пароля не соответствует почте %s".formatted(email),
                     HttpStatus.BAD_REQUEST);
@@ -382,7 +382,7 @@ public class AuthServiceImpl implements AuthService {
      */
     private String createChangePasswordEmail(@NotBlank String nickname, String email) {
         String boldText = "Здравствуй, %s".formatted(nickname);
-        String link = clientAddress + clientChangePasswordPath.formatted(generateUUIDFromString(email), email);
+        String link = clientAddress + clientChangePasswordPath.formatted(CommonUtils.generateUUIDFromString(email), email);
         String buttonText = "Смените Ваш пароль.";
         String regularText = "Если вы не пытались изменить пароль своего аккаунта, то можете проигнорировать это письмо. Возможно, другой пользователь ввёл свою информацию неправильно.";
         return mailService.fillEmailTemplate(boldText, link, buttonText, regularText);
@@ -546,15 +546,5 @@ public class AuthServiceImpl implements AuthService {
             throw new APIException("Ошибка во время генерации токена доступа", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return optionalAccessToken.get();
-    }
-
-    /**
-     * This method allows to generate a string representation of UUID from a string.
-     *
-     * @param str the string to use to generate the UUID.
-     * @return The string representation of UUID.
-     */
-    private String generateUUIDFromString(@NotNull String str) {
-        return UUID.nameUUIDFromBytes(str.getBytes()).toString();
     }
 }
