@@ -133,8 +133,8 @@ public class TaskReportServiceImpl implements TaskReportService {
 
     @Override
     public TaskReportResponseDTO getTaskReport(UUID taskId) {
-        TaskReport taskReport = taskService.findById(taskId).getReport();
-        Band band = bandTaskService.findAllByTask(taskReport.getTask()).getFirst().getBand();
+        TaskReport taskReport = taskReportRepository.findByTaskId(taskId);
+        Band band = bandTaskService.findAllByTask(taskService.findById(taskId)).getFirst().getBand();
 
         if (blockedBandService.existsByBandId(band.getId())) {
             throw new APIException("База данных заблокирована!", HttpStatus.LOCKED);
