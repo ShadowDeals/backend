@@ -3,6 +3,9 @@ package com.shadow.deals;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Map;
 import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.postgresql.PostgreSQLContainer;
@@ -33,6 +36,14 @@ public abstract class BaseTestContainerTest implements TestPropertyProvider {
             "datasources.default.username", postgreSQLContainer.getUsername(),
             "datasources.default.password", postgreSQLContainer.getPassword(),
             "datasources.default.driver-class-name", "org.postgresql.Driver"
+        );
+    }
+
+    protected Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(
+            postgreSQLContainer.getJdbcUrl(),
+            postgreSQLContainer.getUsername(),
+            postgreSQLContainer.getPassword()
         );
     }
 }
