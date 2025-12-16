@@ -206,17 +206,24 @@ public class TestUtils {
     }
 
     public static UUID getBandId(String accessToken) {
+        String bandId = getFromAccessToken(accessToken, "bandId");
+        if (bandId == null) {
+            return null;
+        }
+        return UUID.fromString(bandId);
+    }
+
+    public static String getFromAccessToken(String accessToken, String key) {
         if (accessToken == null) {
             return null;
         }
-
         String[] chunks = accessToken.split("\\.");
         Base64.Decoder decoder = Base64.getUrlDecoder();
 
         String payload = new String(decoder.decode(chunks[1]));
 
         try {
-            return UUID.fromString(new ObjectMapper().readValue(payload, HashMap.class).get("bandId").toString());
+            return new ObjectMapper().readValue(payload, HashMap.class).get(key).toString();
         } catch (JsonProcessingException e) {
             return null;
         }
