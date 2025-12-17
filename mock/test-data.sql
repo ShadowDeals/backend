@@ -697,3 +697,63 @@ values ('ad32ad1a-7a6d-4342-bc09-fa0cd9299b15', 'Какой-то адрес', '�
 
 insert into sd_task (id, address, description, customer_id, type_id, status_id, date_created, officer_id, price)
 values ('984f2d36-fd26-42b7-94de-8fb303c31272', 'Какой-то адрес', 'Сделайте красиво', '2450350f-7970-4008-b660-28116883cd7e', 'afa1f1b4-6758-4a0a-a862-570c7fddd3a0', '041c64ff-e1bc-412a-8738-4a3349aa5a65', now(), '2450350f-7970-4008-b660-28116883cd7e', 150000);
+
+insert into sd_band_task (id, band_id, task_id)
+values ('987754d2-621b-4aa0-a534-74c858c53c08', '17347e02-4263-43ad-810a-855b9ea464eb', '62e9b2b5-cff7-43f9-9946-256d9f5c08c5');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('2f4bd8a6-c80e-4788-9111-4b50c8165563', '17347e02-4263-43ad-810a-855b9ea464eb', 'e0136e74-1efc-4914-a92d-0a8345d6e6c9');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('6b17bc9a-95a6-4edd-8fdc-95d7c9d1fdb5', '17347e02-4263-43ad-810a-855b9ea464eb', 'b278cc13-9329-4019-899a-4ce7f875e23a');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('53930a83-48e6-4d96-bb56-8a029d43252f', '17347e02-4263-43ad-810a-855b9ea464eb', '37ccb80e-ac2f-4398-a51e-146863ccc615');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('18f81dd0-cb7b-457c-a82b-eef74dffc7de', '17347e02-4263-43ad-810a-855b9ea464eb', '7b3ff0e8-517a-4c15-9598-0add046a947a');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('82eaff26-0009-4e98-a928-388cf297db91', '17347e02-4263-43ad-810a-855b9ea464eb', 'e82dd543-ee18-4e03-bf5c-a6b5ceedff5b');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('0c4c6fea-e405-42fe-b36b-b4ea473200b2', '17347e02-4263-43ad-810a-855b9ea464eb', 'bad9960b-bf9e-4f84-bf3f-0ada415769f7');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('f7b7391d-9c21-4951-a135-59be11a178e2', '17347e02-4263-43ad-810a-855b9ea464eb', '384a99c3-602e-41cb-a221-df4503c33f52');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('8b679849-b059-44e7-a696-ebafe0bb42a9', '17347e02-4263-43ad-810a-855b9ea464eb', '6b30251b-1e06-4cad-9868-77e47e53a99e');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('cb79fbf9-624c-4d35-a5a7-6728779c75d2', '17347e02-4263-43ad-810a-855b9ea464eb', 'e0633e6f-6673-48bc-81c0-f1cdf896810e');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('c43c3c5d-fd4d-4e4a-bad6-178bd7656b43', '17347e02-4263-43ad-810a-855b9ea464eb', '23975116-6f2d-4c4e-a102-682a5c086be9');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('824f1c41-1524-41a8-a449-be9ea22644fc', '17347e02-4263-43ad-810a-855b9ea464eb', 'fded5e5c-adc5-4087-aac5-e06d20758ea1');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('ace651f7-ee27-4085-aaf6-b0a5ebec1d30', '17347e02-4263-43ad-810a-855b9ea464eb', 'a5cb27c0-d638-4fc9-b4e1-d195611d5302');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('ab5bef90-ff58-457d-b0f1-fd7931fdfeb9', '17347e02-4263-43ad-810a-855b9ea464eb', '1dd04a91-4b50-4251-b4d5-c0679c50dadf');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('9dd0e8d4-6514-4653-a18e-2c83b9a86e12', '17347e02-4263-43ad-810a-855b9ea464eb', 'dcd0b43b-97d6-488a-83b2-43fdf26afb53');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('6dc02a4a-a91f-45d5-a82b-4ee0181fbae9', '17347e02-4263-43ad-810a-855b9ea464eb', 'a29cd6c7-0661-4a94-9a27-c3407eef93b9');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('8e6c7d84-46d1-4a5e-b584-632081de23b7', '17347e02-4263-43ad-810a-855b9ea464eb', '08845c3a-3acf-4fcb-90ca-0e34c4fc1f40');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('e7458d99-9444-4cec-bb6b-ee225e39290a', '17347e02-4263-43ad-810a-855b9ea464eb', 'fcc623e7-7dce-493e-b3bc-58bf483ce64c');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('65930332-bf0b-4217-8784-a0edffdd06e1', '17347e02-4263-43ad-810a-855b9ea464eb', 'ad32ad1a-7a6d-4342-bc09-fa0cd9299b15');
+
+insert into sd_band_task (id, band_id, task_id)
+values ('ed480e87-9668-4508-b3bd-4fc7f8d23439', '17347e02-4263-43ad-810a-855b9ea464eb', '984f2d36-fd26-42b7-94de-8fb303c31272');
