@@ -251,7 +251,7 @@ public class ForeignKeyTest extends BaseTestContainerTest {
 
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     statement.setObject(1, UUID.randomUUID());
-                    statement.setString(2, "test@example.com");
+                    statement.setString(2, "test1@example.com");
                     statement.setString(3, "Test");
                     statement.setString(4, "User");
                     statement.setString(4, "User");
@@ -276,7 +276,7 @@ public class ForeignKeyTest extends BaseTestContainerTest {
 
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     statement.setObject(1, UUID.randomUUID());
-                    statement.setString(2, "test@example.com");
+                    statement.setString(2, "test2@example.com");
                     statement.setString(3, "Test");
                     statement.setString(4, "User");
                     statement.setObject(5, UUID.randomUUID());
@@ -299,7 +299,7 @@ public class ForeignKeyTest extends BaseTestContainerTest {
 
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     statement.setObject(1, UUID.randomUUID());
-                    statement.setString(2, "test@example.com");
+                    statement.setString(2, "test3@example.com");
                     statement.setString(3, "Test");
                     statement.setString(4, "User");
                     statement.setObject(5, UUID.fromString("fc55ec84-5c0a-4890-9752-cba4c5fa6fa0"));
@@ -323,7 +323,7 @@ public class ForeignKeyTest extends BaseTestContainerTest {
 
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     statement.setObject(1, UUID.randomUUID());
-                    statement.setString(2, "test@example.com");
+                    statement.setString(2, "test4@example.com");
                     statement.setString(3, "Test");
                     statement.setString(4, "User");
                     statement.setObject(5, UUID.fromString("fc55ec84-5c0a-4890-9752-cba4c5fa6fa0"));
@@ -347,7 +347,7 @@ public class ForeignKeyTest extends BaseTestContainerTest {
 
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     statement.setObject(1, UUID.randomUUID());
-                    statement.setString(2, "test@example.com");
+                    statement.setString(2, "test5@example.com");
                     statement.setString(3, "Test");
                     statement.setString(4, "User");
                     statement.setObject(5, UUID.fromString("fc55ec84-5c0a-4890-9752-cba4c5fa6fa0"));
