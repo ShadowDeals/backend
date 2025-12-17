@@ -62,8 +62,21 @@ public class PrimaryKeyTest extends BaseTestContainerTest {
     void testInvalidPrimaryKeyBand() {
         SQLException exception = Assertions.assertThrows(SQLException.class, () -> {
             try (Connection connection = getConnection()) {
-                TestUtils.createBand(connection);
-                TestUtils.createBand(connection);
+                UUID bandId = UUID.randomUUID();
+                UUID regionId = UUID.fromString("170f5f8f-bf1b-4d1b-ab21-7714a83880f1");
+                String sql = "INSERT INTO sd_band(id, region_id) VALUES(?, ?)";
+
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setObject(1, bandId);
+                    statement.setObject(2, regionId);
+                    statement.execute();
+                }
+
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setObject(1, bandId);
+                    statement.setObject(2, regionId);
+                    statement.execute();
+                }
             }
         });
 
