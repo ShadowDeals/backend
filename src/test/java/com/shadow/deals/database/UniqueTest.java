@@ -4,7 +4,9 @@ import com.shadow.deals.base.BaseTestContainerTest;
 import com.shadow.deals.util.TestUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -34,8 +36,8 @@ public class UniqueTest extends BaseTestContainerTest {
     void testNonUniqueBand() {
         SQLException exception = Assertions.assertThrows(SQLException.class, () -> {
             try (Connection connection = getConnection()) {
-                TestUtils.createBand(connection);
-                TestUtils.createBand(connection);
+                createBand(connection);
+                createBand(connection);
             }
         });
 
@@ -66,10 +68,10 @@ public class UniqueTest extends BaseTestContainerTest {
         SQLException exception = Assertions.assertThrows(SQLException.class, () -> {
             try (Connection connection = getConnection()) {
                 UUID bandId = TestUtils.createBand(connection);
-                UUID userId = TestUtils.createUser(connection);
+                UUID taskId = TestUtils.createTask(connection);
 
-                TestUtils.createBandTask(connection, bandId, userId);
-                TestUtils.createBandTask(connection, bandId, userId);
+                TestUtils.createBandTask(connection, bandId, taskId);
+                TestUtils.createBandTask(connection, bandId, taskId);
             }
         });
 
@@ -185,5 +187,22 @@ public class UniqueTest extends BaseTestContainerTest {
         Assertions.assertEquals("23505", exception.getSQLState());
         Assertions.assertTrue(exception.getMessage().contains("duplicate key value violates unique constraint"));
         Assertions.assertEquals("org.postgresql.util.PSQLException", exception.getClass().getName());
+    }
+
+    private UUID createBand(Connection connection) throws SQLException {
+        if (connection == null) {
+            return null;
+        }
+
+        String sql = "INSERT INTO sd_band(id, region_id) VALUES(?, ?)";
+
+        UUID bandId = UUID.randomUUID();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setObject(1, bandId);
+            statement.setObject(2, UUID.fromString("170f5f8f-bf1b-4d1b-ab21-7714a83880f1"));
+            statement.execute();
+        }
+
+        return bandId;
     }
 }
