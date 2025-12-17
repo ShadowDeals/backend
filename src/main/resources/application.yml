@@ -9,6 +9,10 @@ micronaut:
           allowed-origins:
             - http://localhost:5173
   security:
+    intercept-url-map:
+      - pattern: /prometheus/**
+        access:
+          - isAnonymous()
     authentication: bearer
     token:
       generator:
@@ -25,6 +29,13 @@ micronaut:
       bearer:
         enabled: true
       enabled: true
+    enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+        descriptions: true
+        step: PT1M
     enabled: true
 
 jpa:
