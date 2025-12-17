@@ -55,6 +55,11 @@ dependencies {
     // J2HTML - HTML generation
     implementation("com.j2html:j2html:1.6.0")
 
+    // Prometheus
+    implementation("io.micronaut:micronaut-management")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-core")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
+
     // Hibernate
     implementation("io.micronaut.sql:micronaut-hibernate-jpa")
     implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
