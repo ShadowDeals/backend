@@ -1,0 +1,70 @@
+active_connections:
+  query: |
+    SELECT
+      datname,
+      count(*) as total,
+      count(*) FILTER (WHERE state = 'active') as active,
+      count(*) FILTER (WHERE state = 'idle') as idle,
+      count(*) FILTER (WHERE state = 'idle in transaction') as idle_in_transaction,
+      count(*) FILTER (WHERE wait_event IS NOT NULL) as waiting
+    FROM pg_stat_activity
+    WHERE pid <> pg_backend_pid()
+    AND datname IS NOT NULL
+    GROUP BY datname
+  metrics:
+    - datname:
+        usage: LABEL
+        description: Database name
+    - total:
+        usage: GAUGE
+        description: Total connections
+    - active:
+        usage: GAUGE
+        description: Active connections
+    - idle:
+        usage: GAUGE
+        description: Idle connections
+    - idle_in_transaction:
+        usage: GAUGE
+        description: Idle in transaction connections
+    - waiting:
+        usage: GAUGE
+        description: Waiting connections
+
+slow_queries:
+  query: |
+    SELECT
+      datname,
+      queryid,
+      query,
+      total_exec_time,
+      mean_exec_time,
+      calls,
+      rows
+    FROM pg_stat_statements
+    JOIN pg_database ON pg_database.oid = pg_stat_statements.dbid
+    WHERE mean_exec_time > 100
+    AND datname IS NOT NULL
+    ORDER BY mean_exec_time DESC
+  metrics:
+    - datname:
+        usage: LABEL
+        description: Database name
+    - queryid:
+        usage: LABEL
+        description: Query ID
+    - query:
+        usage: LABEL
+        description: Query text
+    - total_exec_time:
+        usage: GAUGE
+        description: Total execution time in milliseconds
+    - mean_exec_time:
+        usage: GAUGE
+        description: Mean execution time in milliseconds
+    - calls:
+        usage: COUNTER
+        description: Number of calls
+    - rows:
+        usage: COUNTER
+        description: Rows processed
