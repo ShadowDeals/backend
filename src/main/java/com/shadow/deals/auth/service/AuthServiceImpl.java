@@ -27,6 +27,8 @@ import com.shadow.deals.user.refresh.service.RefreshTokenService;
 import com.shadow.deals.user.role.enums.UserRoleName;
 import com.shadow.deals.user.role.service.UserRoleService;
 import com.shadow.deals.util.CommonUtils;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
@@ -39,17 +41,14 @@ import io.micronaut.security.token.generator.TokenGenerator;
 import io.micronaut.security.token.refresh.RefreshTokenPersistence;
 import jakarta.inject.Singleton;
 import jakarta.validation.constraints.NotBlank;
-import lombok.RequiredArgsConstructor;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * This class contains methods that perform business logic related to the authentication.
@@ -57,8 +56,8 @@ import java.util.UUID;
  * @author Kirill "Tamada" Simovin
  */
 @Singleton
-@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
+
     /**
      * An instance of the interface that allows to generate an access token.
      */
@@ -117,6 +116,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final RequestService requestService;
 
+    private final Counter signInCounter;
+
     /**
      * The address of the client application.
      */
@@ -150,6 +151,29 @@ public class AuthServiceImpl implements AuthService {
      */
     private final static int REMEMBER_ME_FOR_DAYS = 7;
 
+    public AuthServiceImpl(
+        TokenGenerator tokenGenerator, AccessTokenConfiguration accessTokenConfiguration, PasswordEncoder passwordEncoder,
+        UserServiceImpl userService, RefreshTokenService refreshTokenService, UserRoleService userRoleService,
+        Authenticator<HttpRequest<?>> authenticator, RefreshTokenPersistence refreshTokenPersistence, MailService mailService,
+        ActivationCodeServiceImpl activationCodeService, BandService bandService, RegionService regionService,
+        RequestService requestService, MeterRegistry meterRegistry
+    ) {
+        this.tokenGenerator = tokenGenerator;
+        this.accessTokenConfiguration = accessTokenConfiguration;
+        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
+        this.refreshTokenService = refreshTokenService;
+        this.userRoleService = userRoleService;
+        this.authenticator = authenticator;
+        this.refreshTokenPersistence = refreshTokenPersistence;
+        this.mailService = mailService;
+        this.activationCodeService = activationCodeService;
+        this.bandService = bandService;
+        this.regionService = regionService;
+        this.requestService = requestService;
+        this.signInCounter = meterRegistry.counter("sign_in_requests");
+    }
+
     /**
      * This method allows to add a new user to the database.
      *
@@ -167,7 +191,7 @@ public class AuthServiceImpl implements AuthService {
         String userEmail = signUpRequestDTO.getEmail();
         if (userService.existsByEmail(userEmail)) {
             throw new APIException(
-                    "Пользователь с почтой %s уже существует".formatted(userEmail), HttpStatus.BAD_REQUEST);
+                "Пользователь с почтой %s уже существует".formatted(userEmail), HttpStatus.BAD_REQUEST);
         }
 
         User user = mapSignUpRequestDTOToUser(signUpRequestDTO);
@@ -177,11 +201,15 @@ public class AuthServiceImpl implements AuthService {
             Region region = user.getRegion();
             if (bandService.existsByRegion(region)) {
                 userService.deleteById(user.getId());
-                throw new APIException("В регионе '%s' уже существует банда!".formatted(region.getRegionName().getTitle()), HttpStatus.BAD_REQUEST);
+                throw new APIException(
+                    "В регионе '%s' уже существует банда!".formatted(region.getRegionName().getTitle()),
+                    HttpStatus.BAD_REQUEST
+                );
             }
         }
 
         String activationCodeVal = CommonUtils.generateUUIDFromString(userEmail);
+        System.out.println("email: " + userEmail + ", activationCodeVal: " + activationCodeVal);
         sendSignUpEmail(user, activationCodeVal);
 
         createAndSaveActivationCode(user, activationCodeVal);
@@ -198,18 +226,21 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Publisher<MutableHttpResponse<?>> signin(@NotNull SignInRequestDTO signInRequestDTO, HttpRequest<?> request) {
+        signInCounter.increment();
+
         String authUnexpectedError = "Непредвиденная ошибка во время аутентификации";
         int rememberForDays = signInRequestDTO.isRememberMe() ? REMEMBER_ME_FOR_DAYS : 1;
-        return Flux.from(authenticator.authenticate(request, AuthMapper.INSTANCE.signInRequestDTOToUsernamePasswordCredentials(signInRequestDTO)))
-                .map(authenticationResponse -> {
-                    if (!authenticationResponse.isAuthenticated() || authenticationResponse.getAuthentication().isEmpty()) {
-                        String message = authenticationResponse.getMessage().orElse(authUnexpectedError);
-                        return createUnauthorizedResponse(message);
-                    }
-                    Authentication authentication = authenticationResponse.getAuthentication().get();
-                    User user = userService.findByEmail(authentication.getName());
-                    return HttpResponse.ok(generateTokenResponse(user, authentication, rememberForDays * getAccessTokenExpiration()));
-                }).switchIfEmpty(Mono.defer(() -> Mono.just(createUnauthorizedResponse(authUnexpectedError))));
+        return Flux.from(
+                authenticator.authenticate(request, AuthMapper.INSTANCE.signInRequestDTOToUsernamePasswordCredentials(signInRequestDTO)))
+            .map(authenticationResponse -> {
+                if (!authenticationResponse.isAuthenticated() || authenticationResponse.getAuthentication().isEmpty()) {
+                    String message = authenticationResponse.getMessage().orElse(authUnexpectedError);
+                    return createUnauthorizedResponse(message);
+                }
+                Authentication authentication = authenticationResponse.getAuthentication().get();
+                User user = userService.findByEmail(authentication.getName());
+                return HttpResponse.ok(generateTokenResponse(user, authentication, rememberForDays * getAccessTokenExpiration()));
+            }).switchIfEmpty(Mono.defer(() -> Mono.just(createUnauthorizedResponse(authUnexpectedError))));
     }
 
     /**
@@ -224,7 +255,7 @@ public class AuthServiceImpl implements AuthService {
         String refreshToken = refreshTokenRequestDTO.getRefreshToken();
         String validRefreshToken = refreshTokenService.validateRefreshToken(refreshToken);
         return Mono.from(refreshTokenPersistence.getAuthentication(validRefreshToken))
-                .map(authentication -> HttpResponse.ok(generateTokenResponse(refreshToken, authentication, getAccessTokenExpiration())));
+            .map(authentication -> HttpResponse.ok(generateTokenResponse(refreshToken, authentication, getAccessTokenExpiration())));
     }
 
     /**
@@ -238,8 +269,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * This method allows to verify the user's email by setting the activation code to {@code null} for the corresponding
-     * user.
+     * This method allows to verify the user's email by setting the activation code to {@code null} for the corresponding user.
      *
      * @param activationCodeVal the activation code for email confirmation.
      * @return An object containing information about the user's tokens.
@@ -266,7 +296,8 @@ public class AuthServiceImpl implements AuthService {
             requestService.createRequests(user, regionName);
         }
 
-        Authentication authentication = Authentication.build(user.getEmail(), Set.of(userService.getUserRole(user)), userService.getUserClaims(user));
+        Authentication authentication = Authentication.build(user.getEmail(), Set.of(userService.getUserRole(user)),
+            userService.getUserClaims(user));
         return generateTokenResponse(user, authentication, getAccessTokenExpiration());
     }
 
@@ -286,15 +317,15 @@ public class AuthServiceImpl implements AuthService {
 
         if (!passwordEncoder.matches(updateEmailRequestDTO.getPassword(), user.getPassword())) {
             throw new APIException(
-                    "Данные пользователя не совпадают",
-                    HttpStatus.BAD_REQUEST
+                "Данные пользователя не совпадают",
+                HttpStatus.BAD_REQUEST
             );
         }
         String newEmail = updateEmailRequestDTO.getNewEmail();
         if (userService.existsByEmail(newEmail)) {
             throw new APIException(
-                    "Пользователь с почтой %s уже существует".formatted(newEmail),
-                    HttpStatus.BAD_REQUEST);
+                "Пользователь с почтой %s уже существует".formatted(newEmail),
+                HttpStatus.BAD_REQUEST);
         }
 
         ActivationCode activationCode = user.getActivationCode();
@@ -321,8 +352,7 @@ public class AuthServiceImpl implements AuthService {
     /**
      * This method allows to send an email to the user to change the password.
      *
-     * @param emailRequestDTO an object containing the user's email address to which need to send
-     *                        an email to change the password.
+     * @param emailRequestDTO an object containing the user's email address to which need to send an email to change the password.
      * @throws APIException in case the user with this email is not found.
      */
     @Override
@@ -331,9 +361,9 @@ public class AuthServiceImpl implements AuthService {
         User user = userService.findByEmail(email);
 
         mailService.sendMessage(email,
-                "Смена пароля в Shadow Deals",
-                createChangePasswordEmail(userService.getUserName(user), email),
-                Map.of(LOGO_EMAIL_CID, LOGO_EMAIL_PATH)
+            "Смена пароля в Shadow Deals",
+            createChangePasswordEmail(userService.getUserName(user), email),
+            Map.of(LOGO_EMAIL_CID, LOGO_EMAIL_PATH)
         );
     }
 
@@ -350,8 +380,8 @@ public class AuthServiceImpl implements AuthService {
         String email = changePasswordRequestDTO.getEmail();
         if (!CommonUtils.generateUUIDFromString(email).equals(changePasswordRequestDTO.getChangePasswordCode().toString())) {
             throw new APIException(
-                    "Код смены пароля не соответствует почте %s".formatted(email),
-                    HttpStatus.BAD_REQUEST);
+                "Код смены пароля не соответствует почте %s".formatted(email),
+                HttpStatus.BAD_REQUEST);
         }
 
         User user = userService.findByEmail(email);
@@ -373,8 +403,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * This method allows to create an HTML representation of the message body, which is sent to users during
-     * password changing.
+     * This method allows to create an HTML representation of the message body, which is sent to users during password changing.
      *
      * @param nickname the nickname of the recipient.
      * @param email    the email of the recipient.
@@ -396,20 +425,19 @@ public class AuthServiceImpl implements AuthService {
      */
     private void sendSignUpEmail(User user, String activationCode) {
         mailService.sendMessage(user.getEmail(),
-                "Подтверждение почты Shadow Deals",
-                createSignUpEmail(userService.getUserName(user), activationCode),
-                Map.of(LOGO_EMAIL_CID, LOGO_EMAIL_PATH)
+            "Подтверждение почты Shadow Deals",
+            createSignUpEmail(userService.getUserName(user), activationCode),
+            Map.of(LOGO_EMAIL_CID, LOGO_EMAIL_PATH)
         );
     }
 
     /**
-     * This method allows to create an HTML representation of the message body, which is sent to users during
-     * registration to confirm the email address.
+     * This method allows to create an HTML representation of the message body, which is sent to users during registration to confirm the
+     * email address.
      *
      * @param nickname       the nickname of the recipient.
      * @param activationCode the activation code for email confirmation.
-     * @return HTML representation of the message body, which is sent to users during registration to confirm the email
-     * address.
+     * @return HTML representation of the message body, which is sent to users during registration to confirm the email address.
      */
     @NotNull
     private String createSignUpEmail(String nickname, String activationCode) {
@@ -417,10 +445,10 @@ public class AuthServiceImpl implements AuthService {
         String link = clientAddress + clientConfirmEmailPath.formatted(activationCode);
         String buttonText = "Подтвердите почту";
         String regularText = boldText +
-                "\n" +
-                "\n" +
-                "\n" +
-                "Мы рады, что ты присоединился к нам! Для завершения регистрации осталось подтвердить адрес электронной почты, нажав на кнопку выше.";
+            "\n" +
+            "\n" +
+            "\n" +
+            "Мы рады, что ты присоединился к нам! Для завершения регистрации осталось подтвердить адрес электронной почты, нажав на кнопку выше.";
         return mailService.fillEmailTemplate(boldText, link, buttonText, regularText);
     }
 
@@ -473,10 +501,10 @@ public class AuthServiceImpl implements AuthService {
     @NotNull
     private TokenResponseDTO generateTokenResponse(String refreshToken, Authentication authentication, int accessTokenExpiration) {
         return new TokenResponseDTO(
-                generateAccessToken(authentication, accessTokenExpiration),
-                accessTokenExpiration,
-                refreshToken,
-                authentication.getName()
+            generateAccessToken(authentication, accessTokenExpiration),
+            accessTokenExpiration,
+            refreshToken,
+            authentication.getName()
         );
     }
 
@@ -502,7 +530,8 @@ public class AuthServiceImpl implements AuthService {
         Region region = user.getRegion();
         if (bandService.existsByRegion(region)) {
             userService.deleteById(user.getId());
-            throw new APIException("В регионе '%s' уже существует банда!".formatted(region.getRegionName().getTitle()), HttpStatus.BAD_REQUEST);
+            throw new APIException("В регионе '%s' уже существует банда!".formatted(region.getRegionName().getTitle()),
+                HttpStatus.BAD_REQUEST);
         }
 
         Band band = new Band();

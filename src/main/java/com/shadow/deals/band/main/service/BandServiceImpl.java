@@ -19,6 +19,8 @@ import com.shadow.deals.user.main.mapper.UserMapper;
 import com.shadow.deals.user.main.service.UserService;
 import com.shadow.deals.user.role.enums.UserRoleName;
 import com.shadow.deals.util.CommonUtils;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
 import jakarta.inject.Singleton;
@@ -27,13 +29,11 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 
 /**
  * @author Kirill "Tamada" Simovin
  */
 @Singleton
-@RequiredArgsConstructor
 public class BandServiceImpl implements BandService {
 
     private final BandRepository bandRepository;
@@ -45,6 +45,20 @@ public class BandServiceImpl implements BandService {
     private final BlockedBandService blockedBandService;
 
     private final BandTaskService bandTaskService;
+
+    private final Counter bandStatsCounter;
+
+    public BandServiceImpl(
+        BandRepository bandRepository, RegionService regionService, UserService userService, BlockedBandService blockedBandService,
+        BandTaskService bandTaskService, MeterRegistry meterRegistry
+    ) {
+        this.bandRepository = bandRepository;
+        this.regionService = regionService;
+        this.userService = userService;
+        this.blockedBandService = blockedBandService;
+        this.bandTaskService = bandTaskService;
+        this.bandStatsCounter = meterRegistry.counter("select_band_stats_requests");
+    }
 
     @Override
     public Band save(Band entity) {
@@ -151,6 +165,8 @@ public class BandServiceImpl implements BandService {
 
     @Override
     public BandStatsInfoResponseDTO selectBandStatsInfo(HttpRequest<?> request) {
+        bandStatsCounter.increment();
+
         String userEmail = CommonUtils.getUserEmailFromJWTToken(request);
         User user = userService.findByEmail(userEmail);
         Band band = user.getOwnBand();
