@@ -1,0 +1,44 @@
+{
+  "title": "API Metrics",
+  "tags": ["prometheus"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "title": "API Request Metrics",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "select_band_stats_requests_total",
+          "legendFormat": "__auto"
+        }
+      ],
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+    },
+    {
+      "title": "API CPU Metrics",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "system_cpu_usage",
+          "legendFormat": "{{host}} CPU usage"
+        }
+      ],
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+    },
+    {
+      "title": "API Memory Metrics",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "jvm_memory_used_bytes{area=\"heap\", id=~\".*Eden Space.*\"}",
+          "legendFormat": "{{host}} Memory usage"
+        }
+      ],
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+    }
+  ],
+  "templating": {
+    "list": [
+    ]
+  }
+}

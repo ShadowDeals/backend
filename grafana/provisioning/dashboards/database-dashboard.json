@@ -1,0 +1,37 @@
+{
+  "title": "Database Metrics",
+  "tags": ["prometheus"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "title": "Connections by status",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "active_connections_active",
+          "legendFormat": "{{datname}} active connections"
+        },
+        {
+          "expr": "active_connections_idle",
+          "legendFormat": "{{datname}} idle connections"
+        }
+      ],
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+    },
+    {
+      "title": "Slow queries",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "slow_queries_calls",
+          "legendFormat": "{{datname}} slow queries"
+        }
+      ],
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+    }
+  ],
+  "templating": {
+    "list": [
+    ]
+  }
+}
