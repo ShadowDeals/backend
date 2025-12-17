@@ -2,7 +2,9 @@ package com.shadow.deals.util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.UUID;
@@ -22,6 +24,28 @@ public class TestUtils {
             UUID.fromString("1a653609-da64-460b-bc17-57690d1f00aa"),
             UUID.fromString("1a653609-da64-460b-bc17-57690d1f00aa"),
             customerId
+        );
+    }
+
+    public static void createTaskByStatus(Connection connection, UUID statusId) throws SQLException {
+        createTask(
+            connection,
+            createUser(connection),
+            UUID.fromString("afa1f1b4-6758-4a0a-a862-570c7fddd3a0"),
+            statusId,
+            statusId,
+            null
+        );
+    }
+
+    public static void createTaskByType(Connection connection, UUID typeId) throws SQLException {
+        createTask(
+            connection,
+            createUser(connection),
+            typeId,
+            UUID.fromString("1a653609-da64-460b-bc17-57690d1f00aa"),
+            UUID.fromString("1a653609-da64-460b-bc17-57690d1f00aa"),
+            null
         );
     }
 
@@ -60,8 +84,20 @@ public class TestUtils {
     }
 
     public static UUID createUser(Connection connection) throws SQLException {
+        return createUser(connection, UUID.fromString("170f5f8f-bf1b-4d1b-ab21-7714a83880f1"));
+    }
+
+    public static UUID createUser(Connection connection, UUID regionId) throws SQLException {
         if (connection == null) {
             return null;
+        }
+
+        String email = "test@example.com";
+
+        Statement selectStatement = connection.createStatement();
+        ResultSet rs = selectStatement.executeQuery("SELECT * FROM sd_user WHERE email = '" + email + "'");
+        if (rs.next()) {
+            return UUID.fromString(rs.getString("id"));
         }
 
         String sql = "INSERT INTO sd_user(id, email, first_name, last_name, role_id, region_id) VALUES(?, ?, ?, ?, ?, ?)";
@@ -69,11 +105,11 @@ public class TestUtils {
         UUID userId = UUID.randomUUID();
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setObject(1, userId);
-            statement.setString(2, "test@example.com");
+            statement.setString(2, email);
             statement.setString(3, "Test");
             statement.setString(4, "User");
             statement.setObject(5, UUID.fromString("fc55ec84-5c0a-4890-9752-cba4c5fa6fa0"));
-            statement.setObject(6, UUID.fromString("170f5f8f-bf1b-4d1b-ab21-7714a83880f1"));
+            statement.setObject(6, regionId);
             statement.execute();
         }
 
@@ -87,6 +123,12 @@ public class TestUtils {
     public static UUID createBand(Connection connection, UUID regionId) throws SQLException {
         if (connection == null) {
             return null;
+        }
+
+        Statement selectStatement = connection.createStatement();
+        ResultSet rs = selectStatement.executeQuery("SELECT * FROM sd_band WHERE region_id = '" + regionId + "'");
+        if (rs.next()) {
+            return UUID.fromString(rs.getString("id"));
         }
 
         String sql = "INSERT INTO sd_band(id, region_id) VALUES(?, ?)";

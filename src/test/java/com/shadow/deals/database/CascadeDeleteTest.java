@@ -48,10 +48,12 @@ public class CascadeDeleteTest extends BaseTestContainerTest {
     @Test
     void testCascadeDeleteRegion() throws SQLException {
         try (Connection connection = getConnection()) {
-            TestUtils.createBand(connection);
-            TestUtils.createUser(connection);
+            UUID regionId = UUID.fromString("6a2157dc-63c0-4cae-99ff-c5f54c70c4c5");
 
-            String sql = "DELETE FROM sd_region WHERE id = '170f5f8f-bf1b-4d1b-ab21-7714a83880f1'";
+            TestUtils.createBand(connection, regionId);
+            TestUtils.createUser(connection, regionId);
+
+            String sql = "DELETE FROM sd_region WHERE id = '" + regionId + "'";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.execute();
@@ -59,10 +61,10 @@ public class CascadeDeleteTest extends BaseTestContainerTest {
 
             Statement statement = connection.createStatement();
 
-            ResultSet rs = statement.executeQuery("SELECT * FROM sd_band WHERE region_id = '170f5f8f-bf1b-4d1b-ab21-7714a83880f1'");
+            ResultSet rs = statement.executeQuery("SELECT * FROM sd_band WHERE region_id = '" + regionId + "'");
             Assertions.assertFalse(rs.next());
 
-            rs = statement.executeQuery("SELECT * FROM sd_user WHERE region_id = '170f5f8f-bf1b-4d1b-ab21-7714a83880f1'");
+            rs = statement.executeQuery("SELECT * FROM sd_user WHERE region_id = '" + regionId + "'");
             Assertions.assertFalse(rs.next());
         }
     }
@@ -99,9 +101,11 @@ public class CascadeDeleteTest extends BaseTestContainerTest {
     @Test
     void testCascadeDeleteTaskStatus() throws SQLException {
         try (Connection connection = getConnection()) {
-            TestUtils.createTask(connection);
+            UUID taskStatusId = UUID.fromString("dd193c87-3f6b-43be-8fd6-1fa357cd3c7d");
 
-            String sql = "DELETE FROM sd_task_status WHERE id = '1a653609-da64-460b-bc17-57690d1f00aa'";
+            TestUtils.createTaskByStatus(connection, taskStatusId);
+
+            String sql = "DELETE FROM sd_task_status WHERE id = '" + taskStatusId + "'";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.execute();
@@ -109,10 +113,10 @@ public class CascadeDeleteTest extends BaseTestContainerTest {
 
             Statement statement = connection.createStatement();
 
-            ResultSet rs = statement.executeQuery("SELECT * FROM sd_task WHERE status_id = '1a653609-da64-460b-bc17-57690d1f00aa'");
+            ResultSet rs = statement.executeQuery("SELECT * FROM sd_task WHERE status_id = '" + taskStatusId + "'");
             Assertions.assertFalse(rs.next());
 
-            rs = statement.executeQuery("SELECT * FROM sd_task WHERE cancel_status_id = '1a653609-da64-460b-bc17-57690d1f00aa'");
+            rs = statement.executeQuery("SELECT * FROM sd_task WHERE cancel_status_id = '" + taskStatusId + "'");
             Assertions.assertFalse(rs.next());
         }
     }
@@ -120,9 +124,11 @@ public class CascadeDeleteTest extends BaseTestContainerTest {
     @Test
     void testCascadeDeleteTaskType() throws SQLException {
         try (Connection connection = getConnection()) {
-            TestUtils.createTask(connection);
+            UUID taskTypeId = UUID.fromString("daaf5528-e7a1-4eca-98ea-dd8e2141fb10");
 
-            String sql = "DELETE FROM sd_task_type WHERE id = 'afa1f1b4-6758-4a0a-a862-570c7fddd3a0'";
+            TestUtils.createTaskByType(connection, taskTypeId);
+
+            String sql = "DELETE FROM sd_task_type WHERE id = '" + taskTypeId + "'";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.execute();
@@ -130,7 +136,7 @@ public class CascadeDeleteTest extends BaseTestContainerTest {
 
             Statement statement = connection.createStatement();
 
-            ResultSet rs = statement.executeQuery("SELECT * FROM sd_task WHERE type_id = 'afa1f1b4-6758-4a0a-a862-570c7fddd3a0'");
+            ResultSet rs = statement.executeQuery("SELECT * FROM sd_task WHERE type_id = '" + taskTypeId + "'");
             Assertions.assertFalse(rs.next());
         }
     }
