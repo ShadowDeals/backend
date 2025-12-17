@@ -7,13 +7,21 @@ services:
     container_name: mpi_postgres
     restart: always
     environment:
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+      POSTGRES_SHARED_PRELOAD_LIBRARIES: "pg_stat_statements"
       POSTGRES_USER: ${DB_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${DB_PASS:-postgrespass}
       POSTGRES_DB: ${DB_NAME:-shadow}
+
+    command: >
+      postgres
+      -c shared_preload_libraries=pg_stat_statements
+
     ports:
-      - ${DB_PORT:-5442}:${DB_PORT:-5432}
+      - ${DB_PORT:-5432}:${DB_PORT:-5432}
     volumes:
       - mpi_postgres:/data/postgres
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
 
   # pgAdmin - UI for PostgreSQL
   mpi_pgadmin:
@@ -41,6 +49,40 @@ services:
       - mpi_postgres
     environment:
       - DB_HOST=mpi_postgres
+
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:latest
+    environment:
+      DATA_SOURCE_NAME: postgresql://${DB_USERNAME:-postgres}:${DB_PASS:-postgrespass}@mpi_postgres:${DB_PORT:-5432}/${DB_NAME:-shadow}?sslmode=disable
+
+      PG_EXPORTER_EXTEND_QUERY_PATH: /etc/postgres_exporter/queries.yaml
+
+      PG_EXPORTER_LOG_LEVEL: trace
+    ports:
+      - ${POSTGRES_EXPORTER_OUTER_PORT:-9187}:${POSTGRES_EXPORTER_INNER_PORT:-9187}
+    volumes:
+      - ./grafana/postgres-exporter/queries.yaml:/etc/postgres_exporter/queries.yaml:ro
+    depends_on:
+      - mpi_postgres
+#    command:
+#      - "--extend.query-path=/etc/postgres_exporter/queries.yaml"
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    restart: always
+    ports:
+      - ${PROMETHEUS_OUTER_PORT:-9090}:${PROMETHEUS_INNER_PORT:-9090}
+    volumes:
+      - ./grafana/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - ${GRAFANA_OUTER_PORT:-3000}:${GRAFANA_INNER_PORT:-3000}
 
 volumes:
   mpi_postgres:
