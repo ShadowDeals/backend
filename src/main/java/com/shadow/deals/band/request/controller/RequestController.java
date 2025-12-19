@@ -12,10 +12,9 @@ import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
 import io.micronaut.http.annotation.QueryValue;
 import jakarta.annotation.security.RolesAllowed;
-import lombok.RequiredArgsConstructor;
-
 import java.util.TreeSet;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author Kirill "Tamada" Simovin
@@ -23,6 +22,7 @@ import java.util.UUID;
 @Controller("/request")
 @RequiredArgsConstructor
 public class RequestController {
+
     private final RequestService requestService;
 
     @Post
