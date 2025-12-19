@@ -10,13 +10,11 @@ import com.shadow.deals.band.task.main.entity.Task;
 import com.shadow.deals.band.task.main.service.TaskService;
 import com.shadow.deals.band.task.report.dto.request.TaskReportRequestDTO;
 import com.shadow.deals.band.task.report.dto.response.TaskReportResponseDTO;
-import com.shadow.deals.band.task.report.repository.TaskReportRepository;
 import com.shadow.deals.band.task.report.service.TaskReportService;
 import com.shadow.deals.band.task.status.enums.TaskStatusEnum;
 import com.shadow.deals.band.task.type.enums.TaskTypeEnum;
 import com.shadow.deals.base.BaseAuthTestContainerTest;
 import com.shadow.deals.region.enums.RegionName;
-import com.shadow.deals.user.main.service.UserService;
 import com.shadow.deals.user.role.enums.UserRoleName;
 import com.shadow.deals.util.TestUtils;
 import io.micronaut.http.HttpRequest;
@@ -42,13 +40,7 @@ public class BusinessTest extends BaseAuthTestContainerTest {
     private TaskService taskService;
 
     @Inject
-    private UserService userService;
-
-    @Inject
     private TaskReportService taskReportService;
-
-    @Inject
-    private TaskReportRepository taskReportRepository;
 
     @Test
     public void testFullTaskCycle() {
@@ -167,11 +159,6 @@ public class BusinessTest extends BaseAuthTestContainerTest {
         Assertions.assertEquals(reportDTO.getTimeSpent(), taskReportRequestDTO.getTimeSpent());
         Assertions.assertEquals(reportDTO.getReportId(), reportId);
         Assertions.assertEquals(reportDTO.getTaskId(), taskId);
-    }
-
-    private UUID getUserIdFromAccessToken(String accessToken) {
-        String userEmail = TestUtils.getFromAccessToken(accessToken, "sub");
-        return userService.findByEmail(userEmail).getId();
     }
 
     private void acceptAdminToBand(String donAccessToken, String adminAccessToken) {

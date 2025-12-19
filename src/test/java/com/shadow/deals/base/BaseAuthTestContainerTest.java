@@ -3,9 +3,12 @@ package com.shadow.deals.base;
 import com.shadow.deals.auth.dto.request.SignUpRequestDTO;
 import com.shadow.deals.auth.service.AuthService;
 import com.shadow.deals.region.enums.RegionName;
+import com.shadow.deals.user.main.service.UserService;
 import com.shadow.deals.user.role.enums.UserRoleName;
 import com.shadow.deals.util.CommonUtils;
+import com.shadow.deals.util.TestUtils;
 import jakarta.inject.Inject;
+import java.util.UUID;
 
 /**
  * @author Kirill "Tamada" Simovin
@@ -13,7 +16,10 @@ import jakarta.inject.Inject;
 public abstract class BaseAuthTestContainerTest extends BaseTestContainerTest {
 
     @Inject
-    private AuthService authService;
+    protected AuthService authService;
+
+    @Inject
+    private UserService userService;
 
     protected String createUser() {
         return createUser("volce.chat@mail.ru", UserRoleName.DON, RegionName.MOSCOW_REGION);
@@ -37,5 +43,10 @@ public abstract class BaseAuthTestContainerTest extends BaseTestContainerTest {
         );
 
         return authService.confirmEmail(CommonUtils.generateUUIDFromString(email)).getAccessToken();
+    }
+
+    protected UUID getUserIdFromAccessToken(String accessToken) {
+        String userEmail = TestUtils.getFromAccessToken(accessToken, "sub");
+        return userService.findByEmail(userEmail).getId();
     }
 }
