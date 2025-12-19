@@ -1,7 +1,5 @@
 package com.shadow.deals.volume;
 
-import com.shadow.deals.auth.dto.request.SignInRequestDTO;
-import com.shadow.deals.auth.dto.response.TokenResponseDTO;
 import com.shadow.deals.band.task.main.dto.request.CreateTaskRequestDTO;
 import com.shadow.deals.band.task.main.dto.response.TaskResponseDTO;
 import com.shadow.deals.band.task.main.entity.Task;
@@ -15,7 +13,6 @@ import com.shadow.deals.base.BaseAuthTestContainerTest;
 import com.shadow.deals.region.enums.RegionName;
 import com.shadow.deals.util.TestUtils;
 import io.micronaut.http.HttpRequest;
-import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.io.BufferedReader;
@@ -25,13 +22,11 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
 
 @MicronautTest
 class VolumeTest extends BaseAuthTestContainerTest {
@@ -184,24 +179,6 @@ class VolumeTest extends BaseAuthTestContainerTest {
     }
 
     private String authUser(String email) {
-        SignInRequestDTO dto = new SignInRequestDTO(
-            email,
-            "qweewq",
-            false
-        );
-
-        MutableHttpResponse<?> response = Mono.from(
-            authService.signin(
-                dto,
-                HttpRequest.POST("/auth/signin", dto)
-            )
-        ).block();
-        Assertions.assertNotNull(response);
-
-        Optional<TokenResponseDTO> responseBodyOpt = response.getBody(TokenResponseDTO.class);
-        Assertions.assertTrue(responseBodyOpt.isPresent());
-
-        return responseBodyOpt.get()
-            .getAccessToken();
+        return createUser(email, null, null);
     }
 }
