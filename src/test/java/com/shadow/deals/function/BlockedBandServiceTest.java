@@ -29,7 +29,7 @@ public class BlockedBandServiceTest extends BaseAuthTestContainerTest {
     public void testBlockedBandExists() {
         BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
 
-        String accessToken = createUser();
+        String accessToken = createDon();
 
         blockedBandService.blockDb(
             blockBandRequestDTO,
@@ -43,7 +43,7 @@ public class BlockedBandServiceTest extends BaseAuthTestContainerTest {
     public void testBandBlock() {
         BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
 
-        String accessToken = createUser();
+        String accessToken = createDon();
 
         Assertions.assertDoesNotThrow(() -> blockedBandService.blockDb(
             blockBandRequestDTO,
@@ -57,7 +57,7 @@ public class BlockedBandServiceTest extends BaseAuthTestContainerTest {
     public void testBandAlreadyBlocked() {
         BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
 
-        String accessToken = createUser();
+        String accessToken = createDon();
 
         blockedBandService.blockDb(
             blockBandRequestDTO,
@@ -78,7 +78,7 @@ public class BlockedBandServiceTest extends BaseAuthTestContainerTest {
     public void testUnblockNonBlockedBand() {
         BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
 
-        String accessToken = createUser();
+        String accessToken = createDon();
 
         APIException exception = Assertions.assertThrows(APIException.class, () -> blockedBandService.unblockDb(
             blockBandRequestDTO,
@@ -94,7 +94,7 @@ public class BlockedBandServiceTest extends BaseAuthTestContainerTest {
     public void testUnblockBand() {
         BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
 
-        String accessToken = createUser();
+        String accessToken = createDon();
 
         Assertions.assertDoesNotThrow(() -> blockedBandService.blockDb(
             blockBandRequestDTO,
@@ -113,7 +113,7 @@ public class BlockedBandServiceTest extends BaseAuthTestContainerTest {
     public void testIsBandBlocked() {
         BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
 
-        String accessToken = createUser();
+        String accessToken = createDon();
 
         Assertions.assertDoesNotThrow(() -> blockedBandService.blockDb(
             blockBandRequestDTO,
@@ -129,7 +129,7 @@ public class BlockedBandServiceTest extends BaseAuthTestContainerTest {
 
     @Test
     public void testIsBandNotBlocked() {
-        String accessToken = createUser();
+        String accessToken = createDon();
 
         boolean result = blockedBandService.getDbState(
             HttpRequest.GET("/band/block").bearerAuth(accessToken)

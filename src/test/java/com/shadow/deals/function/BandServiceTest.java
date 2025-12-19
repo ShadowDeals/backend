@@ -27,7 +27,7 @@ public class BandServiceTest extends BaseAuthTestContainerTest {
     public void testBlockedBandGetStats() {
         BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
 
-        String accessToken = createUser();
+        String accessToken = createDon();
 
         blockedBandService.blockDb(
             blockBandRequestDTO,
@@ -45,7 +45,7 @@ public class BandServiceTest extends BaseAuthTestContainerTest {
 
     @Test
     public void testGetStats() {
-        String accessToken = createUser();
+        String accessToken = createDon();
 
         BandStatsInfoResponseDTO responseDTO = Assertions.assertDoesNotThrow(() -> bandService.selectBandStatsInfo(
             HttpRequest.GET("/band/stats").bearerAuth(accessToken))

@@ -21,7 +21,7 @@ public abstract class BaseAuthTestContainerTest extends BaseTestContainerTest {
     @Inject
     private UserService userService;
 
-    protected String createUser() {
+    protected String createDon() {
         return createUser("volce.chat@mail.ru", UserRoleName.DON, RegionName.MOSCOW_REGION);
     }
 
