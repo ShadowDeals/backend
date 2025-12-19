@@ -32,41 +32,94 @@ active_connections:
         usage: GAUGE
         description: Waiting connections
 
-slow_queries:
-  query: |
-    SELECT
-      datname,
-      queryid,
-      query,
-      total_exec_time,
-      mean_exec_time,
-      calls,
-      rows
-    FROM pg_stat_statements
-    JOIN pg_database ON pg_database.oid = pg_stat_statements.dbid
-    WHERE mean_exec_time > 100
-    AND datname IS NOT NULL 
-    AND datname <> ''
-    ORDER BY mean_exec_time DESC
+postgres_locks:
+  help: "Блокировки и ожидания в PostgreSQL"
+  query: "SELECT count(*) as blocked_locks FROM pg_locks WHERE NOT granted;"
   metrics:
-    - datname:
-        usage: LABEL
-        description: Database name
-    - queryid:
-        usage: LABEL
-        description: Query ID
-    - query:
-        usage: LABEL
-        description: Query text
-    - total_exec_time:
-        usage: GAUGE
-        description: Total execution time in milliseconds
-    - mean_exec_time:
-        usage: GAUGE
-        description: Mean execution time in milliseconds
+    - blocked_locks:
+        usage: "GAUGE"
+        description: "Количество заблокированных процессов"
+
+long_transactions:
+  query: "SELECT count(*) as long_idle_transactions FROM pg_stat_activity WHERE state = 'idle in transaction' AND (NOW() - xact_start) > INTERVAL '1 minute';"
+  metrics:
+    - long_idle_transactions:
+        usage: "GAUGE"
+        description: "Количество длительных idle транзакций"
+
+select_query_performance:
+  query: "SELECT COALESCE(SUM(calls), 0) as calls, COALESCE(AVG(mean_exec_time), 0) as avg_time FROM pg_stat_statements WHERE query LIKE '%SELECT%' OR query LIKE '%select%';"
+  metrics:
     - calls:
-        usage: COUNTER
-        description: Number of calls
-    - rows:
-        usage: COUNTER
-        description: Rows processed
+        usage: "COUNTER"
+        description: "Количество SELECT запросов"
+    - avg_time:
+        usage: "GAUGE"
+        description: "Среднее время SELECT запросов"
+
+insert_query_performance:
+  query: "SELECT COALESCE(SUM(calls), 0) as calls, COALESCE(AVG(mean_exec_time), 0) as avg_time FROM pg_stat_statements WHERE query LIKE '%INSERT%' OR query LIKE '%insert%';"
+  metrics:
+    - calls:
+        usage: "COUNTER"
+        description: "Количество INSERT запросов"
+    - avg_time:
+        usage: "GAUGE"
+        description: "Среднее время INSERT запросов"
+
+nplus1_summary:
+  query: |
+    WITH query_patterns AS (
+      SELECT
+        regexp_replace(
+          regexp_replace(query, '\$\d+', '?', 'g'),
+          '\d+', '?', 'g'                           
+        ) as normalized_query,
+        queryid,
+        calls,
+        mean_exec_time,
+        total_exec_time
+      FROM pg_stat_statements
+      WHERE query LIKE '%SELECT%'
+    ),
+    aggregated_stats AS (
+      SELECT
+        normalized_query,
+        COUNT(*) as pattern_count,
+        SUM(calls) as total_calls,
+        AVG(mean_exec_time) as avg_time_ms,
+        SUM(total_exec_time) as total_time_seconds
+      FROM query_patterns
+      WHERE normalized_query LIKE '%WHERE%?%'
+        AND normalized_query LIKE '%id%'
+      GROUP BY normalized_query
+      HAVING COUNT(*) > 3
+        AND SUM(calls) > 50
+    )
+    SELECT 
+      COUNT(*) as suspicious_patterns_count,
+      COALESCE(SUM(total_calls), 0) as total_suspicious_calls,
+      COALESCE(AVG(avg_time_ms), 0) as avg_pattern_time_ms,
+      COALESCE(SUM(total_time_seconds), 0) as total_suspicious_time_seconds,
+      COUNT(CASE WHEN total_calls > 1000 THEN 1 END) as high_volume_patterns,
+      COUNT(CASE WHEN avg_time_ms > 100 THEN 1 END) as slow_patterns
+    FROM aggregated_stats
+  metrics:
+    - suspicious_patterns_count:
+        usage: "GAUGE"
+        description: "Number of suspicious N+1 patterns detected"
+    - total_suspicious_calls:
+        usage: "COUNTER"
+        description: "Total calls of suspicious patterns"
+    - avg_pattern_time_ms:
+        usage: "GAUGE"
+        description: "Average execution time of suspicious patterns (ms)"
+    - total_suspicious_time_seconds:
+        usage: "GAUGE"
+        description: "Total time spent on suspicious patterns (seconds)"
+    - high_volume_patterns:
+        usage: "GAUGE"
+        description: "Number of patterns with >1000 calls"
+    - slow_patterns:
+        usage: "GAUGE"
+        description: "Number of patterns with avg time >100ms"

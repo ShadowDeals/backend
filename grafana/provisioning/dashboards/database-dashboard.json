@@ -23,8 +23,80 @@
       "datasource": "Prometheus",
       "targets": [
         {
-          "expr": "slow_queries_calls",
-          "legendFormat": "{{datname}} slow queries"
+          "expr": "long_transactions_long_idle_transactions",
+          "legendFormat": "long idle connections"
+        }
+      ],
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+    },
+    {
+      "title": "Blocked locks",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "postgres_locks_blocked_locks",
+          "legendFormat": "blocked locks"
+        }
+      ],
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+    },
+    {
+      "title": "Select query performance",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "select_query_performance_avg_time",
+          "legendFormat": "Average query time"
+        },
+        {
+          "expr": "select_query_performance_calls",
+          "legendFormat": "Calls num."
+        }
+      ],
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+    },
+    {
+      "title": "Insert query performance",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "insert_query_performance_avg_time",
+          "legendFormat": "Average query time"
+        },
+        {
+          "expr": "insert_query_performance_calls",
+          "legendFormat": "Calls num."
+        }
+      ],
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+    },
+    {
+      "title": "N+1",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "nplus1_summary_suspicious_patterns_count",
+          "legendFormat": "Number of suspicious N+1 patterns detected"
+        },
+        {
+          "expr": "nplus1_summary_total_suspicious_calls",
+          "legendFormat": "Total calls of suspicious patterns"
+        },
+        {
+          "expr": "nplus1_summary_avg_pattern_time_ms",
+          "legendFormat": "Average execution time of suspicious patterns (ms)"
+        },
+        {
+          "expr": "nplus1_summary_total_suspicious_time_seconds",
+          "legendFormat": "Total time spent on suspicious patterns (seconds)"
+        },
+        {
+          "expr": "nplus1_summary_high_volume_patterns",
+          "legendFormat": "Number of patterns with >1000 calls"
+        },
+        {
+          "expr": "nplus1_summary_slow_patterns",
+          "legendFormat": "Number of patterns with avg time >100ms"
         }
       ],
       "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
