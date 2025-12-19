@@ -31,7 +31,7 @@ public class APIExceptionHandler implements ExceptionHandler<Exception, HttpResp
      */
     @Override
     public HttpResponse<?> handle(HttpRequest request, @NotNull Exception exception) {
-        exception.printStackTrace();
+//        exception.printStackTrace();
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         if (exception instanceof APIException apiException) {
             status = apiException.getCode();
