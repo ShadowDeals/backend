@@ -209,7 +209,6 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String activationCodeVal = CommonUtils.generateUUIDFromString(userEmail);
-        System.out.println("email: " + userEmail + ", activationCodeVal: " + activationCodeVal);
         sendSignUpEmail(user, activationCodeVal);
 
         createAndSaveActivationCode(user, activationCodeVal);
