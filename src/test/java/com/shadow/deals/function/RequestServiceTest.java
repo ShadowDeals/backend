@@ -266,7 +266,7 @@ public class RequestServiceTest extends BaseAuthTestContainerTest {
         Assertions.assertEquals("TEST", request.getName());
         Assertions.assertEquals(UserRoleName.ADMIN, request.getUserRole());
 
-        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
+        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO(PASSWORD);
         Assertions.assertDoesNotThrow(() -> blockedBandService.blockDb(
             blockBandRequestDTO,
             HttpRequest.POST("/band/block", blockBandRequestDTO).bearerAuth(donAccessToken)
@@ -441,7 +441,7 @@ public class RequestServiceTest extends BaseAuthTestContainerTest {
         Assertions.assertEquals("TEST", request.getName());
         Assertions.assertEquals(UserRoleName.SOLDIER, request.getUserRole());
 
-        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
+        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO(PASSWORD);
         Assertions.assertDoesNotThrow(() -> blockedBandService.blockDb(
             blockBandRequestDTO,
             HttpRequest.POST("/band/block", blockBandRequestDTO).bearerAuth(donAccessToken)
@@ -532,7 +532,7 @@ public class RequestServiceTest extends BaseAuthTestContainerTest {
 
         BandWorkerResponseDTO worker = workers.getFirst();
 
-        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
+        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO(PASSWORD);
         Assertions.assertDoesNotThrow(() -> blockedBandService.blockDb(
             blockBandRequestDTO,
             HttpRequest.POST("/band/block", blockBandRequestDTO).bearerAuth(donAccessToken)

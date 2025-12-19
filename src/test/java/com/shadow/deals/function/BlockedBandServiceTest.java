@@ -27,7 +27,7 @@ public class BlockedBandServiceTest extends BaseAuthTestContainerTest {
 
     @Test
     public void testBlockedBandExists() {
-        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
+        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO(PASSWORD);
 
         String accessToken = createDon();
 
@@ -41,7 +41,7 @@ public class BlockedBandServiceTest extends BaseAuthTestContainerTest {
 
     @Test
     public void testBandBlock() {
-        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
+        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO(PASSWORD);
 
         String accessToken = createDon();
 
@@ -55,7 +55,7 @@ public class BlockedBandServiceTest extends BaseAuthTestContainerTest {
 
     @Test
     public void testBandAlreadyBlocked() {
-        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
+        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO(PASSWORD);
 
         String accessToken = createDon();
 
@@ -76,7 +76,7 @@ public class BlockedBandServiceTest extends BaseAuthTestContainerTest {
 
     @Test
     public void testUnblockNonBlockedBand() {
-        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
+        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO(PASSWORD);
 
         String accessToken = createDon();
 
@@ -92,7 +92,7 @@ public class BlockedBandServiceTest extends BaseAuthTestContainerTest {
 
     @Test
     public void testUnblockBand() {
-        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
+        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO(PASSWORD);
 
         String accessToken = createDon();
 
@@ -111,7 +111,7 @@ public class BlockedBandServiceTest extends BaseAuthTestContainerTest {
 
     @Test
     public void testIsBandBlocked() {
-        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
+        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO(PASSWORD);
 
         String accessToken = createDon();
 

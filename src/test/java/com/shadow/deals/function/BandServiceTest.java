@@ -25,7 +25,7 @@ public class BandServiceTest extends BaseAuthTestContainerTest {
 
     @Test
     public void testBlockedBandGetStats() {
-        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO("TEST");
+        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO(PASSWORD);
 
         String accessToken = createDon();
 
