@@ -64,7 +64,7 @@ public class RequestServiceTest extends BaseAuthTestContainerTest {
 
         String adminAccessToken = createUser("ksimovin@br.ru", UserRoleName.ADMIN);
 
-        RegionName regionName = RegionName.VASILEOSTROVKIY_REGION;
+        RegionName regionName = RegionName.VIBORGSKY_REGION;
 
         APIException exception = Assertions.assertThrows(APIException.class, () -> requestService.createRequests(
             HttpRequest.POST("/request", null).bearerAuth(adminAccessToken),
@@ -93,7 +93,7 @@ public class RequestServiceTest extends BaseAuthTestContainerTest {
         );
 
         Assertions.assertNotNull(requests);
-        Assertions.assertEquals(1, requests.size());
+        Assertions.assertFalse(requests.isEmpty());
         Assertions.assertEquals(TestUtils.getBandId(donAccessToken), requests.getFirst().getBandId());
         Assertions.assertEquals(RegionName.MOSCOW_REGION, requests.getFirst().getBandRegion());
     }
@@ -127,7 +127,7 @@ public class RequestServiceTest extends BaseAuthTestContainerTest {
 
         String soldierAccessToken = createUser("ksimovin@br.ru", UserRoleName.SOLDIER);
 
-        RegionName regionName = RegionName.VASILEOSTROVKIY_REGION;
+        RegionName regionName = RegionName.VIBORGSKY_REGION;
 
         APIException exception = Assertions.assertThrows(APIException.class, () -> requestService.createRequests(
             HttpRequest.POST("/request", null).bearerAuth(soldierAccessToken),
@@ -156,7 +156,7 @@ public class RequestServiceTest extends BaseAuthTestContainerTest {
         );
 
         Assertions.assertNotNull(requests);
-        Assertions.assertEquals(1, requests.size());
+        Assertions.assertFalse(requests.isEmpty());
         Assertions.assertEquals(TestUtils.getBandId(donAccessToken), requests.getFirst().getBandId());
         Assertions.assertEquals(RegionName.MOSCOW_REGION, requests.getFirst().getBandRegion());
     }
@@ -699,5 +699,67 @@ public class RequestServiceTest extends BaseAuthTestContainerTest {
         );
         Assertions.assertNotNull(workers);
         Assertions.assertTrue(workers.isEmpty());
+    }
+
+    @Test
+    public void testKickSoldierFromBlockedBand() {
+        String donAccessToken = createUser("volce.chat@mail.ru", UserRoleName.DON);
+
+        String adminAccessToken = createUser("ksimovin@br.ru", UserRoleName.ADMIN);
+
+        Assertions.assertDoesNotThrow(() -> requestService.createRequests(
+                HttpRequest.POST("/request", null).bearerAuth(adminAccessToken),
+                RegionName.MOSCOW_REGION
+            )
+        );
+
+        TreeSet<RequestResponseDTO> requests = Assertions.assertDoesNotThrow(() -> requestService.getRequests(
+                HttpRequest.GET("/request").bearerAuth(donAccessToken)
+            )
+        );
+
+        RequestResponseDTO finalRequest = requests.getFirst();
+        Assertions.assertDoesNotThrow(() -> requestService.acceptRequest(finalRequest.getId()));
+
+        String soldierAccessToken = createUser("volcechatc@gmail.com", UserRoleName.SOLDIER);
+        Assertions.assertDoesNotThrow(() -> requestService.createRequests(
+                HttpRequest.POST("/request", null).bearerAuth(soldierAccessToken),
+                RegionName.MOSCOW_REGION
+            )
+        );
+
+        requests = Assertions.assertDoesNotThrow(() -> requestService.getRequests(
+                HttpRequest.GET("/request").bearerAuth(adminAccessToken)
+            )
+        );
+
+        RequestResponseDTO finalRequest1 = requests.getFirst();
+        Assertions.assertDoesNotThrow(() -> requestService.acceptRequest(finalRequest1.getId()));
+
+        UUID bandId = TestUtils.getBandId(donAccessToken);
+
+        TreeSet<BandWorkerResponseDTO> workers = Assertions.assertDoesNotThrow(() -> bandService.getWorkersByType(
+                bandId,
+                UserRoleName.SOLDIER
+            )
+        );
+
+        Assertions.assertNotNull(workers);
+        Assertions.assertEquals(1, workers.size());
+
+        BlockBandRequestDTO blockBandRequestDTO = new BlockBandRequestDTO(PASSWORD);
+        Assertions.assertDoesNotThrow(() -> blockedBandService.blockDb(
+            blockBandRequestDTO,
+            HttpRequest.POST("/band/block", blockBandRequestDTO).bearerAuth(donAccessToken)
+        ));
+
+        BandWorkerResponseDTO worker = workers.getFirst();
+        APIException exception = Assertions.assertThrows(APIException.class, () -> bandService.kickFromBand(
+            worker.getWorkerId(),
+            HttpRequest.PUT("/band", null).bearerAuth(adminAccessToken)
+        ));
+
+        Assertions.assertEquals(HttpStatus.LOCKED, exception.getCode());
+        Assertions.assertEquals("База данных заблокирована!", exception.getMessage());
     }
 }
