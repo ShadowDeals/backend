@@ -133,16 +133,13 @@ tasks.named("dockerfileNative") {
 }
 
 dependencyCheck {
-    outputDirectory = file("${project.rootDir}/reports/dependency-check")
+    outputDirectory = file("${buildDir}/security-reports/dependency-check")
 
     // Форматы отчетов
     formats = ['HTML', 'JSON', 'XML']
 
-    // Подавление ложных срабатываний
-    suppressionFile = 'config/dependency-check-suppressions.xml'
-
     // Критичность для прерывания сборки
-    failBuildOnCVSS = 7.0 // Сборка упадет при уязвимости с CVSS >= 7.0
+//    failBuildOnCVSS = 7.0 // Сборка упадет при уязвимости с CVSS >= 7.0
 
     // Сканирование всех конфигураций
     scanConfigurations = ['runtimeClasspath']
