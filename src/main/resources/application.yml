@@ -56,6 +56,14 @@ datasources:
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASS:postgrespass}
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:shadow}
+    hikari:
+      maximum-pool-size: 20           # Увеличьте лимит (по умолчанию часто 10)
+      minimum-idle: 5                 # Минимальное количество простаивающих соединений
+      connection-timeout: 30000       # Таймаут ожидания соединения (30 сек)
+      idle-timeout: 600000            # (10 мин) Через какое время неиспользуемое соединение закрывается
+      max-lifetime: 1800000           # (30 мин) Максимальное время жизни соединения
+      validation-timeout: 5000        # Таймаут валидации
+      leak-detection-threshold: 60000 # (1 мин) Порог для детектирования "утечки" соединения
 
 # Liquibase properties
 liquibase:
